@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SubShelf {
 
@@ -67,5 +68,16 @@ public class SubShelf {
         return false;
     }
 
+    public void print_content(){
+        if(count == 0){
+            System.out.println("empty");
+        }
+        else{
+            Set<GoodsType> keys = ThingsOnShelf.keySet();
+            for(GoodsType t : keys){
+                System.out.println(""+t.getName()+" "+ThingsOnShelf.get(t).size());
+            }
+        }
+    }
 
 }

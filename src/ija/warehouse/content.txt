@@ -1,0 +1,11 @@
+jablko 5 1
+pomaranc 8 1
+banan 17 3
+kofola 2 5
+pivo 40 5
+vodka 3 5
+tycinka 22 2
+syr 6 7
+papier 5 6
+kladivo 2 6
+respirator 60 8

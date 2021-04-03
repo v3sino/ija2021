@@ -62,5 +62,12 @@ public class Shelf {
         return true;
     }
 
+    public void print_content(){
+        for(SubShelf s : subshelves){
+            System.out.print("....subshelf: ");
+            s.print_content();
+        }
+    }
+
 
 }
