@@ -1,2 +1,6 @@
 # Project exclude paths
 /out/
+/bin/
+.classpath
+.project
+src/module-info.java
