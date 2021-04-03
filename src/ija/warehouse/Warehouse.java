@@ -28,10 +28,14 @@ public class Warehouse {
                 String name = sc.next();
                 int count = sc.nextInt();
                 int shelf = sc.nextInt();
-                types.add(new GoodsType(name));
+
+                GoodsType type = new GoodsType(name);
+                if (!types.contains(type)){
+                    types.add(type);
+                }
                 List<Goods> tmp = new ArrayList<Goods>();
                 for (int i=0; i < count; i++){
-                    tmp.add(types.get(types.size()-1).newItem());
+                    tmp.add(types.get(types.indexOf(type)).newItem());
                 }
                 for (Goods g : tmp){
                     if (!shelves.get(shelf).isfull()){
@@ -48,6 +52,9 @@ public class Warehouse {
         }
 
         print_state();
+        for(GoodsType t : types){
+            System.out.println(t.getName()+" "+t.size());
+        }
 
         //GUI g = new GUI();
         //g.main(args);
