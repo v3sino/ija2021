@@ -2,6 +2,7 @@ package ija.warehouse;
 
 import ija.warehouse.Goods;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GoodsType {
 
@@ -51,4 +52,18 @@ public class GoodsType {
         return this.pocet;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GoodsType goodsType = (GoodsType) o;
+        return name.equals(goodsType.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
 }
+

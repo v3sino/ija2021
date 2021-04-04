@@ -5,35 +5,65 @@ import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
 import ija.warehouse.Shelf;
 
+import java.io.FileReader;
+import java.util.List;
+import java.util.Scanner;
+import java.util.ArrayList;
+
 public class Warehouse {
 
+    public static ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
+    public static ArrayList<GoodsType> types = new ArrayList<GoodsType>();
+    //public static ArrayList<Goods> goods = new ArrayList<Goods>();
+
     public static void main(String[] args){
-        System.out.println("Starting main");
 
-        Shelf sh1 = new Shelf();
-        Shelf sh2 = new Shelf();
-        GoodsType tp1 = new GoodsType("Jablko");
-        GoodsType tp2 = new GoodsType("Voda");
-        GoodsType tp3 = new GoodsType("Rozok");
-        Goods g1 = new Goods(tp1);
-        Goods g2 = new Goods(tp1);
-        Goods g3 = new Goods(tp2);
-        Goods g4 = new Goods(tp3);
+        for (int i = 0; i < 10; i++){
+            shelves.add(new Shelf());
+        }
 
-        sh1.put(g1);
-        sh1.put(g2);
-        sh2.put(g3);
-        sh2.put(g4);
+        try {
+            Scanner sc = new Scanner(new FileReader("src/ija/warehouse/content.txt"));
+            while(sc.hasNextLine()){
+                String name = sc.next();
+                int count = sc.nextInt();
+                int shelf = sc.nextInt();
 
-        System.out.println("Prva policka obsahuje: " + sh1.numberOfGoods(tp1) + " jablk" );
-        System.out.println("Prva policka obsahuje: " + sh1.numberOfGoods(tp2) + " vody" );
-        System.out.println("Prva policka obsahuje: " + sh1.numberOfGoods(tp3) + " rozkov" );
-        System.out.println("Druha policka obsahuje: " + sh2.numberOfGoods(tp1) + " jablk" );
-        System.out.println("Druha policka obsahuje: " + sh2.numberOfGoods(tp2) + " vody" );
-        System.out.println("Druha policka obsahuje: " + sh2.numberOfGoods(tp3) + " rozkov" );
+                GoodsType type = new GoodsType(name);
+                if (!types.contains(type)){
+                    types.add(type);
+                }
+                List<Goods> tmp = new ArrayList<Goods>();
+                for (int i=0; i < count; i++){
+                    tmp.add(types.get(types.indexOf(type)).newItem());
+                }
+                for (Goods g : tmp){
+                    if (!shelves.get(shelf).isfull()){
+                        shelves.get(shelf).put(g);
+                    }
+                    else{
+                        System.out.println("trying to put onto full shelf");
+                    }
+                }
+            }
+        }
+        catch(Exception e) {
+            System.out.println("file not found");
+        }
 
-        GUI g = new GUI();
-        g.main(args);
+        print_state();
+        for(GoodsType t : types){
+            System.out.println(t.getName()+" "+t.size());
+        }
 
+        //GUI g = new GUI();
+        //g.main(args);
+    }
+
+    private static void print_state(){
+        for(int i=0; i<10 ; i++){
+            System.out.println("SHELF "+i+":");
+            shelves.get(i).print_content();
+        }
     }
 }
