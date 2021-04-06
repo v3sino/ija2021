@@ -12,11 +12,10 @@ import java.util.ArrayList;
 
 public class Warehouse {
 
-    public static ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
-    public static ArrayList<GoodsType> types = new ArrayList<GoodsType>();
-    //public static ArrayList<Goods> goods = new ArrayList<Goods>();
+    public ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
+    public ArrayList<GoodsType> types = new ArrayList<GoodsType>();
 
-    public static void main(String[] args){
+    public Warehouse(){
 
         for (int i = 0; i < 10; i++){
             shelves.add(new Shelf());
@@ -46,6 +45,7 @@ public class Warehouse {
                     }
                 }
             }
+            sc.close();
         }
         catch(Exception e) {
             System.out.println("file not found");
@@ -60,7 +60,7 @@ public class Warehouse {
         //g.main(args);
     }
 
-    private static void print_state(){
+    private void print_state(){
         for(int i=0; i<10 ; i++){
             System.out.println("SHELF "+i+":");
             shelves.get(i).print_content();
