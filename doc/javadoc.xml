@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="private" author="true" classpath="." destdir="" doctitle="Dokumentácia projektu z predmetu IJA" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="ija.gui,ija.warehouse,ija.carts" source="1.8" sourcepath="../src" splitindex="true" use="true" version="true">
+            <link href="https://docs.oracle.com/javase/8/docs/api/"/>
+            <link href="file:/media/martin/DATA_1TB/Programovanie/java-linux/ija2021/doc/"/>
+        </javadoc>
+    </target>
+</project>
