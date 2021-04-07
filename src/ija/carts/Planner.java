@@ -2,7 +2,6 @@ package ija.carts;
 
 
 import java.util.ArrayList;
-
 import ija.warehouse.Goods;
 
 public class Planner {

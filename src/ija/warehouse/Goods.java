@@ -15,4 +15,7 @@ public class Goods {
     public boolean sell() {
         return this.type.remove(this);
     }
+    public boolean toString() {
+    	
+    }
 }

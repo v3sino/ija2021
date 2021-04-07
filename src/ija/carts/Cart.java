@@ -42,6 +42,7 @@ public class Cart {
 		waitTime=-1;
 		waitFor = new ArrayList<Goods>();
 	}
+	
 	public void move() {
 		if(waitTime>0) {
 			if(waitTime==1) {
