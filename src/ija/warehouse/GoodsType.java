@@ -64,6 +64,8 @@ public class GoodsType {
     public int hashCode() {
         return Objects.hash(name);
     }
-
+    public String toString() {
+        return this.name;
+    }
 }
 

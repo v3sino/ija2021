@@ -16,7 +16,23 @@ public class CartTest {
 		MapInfo map = new MapInfo(s);
 		Warehouse w = new Warehouse();
 		w.shelves.add(s);
+		w.types.add(new GoodsType("Mlieko"));
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.types.add(new GoodsType("Ovocie"));
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.types.add(new GoodsType("Maslo"));
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
 		w.types.add(new GoodsType("Pokusny tovar"));
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.types.add(new GoodsType("Med"));
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
+		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
 		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
 		w.shelves.get(w.shelves.size()-1).put(w.types.get(w.types.size()-1).newItem());
 		Goods [] cargo = new Goods[1];
@@ -33,10 +49,11 @@ public class CartTest {
 		
 		System.out.println("Vozík na začiatku obsahuje:");
 		System.out.println(cart1.getCargoToString());
+		System.out.println("Tento tovar rovnako doručí na výdajné miesto");
 		System.out.println("vozík sa nachádza na "+cart1.x+","+cart1.y);
 		System.out.println("Čakajúce požiadavky");
 		System.out.println(p.toString());
-		p.addOrder(new Order(2, w.types.get(w.types.size()-1)));
+		p.addOrder(new Order(2, w.types.get(w.types.size()-2)));
 		System.out.println(">>>>Po pridaní požiadavky na naloženie dvoch kusov tovaru \"Pokusny tovar\"");
 		System.out.println("Vozík na začiatku obsahuje:");
 		System.out.println(cart1.getCargoToString());
@@ -98,7 +115,7 @@ public class CartTest {
 		System.out.println(cart1.getCargoToString());
 		System.out.println("Najbližší ciel vozíku:");
 		System.out.println(cart1.getNextDestination().toString());
-		
+		System.out.println("Správa výdajného okienka:");
 		cart1.move();
 		System.out.println(">>>>Po siedmej aktivite vozíka (vyloženie)");
 		System.out.println("vozík sa nachádza na "+cart1.x+","+cart1.y);
