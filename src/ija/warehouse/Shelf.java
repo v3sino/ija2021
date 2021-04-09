@@ -27,6 +27,24 @@ public class Shelf {
         }
     }
 
+    public boolean reserveGoods(GoodsType type, int count){
+        for (SubShelf i : subshelves){
+            count -= i.reserveGoods(type, count);
+            if (count == 0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int numberOfUnreservedGoods(GoodsType type) {
+        int x = 0;
+        for(SubShelf i : subshelves){
+            x += i.numberOfUnreservedGoods(type);
+        }
+        return x;
+    }
+
     public boolean containsGoods(GoodsType type) {
         for(SubShelf i : subshelves){
             if (i.containsGoods(type)){
@@ -34,6 +52,15 @@ public class Shelf {
             }
         }
         return false;
+    }
+
+    public Goods removeReserved(GoodsType type) {
+        for(SubShelf i : subshelves){
+            if (i.numberOfGoods(type) - i.numberOfUnreservedGoods(type) > 0){
+                return i.removeReserved(type);
+            }
+        }
+        return null;
     }
 
     public Goods removeAny(GoodsType type) {

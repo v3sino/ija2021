@@ -30,6 +30,57 @@ public class SubShelf {
         count ++;
     }
 
+    public int reserveGoods(GoodsType type, int count){
+        int x = 0;
+        for (Goods g : ThingsOnShelf.get(type)){
+            if (!g.isReserved()){
+                g.reserve();
+                x += 1;
+                if (x == count){
+                    break;
+                }
+            }
+        }
+        return x;
+    }
+
+    public int numberOfUnreservedGoods(GoodsType type) {
+        List<Goods> list = this.ThingsOnShelf.get(type);
+        if (list == null){
+            return 0;
+        }
+        else{
+            int count = 0;
+            for (Goods g : list){
+                if (!g.isReserved()){
+                    count += 1;
+                }
+            }
+            return count;
+        }
+    }
+
+    public Goods removeReserved(GoodsType type) {
+        List<Goods> list = this.ThingsOnShelf.get(type);
+        if (list == null) {
+            return null;
+        } else {
+            if (list.isEmpty()){
+                return null;
+            }
+            else {
+                for (Goods g : list){
+                    if (g.isReserved()){
+                        count --;
+                        list.remove(g);
+                        return g;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public boolean containsGoods(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
         if (list == null){
