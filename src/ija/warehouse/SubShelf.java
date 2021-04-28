@@ -83,10 +83,7 @@ public class SubShelf {
 
     public boolean containsGoods(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
-        if (list == null){
-            return false;
-        }
-        return true;
+        return list != null;
     }
 
     public Goods removeAny(GoodsType type) {
@@ -113,10 +110,7 @@ public class SubShelf {
     }
 
     public boolean isfull(){
-        if (count == capacity){
-            return true;
-        }
-        return false;
+        return count == capacity;
     }
 
     public void print_content(){
@@ -130,5 +124,25 @@ public class SubShelf {
             }
         }
     }
+
+    public boolean isEmpty(){
+        return count==0;
+    }
+
+    public String getContent(){
+        StringBuilder content = new StringBuilder();
+        if(count == 0){
+            content.append("empty");
+        }
+        else{
+            Set<GoodsType> keys = ThingsOnShelf.keySet();
+            for(GoodsType t : keys){
+                content.append(t.getName()).append(": ").append(ThingsOnShelf.get(t).size()).append("\n");
+            }
+        }
+
+        return content.toString();
+    }
+
 
 }

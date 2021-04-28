@@ -1,6 +1,5 @@
 package ija.gui;
 
-import ija.warehouse.GoodsType;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -36,15 +35,15 @@ public class GUI extends Application{
 
     List<Rectangle> shelves;
     List<ImageView> carts;
-    private ArrayList<Shelf> shelvesInfo;  			// link to shelves
-    private MapInfo map;				   // link to mapInfo
-    
-    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo) {
-        //--------this works, the shelves are passed correctly
-        System.out.println("inside initinfo\n");
-        System.out.println(shelvesInf.size());
-        shelvesInf.get(8).print_content();
+    private static ArrayList<Shelf> shelvesInfo;  			// link to shelves
+    private static MapInfo map;				   // link to mapInfo
 
+    /**
+     * Stores information about map and shelves from external class
+     * @param shelvesInf list of shelves with data
+     * @param mapInfo map structure with the map description
+     */
+    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo) {
         shelvesInfo = shelvesInf;
     	map = mapInfo;
 	}
@@ -54,10 +53,6 @@ public class GUI extends Application{
         cart_moves = new ArrayList<>();
         carts = new ArrayList<>();
         shelves = new ArrayList<>();
-
-	    // ------this doesnt work, shelvesInfo is null for some reason
-        //System.out.println(shelvesInfo.size());
-	    //shelvesInfo.get(8).print_content();
 
         int size = 40;
 
@@ -190,6 +185,33 @@ public class GUI extends Application{
     }
 
     /**
+     * Function draws one sqare shelf and sets its actions
+     *
+     * @param col column in which shelf will be drawn
+     * @param row row in which shelf will be drawn
+     * @param size size of the rectangle (default size for stage recommended)
+     */
+    private void PutShelf(int col, int row, int size){
+        Rectangle shelf = new Rectangle((row-1)*size, (col-1)*size, size, size);
+        shelf.setFill(Color.LIGHTGREY);
+        shelf.setStrokeWidth(4);
+        shelf.setStroke(Color.DARKGRAY);
+
+        shelf.setOnMouseEntered(mouseEvent -> {
+            shelf.setStrokeWidth(4);
+            shelf.setStroke(Color.RED);
+        });
+        shelf.setOnMouseExited(mouseEvent -> shelf.setStroke(Color.DARKGRAY));
+
+        // Displaying shelf window
+        shelf.setOnMouseClicked(mouseEvent -> {
+            //ShelfWindow.display();
+        });
+
+        building.getChildren().add(shelf);
+    }
+
+    /**
      * Function draws basic lines for orientation and shelves
      *
      * @param scene scene in which warehouse will be drawn
@@ -220,14 +242,15 @@ public class GUI extends Application{
                     shelf.setStroke(Color.DARKGRAY);
 
                     shelf.setOnMouseEntered(mouseEvent -> {
-                        shelf.setStrokeWidth(4);
                         shelf.setStroke(Color.RED);
                     });
                     shelf.setOnMouseExited(mouseEvent -> shelf.setStroke(Color.DARKGRAY));
 
                     // Displaying shelf window
+                    int finalCnt = cnt;
                     shelf.setOnMouseClicked(mouseEvent -> {
-                        ShelfWindow.display();
+                        ShelfWindow.display(shelvesInfo.get(finalCnt));
+                        //shelvesInfo.get(finalCnt).print_content();
                     });
 
                     // Shelf label

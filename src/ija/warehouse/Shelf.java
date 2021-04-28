@@ -3,7 +3,7 @@ package ija.warehouse;
 import java.util.ArrayList;
 
 public class Shelf {
-    private ArrayList<SubShelf> subshelves = new ArrayList<SubShelf>();
+    private final ArrayList<SubShelf> subshelves = new ArrayList<SubShelf>();
 
     public Shelf() {
         SubShelf sub1 = new SubShelf();
@@ -96,5 +96,21 @@ public class Shelf {
         }
     }
 
+    public int numberOfNonEmptyShelves(){
+        int k = 5;
 
+        for(SubShelf s : subshelves)
+            if (s.isEmpty())
+                k--;
+
+        return k;
+    }
+
+    public SubShelf getSubShelf(int i){
+        if (-1 < i && i <= subshelves.size()){
+            return subshelves.get(i);
+        }
+
+        return null;
+    }
 }
