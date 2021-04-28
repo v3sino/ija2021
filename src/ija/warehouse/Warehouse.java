@@ -106,9 +106,10 @@ public class Warehouse {
 
 
 
-		MapInfo map = new MapInfo(s);
-        GUI g = new GUI(shelves,map);
-        g.main();
+		MapInfo map = new MapInfo();
+        GUI g = new GUI();
+        g.initIfo(shelves, map);
+
     }
 
     private void print_state(){

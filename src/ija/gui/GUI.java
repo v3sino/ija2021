@@ -1,8 +1,8 @@
 package ija.gui;
 
+import ija.warehouse.GoodsType;
 import javafx.animation.*;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -40,10 +39,9 @@ public class GUI extends Application{
     ArrayList<Shelf> shelvesInfo;  // link to shelves
     MapInfo map;				   // link to mapInfo
     
-    public GUI(ArrayList<Shelf> shelvesInf,MapInfo mapInfo) {
-    	shelvesInfo= shelvesInf;
+    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo) {
+    	shelvesInfo = shelvesInf;
     	map = mapInfo;
-    	
 	}
     
     public void start(Stage primaryStage) throws Exception{
@@ -51,6 +49,9 @@ public class GUI extends Application{
         cart_moves = new ArrayList<>();
         carts = new ArrayList<>();
         shelves = new ArrayList<>();
+
+        shelvesInfo = new ArrayList<>();
+        map = new MapInfo();
 
         int size = 40;
 
@@ -219,7 +220,9 @@ public class GUI extends Application{
                     shelf.setOnMouseExited(mouseEvent -> shelf.setStroke(Color.DARKGRAY));
 
                     // Displaying shelf window
-                    shelf.setOnMouseClicked(mouseEvent -> ShelfWindow.display());
+                    shelf.setOnMouseClicked(mouseEvent -> {
+                        ShelfWindow.display();
+                    });
 
                     // Shelf label
                     Text shelfLabel = new Text(i+5, j+12, Integer.toString(cnt));
@@ -464,8 +467,8 @@ public class GUI extends Application{
         cart5_moves.getChildren().clear();
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main() {
+        launch();
     }
 
 }
