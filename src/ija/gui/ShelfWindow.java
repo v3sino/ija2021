@@ -15,7 +15,7 @@ public class ShelfWindow{
         primaryStage.initModality(Modality.APPLICATION_MODAL);
 
         // -- Get image
-        Image shelf = new Image("ija/images/shelf.png");
+        Image shelf = new Image("file:data/shelf.png");
         ImageView shelf_view = new ImageView(shelf);
         shelf_view.setX(0);
         shelf_view.setY(0);

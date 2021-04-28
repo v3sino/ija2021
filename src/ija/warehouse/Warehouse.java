@@ -22,7 +22,7 @@ public class Warehouse {
         }
 
         try {
-            Scanner sc = new Scanner(new FileReader("src/ija/warehouse/content.txt"));
+            Scanner sc = new Scanner(new FileReader("data/content.txt"));
             while(sc.hasNextLine()){
                 String name = sc.next();
                 int count = sc.nextInt();
@@ -52,7 +52,8 @@ public class Warehouse {
         }
 
         print_state();
-
+	
+/* -------------------------------------------------------demonstration how to reserve goods on shelf--------------------------
         GoodsType apple = new GoodsType("jablko");
         GoodsType orange = new GoodsType("pomaranc");
 
@@ -104,11 +105,13 @@ public class Warehouse {
         System.out.println("number of unreserved apples on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(apple));
         System.out.println("number of unreserved oranges on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(orange));
 
+--------------------------------------------------end of demonstration-----------------------------
+*/	
 
-
-		MapInfo map = new MapInfo();
+	MapInfo map = new MapInfo();
         GUI g = new GUI();
         g.initIfo(shelves, map);
+	g.main();
 
     }
 

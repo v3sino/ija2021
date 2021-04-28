@@ -36,11 +36,16 @@ public class GUI extends Application{
 
     List<Rectangle> shelves;
     List<ImageView> carts;
-    ArrayList<Shelf> shelvesInfo;  // link to shelves
-    MapInfo map;				   // link to mapInfo
+    private ArrayList<Shelf> shelvesInfo;  			// link to shelves
+    private MapInfo map;				   // link to mapInfo
     
     public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo) {
-    	shelvesInfo = shelvesInf;
+        //--------this works, the shelves are passed correctly
+        System.out.println("inside initinfo\n");
+        System.out.println(shelvesInf.size());
+        shelvesInf.get(8).print_content();
+
+        shelvesInfo = shelvesInf;
     	map = mapInfo;
 	}
     
@@ -50,8 +55,9 @@ public class GUI extends Application{
         carts = new ArrayList<>();
         shelves = new ArrayList<>();
 
-        shelvesInfo = new ArrayList<>();
-        map = new MapInfo();
+	    // ------this doesnt work, shelvesInfo is null for some reason
+        //System.out.println(shelvesInfo.size());
+	    //shelvesInfo.get(8).print_content();
 
         int size = 40;
 
@@ -260,7 +266,7 @@ public class GUI extends Application{
             carts.clear();
         }
 
-        Image cart = new Image("ija/images/cart.png");
+        Image cart = new Image("file:data/cart.png");
 
         for (int i = 1; i < 6; i++) {
             ImageView imageview = new ImageView(cart);
