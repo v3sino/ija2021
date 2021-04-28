@@ -80,6 +80,13 @@ public class GUI extends Application{
         help_layout.setBottom(g);
         // -- SCENE SET -- //
 
+        // -- SETTING HEATMAP -- //
+        Rectangle hMap = new Rectangle(0, 0, scene.getWidth(), scene.getHeight());
+        hMap.setOpacity(0.4);
+        hMap.setFill(Color.LIGHTBLUE);
+        hMap.setVisible(false);
+        // -- HEATMAP SET -- //
+
         // -- MENU INITIALIZATION -- //
         Menu hlp_menu = new Menu("Help");
         MenuItem readme = new MenuItem("ReadMe");
@@ -93,7 +100,7 @@ public class GUI extends Application{
             building.setScaleY(1);
         });
 
-        hlp_menu.getItems().addAll(readme, reset_scene);
+        hlp_menu.getItems().addAll(readme);
 
         Menu play_menu = new Menu("Play");
         MenuItem animation1 = new MenuItem("Animation_1");
@@ -124,8 +131,15 @@ public class GUI extends Application{
 
         play_menu.getItems().addAll(animation1, animation2, restart);
 
+        Menu scene_menu = new Menu("Scene");
+        MenuItem heatMap = new MenuItem("HeatMap");
+        heatMap.setOnAction(actionEvent -> {
+            hMap.setVisible(!hMap.isVisible());
+        });
+        scene_menu.getItems().addAll(reset_scene, heatMap);
+
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(hlp_menu, play_menu);
+        menuBar.getMenus().addAll(hlp_menu, play_menu, scene_menu);
         // -- END OF MENU INITIALIZATION -- //
 
         // Init objects
@@ -176,6 +190,8 @@ public class GUI extends Application{
         });
         // ------- END OF ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
+        building.getChildren().add(hMap);
+        
         layout.setTop(menuBar);
         layout.setCenter(building);
 
