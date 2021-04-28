@@ -23,6 +23,9 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import ija.warehouse.MapInfo;
+import ija.warehouse.Shelf;
+
 public class GUI extends Application{
 
     // -- Privates -- //
@@ -34,8 +37,15 @@ public class GUI extends Application{
 
     List<Rectangle> shelves;
     List<ImageView> carts;
-
-    @Override
+    ArrayList<Shelf> shelvesInfo;  // link to shelves
+    MapInfo map;				   // link to mapInfo
+    
+    public GUI(ArrayList<Shelf> shelvesInf,MapInfo mapInfo) {
+    	shelvesInfo= shelvesInf;
+    	map = mapInfo;
+    	
+	}
+    
     public void start(Stage primaryStage) throws Exception{
         building = new Group();
         cart_moves = new ArrayList<>();
