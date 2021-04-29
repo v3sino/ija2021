@@ -109,7 +109,7 @@ public class Warehouse {
 --------------------------------------------------end of demonstration-----------------------------
 */	
 
-	MapInfo map = new MapInfo();
+	MapInfo map = new MapInfo(shelves);
         GUI g = new GUI();
         g.initIfo(shelves, map);
 	g.main();
