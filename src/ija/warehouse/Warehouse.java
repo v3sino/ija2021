@@ -6,6 +6,7 @@ import ija.warehouse.GoodsType;
 import ija.warehouse.Shelf;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -112,7 +113,6 @@ public class Warehouse {
         GUI g = new GUI();
         g.initIfo(shelves, map);
 	g.main();
-
     }
 
     private void print_state(){

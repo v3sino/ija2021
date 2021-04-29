@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class GUI extends Application{
     List<Rectangle> shelves;
     List<ImageView> carts;
     private static ArrayList<Shelf> shelvesInfo;  			// link to shelves
-    private static MapInfo map;				   // link to mapInfo
+	private static MapInfo map;				   // link to mapInfo
 
     /**
      * Stores information about map and shelves from external class
@@ -198,6 +199,14 @@ public class GUI extends Application{
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
+    	try {
+    		map.readMapFromFile(this);
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+
     }
 
     /**
@@ -207,7 +216,7 @@ public class GUI extends Application{
      * @param row row in which shelf will be drawn
      * @param size size of the rectangle (default size for stage recommended)
      */
-    private void PutShelf(int col, int row, int size){
+    public void PutShelf(int col, int row, int size){
         Rectangle shelf = new Rectangle((row-1)*size, (col-1)*size, size, size);
         shelf.setFill(Color.LIGHTGREY);
         shelf.setStrokeWidth(4);
@@ -359,6 +368,18 @@ public class GUI extends Application{
     }
 
     /**
+     * Function rotates and moves cart down in given number of moves (rectangles)
+     * @author xbabac02
+     * @param cart_index index of cart which is to be moved
+     * @param size size of one map-rectangle
+     * @param moves number of moves
+     *
+     */
+    public synchronized void CartMoveDown(int cart_index, int size, int moves) {
+    	this.CartMoveDown(carts.get(cart_index), size, moves);
+    }
+
+    /**
      * Function moves cart up in given number of moves (rectangles)
      * @param cart cart which is to be moved
      * @param size size of one map-rectangle
@@ -393,6 +414,18 @@ public class GUI extends Application{
         SequentialTransition move = new SequentialTransition(cart_rotate, cart_move);
         move.setNode(cart);
         cart_moves.add(move);
+    }
+
+    /**
+     * Function moves cart up in given number of moves (rectangles)
+     * @author xbabac02
+     * @param cart_index index of cart which is to be moved
+     * @param size size of one map-rectangle
+     * @param moves number of moves
+     *
+     */
+    public synchronized void CartMoveUp(int cart_index, int size, int moves){
+    	this.CartMoveUp(carts.get(cart_index), size, moves);
     }
 
     /**
@@ -431,6 +464,18 @@ public class GUI extends Application{
         move.setNode(cart);
         cart_moves.add(move);
     }
+    
+    /**
+     * Function rotates and moves cart in the right direction of a given number of moves (rectangles)
+     * @author xbabac02
+     * @param cart_index index of cart which is to be moved
+     * @param size size of one map-rectangle
+     * @param moves number of moves
+     *
+     */
+    public synchronized void CartMoveRight(int cart_index, int size, int moves) {
+    	this.CartMoveRight(carts.get(cart_index), size, moves);
+    }
 
     /**
      * Function rotates and moves cart in the left direction of a given number of moves (rectangles)
@@ -468,7 +513,20 @@ public class GUI extends Application{
         move.setNode(cart);
         cart_moves.add(move);
     }
+    
+    /**
+     * Function rotates and moves cart in the left direction of a given number of moves (rectangles)
+     * @author xbabac02
+     * @param cart_index index of cart which is to be moved
+     * @param size size of one map-rectangle
+     * @param moves number of moves
+     *
+     */
+    public synchronized void CartMoveLeft(int cart_index, int size, int moves){
 
+        this.CartMoveLeft(carts.get(cart_index), size, moves);
+    }
+    
     /**
      * Function handles cart movements.
      * Probably will be called every xy seconds
@@ -515,5 +573,5 @@ public class GUI extends Application{
     public static void main() {
         launch();
     }
-
+    
 }
