@@ -16,9 +16,18 @@ public class Warehouse {
     public ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
     public ArrayList<GoodsType> types = new ArrayList<GoodsType>();
 
-    public Warehouse(){
+    @SuppressWarnings("static-access")
+	public Warehouse(){
 
-        for (int i = 0; i < 10; i++){
+    	MapInfo map = new MapInfo(shelves);
+    	try {
+			map.readMapFromFile("data/map1.txt");
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+    	
+        for (int i = 0; i <map.getShelfCount(); i++){
             shelves.add(new Shelf());
         }
 
@@ -37,18 +46,19 @@ public class Warehouse {
                 for (int i=0; i < count; i++){
                     tmp.add(types.get(types.indexOf(type)).newItem());
                 }
-                for (Goods g : tmp){
+                for (Goods go : tmp){
                     if (!shelves.get(shelf).isfull()){
-                        shelves.get(shelf).put(g);
+                        shelves.get(shelf).put(go);
                     }
                     else{
-                        System.out.println("trying to put onto full shelf");
+                        System.out.println("trying to put "+name+" onto full shelf");
                     }
                 }
             }
             sc.close();
         }
         catch(Exception e) {
+        	System.out.println(e);
             System.out.println("file not found");
         }
 
@@ -109,14 +119,13 @@ public class Warehouse {
 --------------------------------------------------end of demonstration-----------------------------
 */	
 
-	MapInfo map = new MapInfo(shelves);
         GUI g = new GUI();
         g.initIfo(shelves, map);
 	g.main();
     }
 
     private void print_state(){
-        for(int i=0; i<10 ; i++){
+        for(int i=0; i<shelves.size() ; i++){
             System.out.println("SHELF "+i+":");
             shelves.get(i).print_content();
         }

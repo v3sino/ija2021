@@ -17,8 +17,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -200,12 +198,7 @@ public class GUI extends Application{
         primaryStage.setResizable(false);
         primaryStage.show();
 
-    	try {
-    		map.readMapFromFile(this);
-    	} catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	}
+    	map.readMapToGui(this);
 
     }
 

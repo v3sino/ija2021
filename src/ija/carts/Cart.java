@@ -14,6 +14,7 @@ public class Cart {
 	private Planner planner;
 	private ArrayList<Goods> cargo = new ArrayList<Goods>();
 	private ArrayList<Destination> destinations;
+	private ArrayList<Destination> planned_path;
 	private int completedDestinations;
 	public int x;
 	public int y;
@@ -23,10 +24,8 @@ public class Cart {
 	private int waitTime;
 	private ArrayList<Goods> waitFor;
 	private Warehouse wh;
-	//mam ciel, idem tam (v smere x ak je volno a dx !=0 inak v y)
-	//ak nie je mozne, tak zoberiem ciel prekazky a posuniem sa do inej strany
+	
 	public Cart(Goods[] cargoToLoad, int[] place, Planner plan, MapInfo m, Warehouse warehouse) {
-		// !!! Constructor still in progress
 		for (Goods c : cargoToLoad) {
 			cargo.add(c);
 		}
@@ -44,6 +43,7 @@ public class Cart {
 	}
 	
 	public void move() {
+		/// Loading
 		if(waitTime>0) {
 			if(waitTime==1) {
 				for (Goods goods : waitFor) {
@@ -55,6 +55,8 @@ public class Cart {
 			}
 			return;
 		}
+		
+		/// Move
 		if(destinations.size()!=0 && destinations.size()!=completedDestinations){
 			if(Math.abs(destinations.get(completedDestinations).x-x)==1 && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==2){
 				Shelf shelf = map.getShelf(destinations.get(completedDestinations));
@@ -65,7 +67,7 @@ public class Cart {
 						break;
 					}else{
 						if(!this.load(good)){
-							System.out.println("33333333333333chyba");
+							System.out.println("chyba");
 						}
 					}
 				}
@@ -109,6 +111,8 @@ public class Cart {
 			this.findOrder();
 		}
 	}
+	
+	
 	private void findOrder() {
 		if(destinations.size()==0 || destinations.size()==completedDestinations) {
 			destinations=new ArrayList<Destination>();
@@ -130,7 +134,7 @@ public class Cart {
 				}
 			}
 			}
-			Destination a = map.getStartDest();
+			Destination a = new Destination(x, y, -1);
 			Destination nextD;
 			for(int j = 0;j<destinations.size()-1;j++) {
 				nextD = destinations.get(j);
