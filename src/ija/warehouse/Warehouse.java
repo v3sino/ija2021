@@ -1,10 +1,11 @@
 package ija.warehouse;
 
+import ija.carts.Cart;
+import ija.carts.Planner;
 import ija.gui.GUI;
 import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
 import ija.warehouse.Shelf;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class Warehouse {
 
     public ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
+    public ArrayList<Cart> carts = new ArrayList<Cart>(); 
     public ArrayList<GoodsType> types = new ArrayList<GoodsType>();
 
     @SuppressWarnings("static-access")
@@ -27,9 +29,19 @@ public class Warehouse {
 			e2.printStackTrace();
 		}
     	
-        for (int i = 0; i <map.getShelfCount(); i++){
+    	for (int i = 0; i <map.getShelfCount(); i++){
             shelves.add(new Shelf());
         }
+		Planner planner = new Planner();
+    	for (int y = 0;y<map.y_size; y++) {
+			for (int x = 0; x < map.x_size; x++) {
+				if(map.cells[x][y].type==2) {
+					int [] a = {x,y};
+					carts.add(new Cart(new Goods[0], a, planner, map, this));
+				}
+			}
+		}
+    	
 
         try {
             Scanner sc = new Scanner(new FileReader("data/content.txt"));
@@ -118,7 +130,7 @@ public class Warehouse {
 
 --------------------------------------------------end of demonstration-----------------------------
 */	
-
+        planner.readOrderFromFile("data/Order1.txt",types);
         GUI g = new GUI();
         g.initIfo(shelves, map);
 	g.main();

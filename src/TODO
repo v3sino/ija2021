@@ -1,0 +1,14 @@
+K dorobeniu:
+
+ako chceme zvoliť/zmeniť mapu?
+vozíky stále nikto nehýbe (časovač by mal volať funkciu move)
+požiadavky nie su načítavané z GUI
+požiadavky nie su načítavané zo súboru - programované, netestované
+dokladanie
+grafické zobrazenie stavu vozíku
+grafické zobrazenie stavu objednávky
+grafické zobrazenie vyskladnenia
+
+M: vozíky nie su načítavané do mapy - programované, netestované
+M: vozíky nie su vytvárané - programované, netestované 
+M: rezervácia tovarov - programované, netestované

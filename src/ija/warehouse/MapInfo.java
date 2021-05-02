@@ -9,8 +9,6 @@ import ija.carts.Destination;
 import ija.gui.GUI;
 
 /**
- * 
- * @author xbabac02
  * @implNote file with map, should contain size of cells table; Map contains 1 export window
  */
 public class MapInfo {
@@ -18,8 +16,8 @@ public class MapInfo {
 	private String mapFileName= "data/map1.txt";
 	public Cell cells [][];
 	private GUI g;
-	private int x_size=-1;
-	private int y_size=-1;
+	public int x_size=-1;
+	public int y_size=-1;
 	private int cart_c;
 	private int shelf_c;
 	private Destination export_window = null;
@@ -81,7 +79,7 @@ public class MapInfo {
 					cart_c++;
 				}
 				if(line.charAt(y)=='E' || line.charAt(y)=='e') {
-					if(export_window!=null) {
+					if(getExport_window()!=null) {
 						JOptionPane.showMessageDialog(null,"multiple export windows are on the screen, should be 1","multiple export windows are on the screen, should be 1", JOptionPane.ERROR_MESSAGE);
 					}
 					export_window=new Destination(x1, y, -1);
@@ -271,6 +269,9 @@ public class MapInfo {
 			return true;
 		}
 		return false;
+	}
+	public Destination getExport_window() {
+		return export_window;
 	}
 
 }

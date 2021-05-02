@@ -1,0 +1,18 @@
+#orders
+-- order 1: Martin want's banana milk
+banana 5
+milk 3
+
+-- order 2: fruit salat
+apple 
+2 apples were delicious last month
+pineapple
+1 
+plum
+7
+grapes
+1
+kiwi
+3
+orange
+2

@@ -3,7 +3,6 @@ package ija.carts;
 import java.lang.Math;
 import java.util.AbstractList;
 import java.util.ArrayList;
-
 import ija.carts.Planner;
 import ija.warehouse.Goods;
 import ija.warehouse.Shelf;
@@ -40,6 +39,7 @@ public class Cart {
 		map=m;
 		waitTime=-1;
 		waitFor = new ArrayList<Goods>();
+		planned_path = new ArrayList<Destination>();
 	}
 	
 	public void move() {
@@ -50,19 +50,36 @@ public class Cart {
 					cargo.add(goods);
 				}
 				waitTime=-1;
+				// Plan the path
+				// TODO ..............
+				this.plan();
 			}else {
 				waitTime--;
 			}
 			return;
 		}
 		
-		/// Move
-		if(destinations.size()!=0 && destinations.size()!=completedDestinations){
+		//Moving
+		if(planned_path.size()>0) {// way is planned, path is cleared 
+			
+			if(planned_path.get(0).task==1 || planned_path.get(0).count==1) {
+				// cart reached crossroad, path to next crossroad is planned, path to following crossroad is been planning
+				// TODO .............
+				this.plan();
+			}
+			
+			//Move to next Destination from planned_path
+			map.moveCart(x, y, planned_path.get(0).x, planned_path.get(0).y);
+			x = planned_path.get(0).x;
+			y = planned_path.get(0).y;
+			planned_path.remove(0);
+			
+		}else if(destinations.size()!=0 && destinations.size()!=completedDestinations){
 			if(Math.abs(destinations.get(completedDestinations).x-x)==1 && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==2){
 				Shelf shelf = map.getShelf(destinations.get(completedDestinations));
 				Goods good;
 				for(int i = 0;i<destinations.get(completedDestinations).count;i++) {
-					good = shelf.removeAny(destinations.get(completedDestinations).goodtype);
+					good = shelf.removeReserved(destinations.get(completedDestinations).goodtype);
 					if(good==null){
 						break;
 					}else{
@@ -79,40 +96,407 @@ public class Cart {
 				this.findOrder();
 				return; 
 			}
-			if(destinations.get(completedDestinations).x-x>1) {
-				if(map.isFree(x+1,y)){
-					x=x+1;
-					map.moveCart(x-1,y,x,y);
-					return;
-				}
-			}
-			if(destinations.get(completedDestinations).x-x<1 || destinations.get(completedDestinations).x == x) {
-				if(map.isFree(x-1,y)){
-					x=x-1;
-					map.moveCart(x+1,y,x,y);
-					return;
-				}
-			}
-			if(destinations.get(completedDestinations).y-y>0) {
-				if(map.isFree(x,y+1)){
-					y=y+1;
-					map.moveCart(x,y-1,x,y);
-					return;
-				}
-			}
-			if(destinations.get(completedDestinations).y-y<0) {
-				if(map.isFree(x-1,y)){
-					x=x-1;
-					map.moveCart(x+1,y,x,y);
-					return;
-				}
-			}
+			
 		}else{
 			this.findOrder();
 		}
+		
 	}
 	
+	private Destination recursivePlanner(int last_x, int last_y) {
+		if(map.cells[last_x][last_y].crossroad) {
+			planned_path.add(new Destination(last_x, last_y, 1));
+			Destination d = new Destination(last_x, last_y, 1);
+			return d;
+		}
+		if(Math.abs(destinations.get(completedDestinations).x-x)==1 && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==1) {
+			planned_path.add(new Destination(last_x, last_y, 2));
+		}
+		if(destinations.get(completedDestinations).x==x && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==3) {
+			planned_path.add(new Destination(last_x, last_y, 3));
+		}
+		
+		if(destinations.get(completedDestinations).x-last_x>1) {
+			if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+				last_x=last_x+1;
+				planned_path.add(new Destination(last_x, last_y, 1));
+				Destination d = recursivePlanner(last_x, last_y);
+				if(d.x<0 || d.y<0) {
+					planned_path.remove(planned_path.size()-1);
+					return d;
+				}
+			}
+		}
+		if(destinations.get(completedDestinations).x-last_x<-1) {
+			if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+				last_x=last_x-1;
+				planned_path.add(new Destination(last_x, last_y, 1));
+				Destination d = recursivePlanner(last_x, last_y);
+				if(d.x<0 || d.y<0) {
+					planned_path.remove(planned_path.size()-1);
+					return d;
+				}
+			}
+		}
+		if(destinations.get(completedDestinations).y-last_y>0) {
+			if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+				last_y=last_y+1;
+				planned_path.add(new Destination(last_x, last_y, 1));
+				Destination d = recursivePlanner(last_x, last_y);
+				if(d.x<0 || d.y<0) {
+					planned_path.remove(planned_path.size()-1);
+					return d;
+				}
+			}
+		}
+		if(destinations.get(completedDestinations).y-last_y<0) {
+			if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+				last_y=last_y-1;
+				planned_path.add(new Destination(last_x, last_y, 1));
+				Destination d = recursivePlanner(last_x, last_y);
+				if(d.x<0 || d.y<0) {
+					planned_path.remove(planned_path.size()-1);
+					return d;
+				}
+			}
+		}
+		if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+			last_x=last_x+1;
+			planned_path.add(new Destination(last_x, last_y, 1));
+			Destination d = recursivePlanner(last_x, last_y);
+			if(d.x<0 || d.y<0) {
+				planned_path.remove(planned_path.size()-1);
+				return d;
+			}
+		}
+		if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+			last_x=last_x-1;
+			planned_path.add(new Destination(last_x, last_y, 1));
+			Destination d = recursivePlanner(last_x, last_y);
+			if(d.x<0 || d.y<0) {
+				planned_path.remove(planned_path.size()-1);
+				return d;
+			}
+		}
+		if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+			last_y=last_y+1;
+			planned_path.add(new Destination(last_x, last_y, 1));
+			Destination d = recursivePlanner(last_x, last_y);
+			if(d.x<0 || d.y<0) {
+				planned_path.remove(planned_path.size()-1);
+				return d;
+			}
+		}
+		if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+			last_y=last_y-1;
+			planned_path.add(new Destination(last_x, last_y, 1));
+			Destination d = recursivePlanner(last_x, last_y);
+			if(d.x<0 || d.y<0) {
+				planned_path.remove(planned_path.size()-1);
+				return d;
+			}
+		}
+	return new Destination(-1, -1, -1);
+	}
 	
+	private void plan() {
+		// TODO ??? i don't know, if this works
+		int last_x;
+		int last_y;
+		if(planned_path.size()>0) {
+			if(planned_path.get(planned_path.size()-1).count==1) {
+				// Planned path ends on crossroad -> path is not completed
+				last_x = planned_path.get(planned_path.size()-1).x;
+				last_y = planned_path.get(planned_path.size()-1).y;
+				
+				while(true) {
+					if(destinations.get(completedDestinations).x-last_x>1) {
+						if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+							last_x=last_x+1;
+							planned_path.add(new Destination(last_x, last_y, 1));
+							Destination d = recursivePlanner(last_x, last_y);
+							if(d.x<0 || d.y<0) {
+								planned_path.remove(planned_path.size()-1);
+							}else {
+								break;
+							}
+						}
+					}
+					if(destinations.get(completedDestinations).x-last_x<-1) {
+						if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+							last_x=last_x-1;
+							planned_path.add(new Destination(last_x, last_y, 1));
+							Destination d = recursivePlanner(last_x, last_y);
+							if(d.x<0 || d.y<0) {
+								planned_path.remove(planned_path.size()-1);
+							}else {
+								break;
+							}
+						}
+					}
+					if(destinations.get(completedDestinations).y-last_y>0) {
+						if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+							last_y=last_y+1;
+							planned_path.add(new Destination(last_x, last_y, 1));
+							Destination d = recursivePlanner(last_x, last_y);
+							if(d.x<0 || d.y<0) {
+								planned_path.remove(planned_path.size()-1);
+							}else {
+								break;
+							}
+						}
+					}
+					if(destinations.get(completedDestinations).y-last_y<0) {
+						if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+							last_y=last_y-1;
+							planned_path.add(new Destination(last_x, last_y, 1));
+							Destination d = recursivePlanner(last_x, last_y);
+							if(d.x<0 || d.y<0) {
+								planned_path.remove(planned_path.size()-1);
+							}else {
+								break;
+							}
+						}
+					}
+					if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+						last_x=last_x+1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+					if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+						last_x=last_x-1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+					if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+						last_y=last_y+1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+					if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+						last_y=last_y-1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+					break;
+				}
+			}else{
+				// Path doesn't end on crossroad -> path is completed
+				return;
+			}
+		}else {
+			last_x = x;
+			last_y = y;
+			
+			while(true) {
+				if(destinations.get(completedDestinations).x-last_x>1) {
+					if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+						last_x=last_x+1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(destinations.get(completedDestinations).x-last_x<-1) {
+					if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+						last_x=last_x-1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(destinations.get(completedDestinations).y-last_y>0) {
+					if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+						last_y=last_y+1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(destinations.get(completedDestinations).y-last_y<0) {
+					if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+						last_y=last_y-1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+					last_x=last_x+1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+					last_x=last_x-1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+					last_y=last_y+1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+					last_y=last_y-1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				break;
+			}
+			
+			last_x = planned_path.get(planned_path.size()-1).x;
+			last_y = planned_path.get(planned_path.size()-1).y;
+			
+			while(true) {
+				if(destinations.get(completedDestinations).x-last_x>1) {
+					if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+						last_x=last_x+1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(destinations.get(completedDestinations).x-last_x<-1) {
+					if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+						last_x=last_x-1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(destinations.get(completedDestinations).y-last_y>0) {
+					if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+						last_y=last_y+1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(destinations.get(completedDestinations).y-last_y<0) {
+					if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+						last_y=last_y-1;
+						planned_path.add(new Destination(last_x, last_y, 1));
+						Destination d = recursivePlanner(last_x, last_y);
+						if(d.x<0 || d.y<0) {
+							planned_path.remove(planned_path.size()-1);
+						}else {
+							break;
+						}
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x+1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+					last_x=last_x+1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x-1 && planned_path.get(planned_path.size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+					last_x=last_x-1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+					last_y=last_y+1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				if(planned_path.get(planned_path.size()-1).x==last_x && planned_path.get(planned_path.size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
+					last_y=last_y-1;
+					planned_path.add(new Destination(last_x, last_y, 1));
+					Destination d = recursivePlanner(last_x, last_y);
+					if(d.x<0 || d.y<0) {
+						planned_path.remove(planned_path.size()-1);
+					}else {
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+
 	private void findOrder() {
 		if(destinations.size()==0 || destinations.size()==completedDestinations) {
 			destinations=new ArrayList<Destination>();
@@ -120,11 +504,12 @@ public class Cart {
 			int c;
 			for(int j = 0;j<order.getGoodTypeObj().length;j++) {
 			for(int i = 0;i<wh.shelves.size();i++) {
-				c = wh.shelves.get(i).numberOfGoods(order.getGoodTypeObj()[j]);
+				c = wh.shelves.get(i).numberOfUnreservedGoods(order.getGoodTypeObj()[j]);
 				if(c!=0){
 					Destination d  = map.getDestination(wh.shelves.get(i));
 					d.task = 2;
 					d.count = c;
+					wh.shelves.get(i).reserveGoods(order.getGoodTypeObj()[j], c);
 					if(d.count>order.getGoodTypeCount()[j]) {
 						d.count=order.getGoodTypeCount()[j];
 					}
@@ -136,6 +521,7 @@ public class Cart {
 			}
 			Destination a = new Destination(x, y, -1);
 			Destination nextD;
+			//sorting Destinations in row 
 			for(int j = 0;j<destinations.size()-1;j++) {
 				nextD = destinations.get(j);
 				for (int i = 1; i < destinations.size(); i++) {
@@ -146,13 +532,15 @@ public class Cart {
 				destinations.set(destinations.indexOf(nextD), destinations.get(j));
 				destinations.set(j, nextD);
 			}
-			a = map.getWindowDest();
+			a = map.getExport_window();
 			a.task = 3;
 			destinations.add(a);
+			completedDestinations=0;
 		}else {
 			completedDestinations++;
 		}
 	}
+	
 	private boolean load(Goods good) {
 		if(load<maxLoad) {
 			waitTime=1;
@@ -161,9 +549,11 @@ public class Cart {
 		}
 		return false;
 	}
+	
 	public ArrayList<Goods> getCargo() {
 		return cargo;
 	}
+	
 	public String getCargoToString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Počet:" + cargo.size()+'\n');
@@ -173,6 +563,7 @@ public class Cart {
 		}
 		return sb.toString();
 	}
+	
 	private Boolean unload() {
 		Goods[] outLoad = new Goods[cargo.size()];
 		for (int i = 0; i < outLoad.length; i++) {
@@ -181,6 +572,7 @@ public class Cart {
 		cargo.clear();
 		return planner.dispatch(outLoad);
 	}
+	
 	public Destination getNextDestination() {
 		try {
 			return destinations.get(completedDestinations);
@@ -188,6 +580,7 @@ public class Cart {
 			return new Destination(-1,-1,0);
 		}
 	}
+	
 	public AbstractList<Destination> getPath() {
 		return destinations;
 	}
