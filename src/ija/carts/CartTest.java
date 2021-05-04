@@ -7,6 +7,7 @@ import ija.warehouse.Shelf;
 import ija.warehouse.Warehouse;
 
 /**
+ * @deprecated 
  * @author Martin Babača
  *
  */
