@@ -17,8 +17,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Timer;
+
 import ija.carts.Cart;
 import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
@@ -31,6 +36,7 @@ public class GUI extends Application{
     double deltaX; // delta of scene movement while mouse dragging
     double deltaY;
     private final double speed = 0.75; // speed of one cart in seconds per square
+    int delay = 2000;
 
     List<Rectangle> shelves;
     List<ImageView> carts;
@@ -201,17 +207,19 @@ public class GUI extends Application{
         primaryStage.show();
 
     	map.readMapToGui(this);
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	cartsInfo.get(0).move();
-    	timer();
+
+    	Timer tmr = new Timer(delay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Tick\n");
+                CartMoveDown(carts.get(0), size, 1);
+                CartMoveDown(carts.get(1), size, 1);
+                CartMoveDown(carts.get(2), size, 1);
+                CartMoveDown(carts.get(3), size, 1);
+                timer();
+            }
+        });
+        tmr.start();
     }
 
     /**
