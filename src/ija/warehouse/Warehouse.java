@@ -140,7 +140,7 @@ public class Warehouse {
         planner.readOrderFromFile("data/Orders1.txt",types);
         GUI g = new GUI();
         g.initIfo(shelves, map, carts);
-	g.main();
+	    g.main();
     }
 
     private void print_state(){
