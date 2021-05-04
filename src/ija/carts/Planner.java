@@ -93,14 +93,15 @@ public class Planner {
 						}
 					}
 					if(!found) {
-						goods.remove(goods.size()-1);
 						JOptionPane.showMessageDialog(null,"Unknown name of good type: "+line,"Unknown name of good type: "+line, JOptionPane.ERROR_MESSAGE);
+						System.exit(1);
 						br.readLine();
 						continue;
 					}
 					if((line=br.readLine())==null) {
 						goods.remove(goods.size()-1);
 						JOptionPane.showMessageDialog(null,"wrong format of Order file","wrong format of Order file", JOptionPane.ERROR_MESSAGE);
+						System.exit(1);
 						break;
 					}
 					try {
@@ -109,6 +110,7 @@ public class Planner {
 					}catch (Exception e) {
 						goods.remove(goods.size()-1);
 						JOptionPane.showMessageDialog(null,"wrong format of Order file",line.trim() +  "doesn't starts with number representing count", JOptionPane.ERROR_MESSAGE);
+						System.exit(1);
 					}
 				}
 			}

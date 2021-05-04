@@ -32,16 +32,14 @@ public class Warehouse {
     	for (int i = 0; i <map.getShelfCount(); i++){
             shelves.add(new Shelf());
         }
-		Planner planner = new Planner();
-    	for (int y = 0;y<map.y_size; y++) {
-			for (int x = 0; x < map.x_size; x++) {
-				if(map.cells[x][y].type==2) {
-					int [] a = {x,y};
-					carts.add(new Cart(new Goods[0], a, planner, map, this));
-				}
-			}
-		}
-    	
+    	types.add(new GoodsType("banana"));
+    	types.add(new GoodsType("milk"));
+    	types.add(new GoodsType("apple"));
+    	types.add(new GoodsType("pineapple"));
+    	types.add(new GoodsType("plum"));
+    	types.add(new GoodsType("grapes"));
+    	types.add(new GoodsType("kiwi"));
+    	types.add(new GoodsType("orange"));
 
         try {
             Scanner sc = new Scanner(new FileReader("data/content.txt"));
@@ -73,6 +71,15 @@ public class Warehouse {
         	System.out.println(e);
             System.out.println("file not found");
         }
+		Planner planner = new Planner();
+    	for (int y = 0;y<map.y_size; y++) {
+			for (int x = 0; x < map.x_size; x++) {
+				if(map.cells[x][y].type==2) {
+					int [] a = {x,y};
+					carts.add(new Cart(new Goods[0], a, planner, map, this));
+				}
+			}
+		}
 
         print_state();
 	
@@ -130,9 +137,9 @@ public class Warehouse {
 
 --------------------------------------------------end of demonstration-----------------------------
 */	
-        planner.readOrderFromFile("data/Order1.txt",types);
+        planner.readOrderFromFile("data/Orders1.txt",types);
         GUI g = new GUI();
-        g.initIfo(shelves, map);
+        g.initIfo(shelves, map, carts);
 	g.main();
     }
 

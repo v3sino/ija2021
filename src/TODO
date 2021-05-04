@@ -10,7 +10,6 @@ grafické zobrazenie stavu objednávky
 grafické zobrazenie vyskladnenia
 heatmap dáta
 
-
 M: vozíky nie su načítavané do mapy - programované, netestované
 M: vozíky nie su vytvárané - programované, netestované 
 M: rezervácia tovarov - programované, netestované
