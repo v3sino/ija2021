@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
-
+import ija.carts.Cart;
 import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
 
@@ -35,6 +35,7 @@ public class GUI extends Application{
     List<Rectangle> shelves;
     List<ImageView> carts;
     private static ArrayList<Shelf> shelvesInfo;  			// link to shelves
+    private static ArrayList<Cart> cartsInfo;
 	private static MapInfo map;				   // link to mapInfo
 
     /**
@@ -42,8 +43,9 @@ public class GUI extends Application{
      * @param shelvesInf list of shelves with data
      * @param mapInfo map structure with the map description
      */
-    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo) {
+    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo, ArrayList<Cart> cartsInf) {
         shelvesInfo = shelvesInf;
+        cartsInfo = cartsInf;
     	map = mapInfo;
 	}
     
@@ -199,7 +201,17 @@ public class GUI extends Application{
         primaryStage.show();
 
     	map.readMapToGui(this);
-
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	cartsInfo.get(0).move();
+    	timer();
     }
 
     /**
