@@ -142,7 +142,7 @@ public class Warehouse {
         System.out.println("cart:"+carts.get(0).planner.orders.size());
         GUI g = new GUI();
         g.initIfo(shelves, map, carts);
-	g.main();
+	    g.main();
     }
 
     private void print_state(){
