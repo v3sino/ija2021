@@ -191,7 +191,7 @@ public class GUI extends Application{
         // ------- END OF ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
         building.getChildren().add(hMap);
-        
+
         layout.setTop(menuBar);
         layout.setCenter(building);
 
