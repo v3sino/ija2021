@@ -65,27 +65,27 @@ public class MapInfo {
 		cells = new Cell[x_size][y_size];
 		cart_c = 0;
 		shelf_c = 0;
-		int x1=0;
+		int y1=0;
 		Cell w = new Cell('0', 0);
 		while((line=br.readLine())!=null){
-			for(int y = 0; y<line.length();y++) {
-				cells[x1][y] = new Cell(w.typeCharToValue(line.charAt(y)),0);
-				if(line.charAt(y)=='S' || line.charAt(y)=='s') {
-					cells[x1][y].index=shelf_c;
+			for(int x = 0; x<line.length();x++) {
+				cells[x][y1] = new Cell(w.typeCharToValue(line.charAt(x)),0);
+				if(line.charAt(x)=='S' || line.charAt(x)=='s') {
+					cells[x][y1].index=shelf_c;
 					shelf_c++;
 				} else
-				if(line.charAt(y)=='C' || line.charAt(y)=='c') {
-					cells[x1][y].index=cart_c;
+				if(line.charAt(x)=='C' || line.charAt(x)=='c') {
+					cells[x][y1].index=cart_c;
 					cart_c++;
 				}
-				if(line.charAt(y)=='E' || line.charAt(y)=='e') {
+				if(line.charAt(x)=='E' || line.charAt(x)=='e') {
 					if(getExport_window()!=null) {
 						JOptionPane.showMessageDialog(null,"multiple export windows are on the screen, should be 1","multiple export windows are on the screen, should be 1", JOptionPane.ERROR_MESSAGE);
 					}
-					export_window=new Destination(x1, y, -1);
+					export_window=new Destination(y1, x, -1);
 				}
 			}
-			x1++;
+			y1++;
 		}
 		br.close();
 
@@ -122,11 +122,11 @@ public class MapInfo {
 	 */
 	public void readMapToGui(GUI gui){
 		g=gui;
-		for(int x = 0; x<x_size;x++){
-			for(int y = 0; y<y_size;y++) {
+		for(int y = 0; y<y_size;y++){
+			for(int x = 0; x<x_size;x++) {
 				if(cells[x][y].type==1) {
-					System.out.println("Shelf on ["+x+","+y+"]");
-					gui.PutShelf(x+1,y+1, 40);
+					//System.out.println("Shelf on ["+x+","+y+"]");
+					gui.PutShelf(y+1,x+1, 40);
 				}
 			}
 		}
@@ -140,6 +140,7 @@ public class MapInfo {
 	 * @param y2 y value of new position of cart
 	 */
 	public void moveCart(int x, int y, int x2, int y2) {
+		System.out.println("Map move");
 		System.out.println("Pohyb voziku z "+ Integer.toString(x)+","+Integer.toString(y)+" na: "+Integer.toString(x2)+","+Integer.toString(y2));
 		int cart_index = cells[x][y].index;
 		assert(cells[x][y].type==2);

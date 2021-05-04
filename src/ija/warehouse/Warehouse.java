@@ -25,7 +25,6 @@ public class Warehouse {
     	try {
 			map.readMapFromFile("data/map1.txt");
 		} catch (IOException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
     	
@@ -40,6 +39,7 @@ public class Warehouse {
     	types.add(new GoodsType("grapes"));
     	types.add(new GoodsType("kiwi"));
     	types.add(new GoodsType("orange"));
+		Planner planner = new Planner();
 
         try {
             Scanner sc = new Scanner(new FileReader("data/content.txt"));
@@ -71,11 +71,11 @@ public class Warehouse {
         	System.out.println(e);
             System.out.println("file not found");
         }
-		Planner planner = new Planner();
     	for (int y = 0;y<map.y_size; y++) {
 			for (int x = 0; x < map.x_size; x++) {
 				if(map.cells[x][y].type==2) {
 					int [] a = {x,y};
+					System.out.println(x+"=="+a[0]+",y=="+a[1]);
 					carts.add(new Cart(new Goods[0], a, planner, map, this));
 				}
 			}
@@ -138,6 +138,8 @@ public class Warehouse {
 --------------------------------------------------end of demonstration-----------------------------
 */	
         planner.readOrderFromFile("data/Orders1.txt",types);
+        System.out.println("Planner:"+planner.orders.size());
+        System.out.println("cart:"+carts.get(0).planner.orders.size());
         GUI g = new GUI();
         g.initIfo(shelves, map, carts);
 	g.main();

@@ -9,13 +9,12 @@ import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
 
 public class Planner {
-	private ArrayList<Order> orders;
+	public ArrayList<Order> orders;
 	public Planner() {
-		// TODO Auto-generated constructor stub
 		orders = new ArrayList<Order>();
 	}
+	
 	public Boolean dispatch(Goods[] outLoad) {
-		// TODO Auto-generated method stub
 		System.out.println("Na výdajné okienko bola vyložená objednávka");
 		System.out.println("obsahuje:");
 		for (int i = 0; i < outLoad.length; i++) {
@@ -27,17 +26,18 @@ public class Planner {
 	}
 
 	public Order getNextOrder() {
-		if(orders.size()==0) {
-			Order a = orders.get(0);
-			orders.remove(0);
-			return a;
+		System.out.println("In if" + orders.size());
+		if(orders.size()!=0) {
+			return orders.remove(0);
 		}
 		return null;
 	} 
 
 	public void addOrder(Order order) {
 		orders.add(order);
+		System.out.println("Order count = "+orders.size());
 	}
+	
 	public String toString() {
 		if(orders.size()==0) {
 			return "no order";
@@ -62,11 +62,14 @@ public class Planner {
 			
 			while((line=br.readLine())!=null) {
 				line = line.trim();
+				System.out.println(line);
 				if(line.charAt(0)=='#') {
 					// Order file comment
+					System.out.println("Line comment");
 					
 				}else if(line.charAt(0)=='-' && line.charAt(1)=='-') {
 					// Order file name of order (new order identifier)
+					System.out.println("new order "+line);
 					if(name!=null) {
 						GoodsType a1 [] = new GoodsType[goods.size()];
 						int a2 [] = new int[count.size()];
@@ -86,6 +89,8 @@ public class Planner {
 					// Order file one stock order (structure of 1. line is: name of stock)(structure of 2. line: number any_comment with/without spaces)
 					found = false;
 					for (GoodsType type : types) {
+						//System.out.println(type.getName());
+						//System.out.println(line);
 						if(type.getName().equalsIgnoreCase(line)) {
 							goods.add(type);
 							found = true;
@@ -93,12 +98,14 @@ public class Planner {
 						}
 					}
 					if(!found) {
+						System.out.println("not found "+line);
 						JOptionPane.showMessageDialog(null,"Unknown name of good type: "+line,"Unknown name of good type: "+line, JOptionPane.ERROR_MESSAGE);
 						System.exit(1);
 						br.readLine();
 						continue;
 					}
 					if((line=br.readLine())==null) {
+						System.out.println("number is null");
 						goods.remove(goods.size()-1);
 						JOptionPane.showMessageDialog(null,"wrong format of Order file","wrong format of Order file", JOptionPane.ERROR_MESSAGE);
 						System.exit(1);
@@ -123,6 +130,7 @@ public class Planner {
 				for (int i = 0; i < a2.length; i++) {
 					a2[i] = count.get(i);
 				}
+				System.out.println("pocet orderov: "+goods.size());
 				this.addOrder(new Order(a2, a1, name));
 			}
 			br.close();
