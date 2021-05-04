@@ -27,9 +27,12 @@ public class Planner {
 	}
 
 	public Order getNextOrder() {
-		Order a = orders.get(0);
-		orders.remove(0);
-		return a;
+		if(orders.size()==0) {
+			Order a = orders.get(0);
+			orders.remove(0);
+			return a;
+		}
+		return null;
 	} 
 
 	public void addOrder(Order order) {

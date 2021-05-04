@@ -1,8 +1,10 @@
 package ija.carts;
 
 import java.lang.Math;
-import java.util.AbstractList;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 import ija.carts.Planner;
 import ija.warehouse.Goods;
 import ija.warehouse.Shelf;
@@ -17,7 +19,7 @@ public class Cart {
 	private int completedDestinations;
 	public int x;
 	public int y;
-	private int maxLoad= 10000000;
+	private int maxLoad= 10;
 	public int load = 0;
 	private MapInfo map;
 	private int waitTime;
@@ -40,6 +42,7 @@ public class Cart {
 		waitTime=-1;
 		waitFor = new ArrayList<Goods>();
 		planned_path = new ArrayList<Destination>();
+		load = cargo.size();
 	}
 	
 	public void move() {
@@ -48,6 +51,7 @@ public class Cart {
 			if(waitTime==1) {
 				for (Goods goods : waitFor) {
 					cargo.add(goods);
+					load++;
 				}
 				waitTime=-1;
 				// Plan the path
@@ -92,8 +96,10 @@ public class Cart {
 				return;
 			}
 			if(Math.abs(destinations.get(completedDestinations).x-x)==1 && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==3){
-				unload(); //TODO check returned boolean
-				this.findOrder();
+				if(unload()) {
+					load=0;
+					this.findOrder();
+				}
 				return; 
 			}
 			
@@ -501,11 +507,22 @@ public class Cart {
 		if(destinations.size()==0 || destinations.size()==completedDestinations) {
 			destinations=new ArrayList<Destination>();
 			Order order = planner.getNextOrder();
+			if(order==null) {
+				destinations.add(new Destination(0, 0, 1));
+				return;
+			}
 			int c;
-			for(int j = 0;j<order.getGoodTypeObj().length;j++) {
+			int to_load = maxLoad-load;
+			for(int j = 0;j<order.getGoodTypeObj().length && to_load>0;j++) {
+				if(order.getGoodTypeCount()[j]<1) {
+					continue;
+				}
 			for(int i = 0;i<wh.shelves.size();i++) {
 				c = wh.shelves.get(i).numberOfUnreservedGoods(order.getGoodTypeObj()[j]);
 				if(c!=0){
+					if(c>to_load) {
+						c=to_load;
+					}
 					Destination d  = map.getDestination(wh.shelves.get(i));
 					d.task = 2;
 					d.count = c;
@@ -515,9 +532,13 @@ public class Cart {
 					}
 					d.goodtype=order.getGoodTypeObj()[j];
 					destinations.add(d);
+					to_load-=c;
 					if(order.loverCount(j, c))break;
 				}
 			}
+			}
+			if(!order.isEmpty()) {
+				planner.addOrder(order);
 			}
 			Destination a = new Destination(x, y, -1);
 			Destination nextD;
@@ -546,6 +567,8 @@ public class Cart {
 			waitTime=1;
 			waitFor.add(good);
 			return true;
+		}else {
+			JOptionPane.showMessageDialog(null,"Cart is already full, when it loads next stock","Cart loading problem",JOptionPane.WARNING_MESSAGE);
 		}
 		return false;
 	}
@@ -577,11 +600,11 @@ public class Cart {
 		try {
 			return destinations.get(completedDestinations);
 		} catch (IndexOutOfBoundsException e) {
-			return new Destination(-1,-1,0);
+			return new Destination(0,0,0);
 		}
 	}
 	
-	public AbstractList<Destination> getPath() {
+	public ArrayList<Destination> getPath() {
 		return destinations;
 	}
 }

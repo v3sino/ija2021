@@ -64,6 +64,13 @@ public class Order {
 		}
 		return r;
 	}
+	
+	/**
+	 * remove some stocks from Order (already shipped)
+	 * @param index Type of stock
+	 * @param count Count of stock
+	 * @return true on no stock remains
+	 */
 	public boolean loverCount(int index,int count) {
 		goodTypeCount[index]-=count;
 		if(goodTypeCount[index]>0) {
@@ -73,6 +80,7 @@ public class Order {
 			return true;
 		}
 	}
+	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0;i<goodTypeCount.length;i++) {
