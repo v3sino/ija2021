@@ -11,7 +11,7 @@ kladivo 2 6
 respirator 60 8
 papier 30 6
 banana 4 10
-milk 6 12
+milk 6 36
 apple 5 11
 pineapple 1 12
 plum 7 11

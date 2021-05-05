@@ -83,7 +83,7 @@ public class MapInfo {
 						JOptionPane.showMessageDialog(null,"multiple export windows are on the screen, should be 1","multiple export windows are on the screen, should be 1", JOptionPane.ERROR_MESSAGE);
 						System.exit(1);
 					}
-					export_window=new Destination(y1, x, -1);
+					export_window=new Destination(x,y1, -1);
 				}
 			}
 			y1++;
@@ -93,18 +93,18 @@ public class MapInfo {
 		int count;
 		for(int x = 0; x<x_size;x++){
 			for(int y = 0; y<y_size;y++) {
-				if(cells[x][y].type==0 || cells[x][y].type==2) {
+				if(cells[x][y].type==0 || cells[x][y].type==2 || cells[x][y].type==4) {
 					count=0;
-					if(x>0 && (cells[x-1][y].type==0 || cells[x-1][y].type==2)) {
+					if(x>0 && (cells[x-1][y].type==0 || cells[x-1][y].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
-					if(x_size-1>x && (cells[x+1][y].type==0 || cells[x+1][y].type==2)) {
+					if(x_size-1>x && (cells[x+1][y].type==0 || cells[x+1][y].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
-					if(y>0 && (cells[x][y-1].type==0 || cells[x][y-1].type==2)) {
+					if(y>0 && (cells[x][y-1].type==0 || cells[x][y-1].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
-					if(y_size-1>y && (cells[x][y+1].type==0 || cells[x][y+1].type==2)) {
+					if(y_size-1>y && (cells[x][y+1].type==0 || cells[x][y+1].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
 					if(count>2) {
@@ -148,8 +148,13 @@ public class MapInfo {
 		assert(this.isFree(x,y));
 		cells[x2][y2].type=cells[x][y].type;
 		cells[x2][y2].index=cells[x][y].index;
-		cells[x][y].type=0;
-		cells[x][y].index=0;
+		if(export_window.y==y && export_window.x==x) {
+			cells[x][y].type=4;
+			cells[x][y].index=-1;
+		}else {
+			cells[x][y].type=0;
+			cells[x][y].index=0;
+		}
 		if(x==x2) {
 			if(y2-y<0) {
 				g.CartMoveUp(cart_index, 40, 1);
@@ -181,7 +186,10 @@ public class MapInfo {
 	 * @return if the cell is free path
 	 */
 	public boolean isFree(int x, int y) {
-		if(cells[x][y].type==0 && cells[x][y].index==0) {
+		if(x>=x_size||y>=y_size) {
+			return false;
+		}
+		if((cells[x][y].type==0 && cells[x][y].index==0 )|| cells[x][y].type==4) {
 			return true;
 		}
 		return false;
@@ -206,12 +214,8 @@ public class MapInfo {
 	 * @return shelf on given position
 	 */
 	public Shelf getShelf(Destination destination) {
-		for(int y = 0;y<y_size;y++){
-			for (int x = 0; x < x_size; x++) {
-				if(cells[destination.x][destination.y].type==1) {
-					return shelves.get(cells[x][y].index);
-				}
-			}
+		if(cells[destination.x][destination.y].type==1) {
+			return shelves.get(cells[destination.x][destination.y].index);
 		}
 		return null;
 	}
