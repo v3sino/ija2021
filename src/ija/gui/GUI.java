@@ -212,10 +212,7 @@ public class GUI extends Application{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Tick\n");
-                CartMoveDown(carts.get(0), size, 1);
-                CartMoveDown(carts.get(1), size, 1);
-                CartMoveDown(carts.get(2), size, 1);
-                CartMoveDown(carts.get(3), size, 1);
+                cartsInfo.get(0).move();
                 timer();
             }
         });

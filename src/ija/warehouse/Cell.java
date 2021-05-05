@@ -26,6 +26,22 @@ public class Cell {
 		return "unknown";
 	}
 	
+	public char typeToChar(char c) {
+		switch (c) {
+		case 1:
+			return 's';
+		case 2:
+			return 'c';
+		case 8:
+			return 'b';
+		case 0:
+			return '-';
+		case 4:
+			return 'E';
+		}
+		return 'U';
+	}
+	
 	public char typeCharToValue(char c) {
 		switch (c) {
 		case 's':

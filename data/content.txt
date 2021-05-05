@@ -10,3 +10,11 @@ papier 5 6
 kladivo 2 6
 respirator 60 8
 papier 30 6
+banana 4 10
+milk 6 12
+apple 5 11
+pineapple 1 12
+plum 7 11
+grapes 1 11
+kiwi 3 10
+orange 2 10

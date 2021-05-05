@@ -92,18 +92,18 @@ public class MapInfo {
 		int count;
 		for(int x = 0; x<x_size;x++){
 			for(int y = 0; y<y_size;y++) {
-				if(cells[x][y].type==0) {
+				if(cells[x][y].type==0 || cells[x][y].type==2) {
 					count=0;
-					if(x>0 && (cells[x-1][y].type==0 || cells[x-1][y].type==8)) {
+					if(x>0 && (cells[x-1][y].type==0 || cells[x-1][y].type==2)) {
 						count++;
 					}
-					if(x_size-1>x && (cells[x+1][y].type==0 || cells[x+1][y].type==8)) {
+					if(x_size-1>x && (cells[x+1][y].type==0 || cells[x+1][y].type==2)) {
 						count++;
 					}
-					if(y>0 && (cells[x][y-1].type==0 || cells[x][y-1].type==8)) {
+					if(y>0 && (cells[x][y-1].type==0 || cells[x][y-1].type==2)) {
 						count++;
 					}
-					if(y_size-1>y && (cells[x][y+1].type==0 || cells[x][y+1].type==8)) {
+					if(y_size-1>y && (cells[x][y+1].type==0 || cells[x][y+1].type==2)) {
 						count++;
 					}
 					if(count>2) {
@@ -149,22 +149,27 @@ public class MapInfo {
 		cells[x2][y2].index=cells[x][y].index;
 		cells[x][y].type=0;
 		cells[x][y].index=0;
+		if(x==x2) {
+			if(y2-y<0) {
+				g.CartMoveUp(cart_index, 40, 1);
+				return;
+			}
+			if(y2-y>0) {
+				g.CartMoveDown(cart_index, 40, 1);
+				return;
+			}
+		}
 		if(y==y2) {
 			if(x2-x>0) {
-				g.CartMoveUp(cart_index, 40, 1);
+				g.CartMoveRight(cart_index, 40, 1);
+				return;
 			}
 			if(x2-x<0) {
-				g.CartMoveDown(cart_index, 40, 1);
-			}
-		}
-		if(x==x2) {
-			if(y2-y>0) {
-				g.CartMoveRight(cart_index, 40, 1);
-			}
-			if(y2-y<0) {
 				g.CartMoveLeft(cart_index, 40, 1);
+				return;
 			}
 		}
+		JOptionPane.showMessageDialog(null, "Wrong move from:"+x+","+y+" to "+x+","+y+"!", "WRONG MOVE", JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**
@@ -222,7 +227,21 @@ public class MapInfo {
 				}
 			}
 		}
+		JOptionPane.showMessageDialog(null, "shelf is not in map", "unknown shelf", JOptionPane.ERROR_MESSAGE);;
 		return new Destination(-1, -1, 0);
+	}
+	
+	public void printMap() {
+		for (int y = 0; y < y_size; y++) {
+			for (int x = 0; x < x_size; x++) {
+				if(cells[x][y].type==0 && cells[x][y].crossroad) {
+					System.out.print("T");
+				}else {
+					System.out.print(cells[x][y].typeToChar(cells[x][y].type));
+				}
+			}
+			System.out.println();
+		}
 	}
 
 	/**
