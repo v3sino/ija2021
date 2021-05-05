@@ -81,6 +81,7 @@ public class MapInfo {
 				if(line.charAt(x)=='E' || line.charAt(x)=='e') {
 					if(getExport_window()!=null) {
 						JOptionPane.showMessageDialog(null,"multiple export windows are on the screen, should be 1","multiple export windows are on the screen, should be 1", JOptionPane.ERROR_MESSAGE);
+						System.exit(1);
 					}
 					export_window=new Destination(y1, x, -1);
 				}
@@ -170,6 +171,7 @@ public class MapInfo {
 			}
 		}
 		JOptionPane.showMessageDialog(null, "Wrong move from:"+x+","+y+" to "+x+","+y+"!", "WRONG MOVE", JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 	}
 
 	/**
@@ -227,7 +229,8 @@ public class MapInfo {
 				}
 			}
 		}
-		JOptionPane.showMessageDialog(null, "shelf is not in map", "unknown shelf", JOptionPane.ERROR_MESSAGE);;
+		JOptionPane.showMessageDialog(null, "shelf is not in map", "unknown shelf", JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 		return new Destination(-1, -1, 0);
 	}
 	

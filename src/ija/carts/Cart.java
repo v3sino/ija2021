@@ -118,92 +118,96 @@ public class Cart {
 			Destination d = new Destination(last_x, last_y, 1);
 			return d;
 		}
-		if(Math.abs(destinations.get(completedDestinations).x-x)==1 && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==1) {
-			getPlanned_path().add(new Destination(last_x, last_y, 2));
+		if(Math.abs(destinations.get(completedDestinations).x-last_x)==1 && destinations.get(completedDestinations).y==last_y && destinations.get(completedDestinations).task==2) {
+			Destination d = new Destination(last_x, last_y, 2);
+			getPlanned_path().add(d);
+			return d;
 		}
 		if(destinations.get(completedDestinations).x==x && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==3) {
-			getPlanned_path().add(new Destination(last_x, last_y, 3));
+			Destination d = new Destination(last_x, last_y, 3);
+			getPlanned_path().add(d);
+			return d;
 		}
 		
 		if(destinations.get(completedDestinations).x-last_x>1) {
-			if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x+1 && getPlanned_path().get(getPlanned_path().size()-1).y==last_y && map.isFree(last_x+1,last_y)){
-				last_x=last_x+1;
+			if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x+1 && map.isFree(last_x+1,last_y)){
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
+				last_x=last_x+1;
 				Destination d = recursivePlanner(last_x, last_y);
 				if(d.x<0 || d.y<0) {
 					getPlanned_path().remove(getPlanned_path().size()-1);
-					return d;
 				}
+				return d;
 			}
 		}
 		if(destinations.get(completedDestinations).x-last_x<-1) {
-			if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x-1 && getPlanned_path().get(getPlanned_path().size()-1).y==last_y && map.isFree(last_x-1,last_y)){
-				last_x=last_x-1;
+			if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x-1 && map.isFree(last_x-1,last_y)){
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
+				last_x=last_x-1;
 				Destination d = recursivePlanner(last_x, last_y);
 				if(d.x<0 || d.y<0) {
 					getPlanned_path().remove(getPlanned_path().size()-1);
-					return d;
 				}
+				return d;
 			}
 		}
 		if(destinations.get(completedDestinations).y-last_y>0) {
-			if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x && getPlanned_path().get(getPlanned_path().size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
-				last_y=last_y+1;
+			if(getPlanned_path().get(getPlanned_path().size()-1).y!=last_y+1 && map.isFree(last_x,last_y+1)){
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
+				last_y=last_y+1;
 				Destination d = recursivePlanner(last_x, last_y);
 				if(d.x<0 || d.y<0) {
 					getPlanned_path().remove(getPlanned_path().size()-1);
-					return d;
 				}
+				return d;
 			}
 		}
 		if(destinations.get(completedDestinations).y-last_y<0) {
-			if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x && getPlanned_path().get(getPlanned_path().size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
-				last_y=last_y-1;
+			if(getPlanned_path().get(getPlanned_path().size()-1).y!=last_y-1 && map.isFree(last_x,last_y-1)){
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
+				last_y=last_y-1;
 				Destination d = recursivePlanner(last_x, last_y);
 				if(d.x<0 || d.y<0) {
 					getPlanned_path().remove(getPlanned_path().size()-1);
-					return d;
 				}
+				return d;
 			}
 		}
-		if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x+1 && getPlanned_path().get(getPlanned_path().size()-1).y==last_y && map.isFree(last_x+1,last_y)){
+		if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x+1 && map.isFree(last_x+1,last_y)){
+			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			last_x=last_x+1;
-			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			Destination d = recursivePlanner(last_x, last_y);
 			if(d.x<0 || d.y<0) {
 				getPlanned_path().remove(getPlanned_path().size()-1);
-				return d;
 			}
+			return d;
 		}
-		if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x-1 && getPlanned_path().get(getPlanned_path().size()-1).y==last_y && map.isFree(last_x-1,last_y)){
+		if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x-1 && map.isFree(last_x-1,last_y)){
+			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			last_x=last_x-1;
-			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			Destination d = recursivePlanner(last_x, last_y);
 			if(d.x<0 || d.y<0) {
 				getPlanned_path().remove(getPlanned_path().size()-1);
-				return d;
 			}
+			return d;
 		}
-		if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x && getPlanned_path().get(getPlanned_path().size()-1).y==last_y+1 && map.isFree(last_x,last_y+1)){
+		if(getPlanned_path().get(getPlanned_path().size()-1).y!=last_y+1 && map.isFree(last_x,last_y+1)){
+			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			last_y=last_y+1;
-			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			Destination d = recursivePlanner(last_x, last_y);
 			if(d.x<0 || d.y<0) {
 				getPlanned_path().remove(getPlanned_path().size()-1);
-				return d;
 			}
+			return d;
 		}
-		if(getPlanned_path().get(getPlanned_path().size()-1).x==last_x && getPlanned_path().get(getPlanned_path().size()-1).y==last_y-1 && map.isFree(last_x,last_y-1)){
-			last_y=last_y-1;
+		if(getPlanned_path().get(getPlanned_path().size()-1).y!=last_y-1 && map.isFree(last_x,last_y-1)){
 			getPlanned_path().add(new Destination(last_x, last_y, 1));
+			last_y=last_y-1;
 			Destination d = recursivePlanner(last_x, last_y);
 			if(d.x<0 || d.y<0) {
 				getPlanned_path().remove(getPlanned_path().size()-1);
-				return d;
 			}
+			return d;
 		}
 	return new Destination(-1, -1, -1);
 	}
@@ -226,9 +230,7 @@ public class Cart {
 						if(map.isFree(last_x+1,last_y)){
 							last_x=last_x+1;
 							Destination d = recursivePlanner(last_x, last_y);
-							if(d.x<0 || d.y<0) {
-								getPlanned_path().remove(getPlanned_path().size()-1);
-							}else {
+							if(!(d.x<0 || d.y<0)) {
 								break;
 							}
 						}
@@ -237,9 +239,7 @@ public class Cart {
 						if(map.isFree(last_x-1,last_y)){
 							last_x=last_x-1;
 							Destination d = recursivePlanner(last_x, last_y);
-							if(d.x<0 || d.y<0) {
-								getPlanned_path().remove(getPlanned_path().size()-1);
-							}else {
+							if(!(d.x<0 || d.y<0)) {
 								break;
 							}
 						}
@@ -248,9 +248,7 @@ public class Cart {
 						if(map.isFree(last_x,last_y+1)){
 							last_y=last_y+1;
 							Destination d = recursivePlanner(last_x, last_y);
-							if(d.x<0 || d.y<0) {
-								getPlanned_path().remove(getPlanned_path().size()-1);
-							}else {
+							if(!(d.x<0 || d.y<0)) {
 								break;
 							}
 						}
@@ -259,9 +257,7 @@ public class Cart {
 						if(map.isFree(last_x,last_y-1)){
 							last_y=last_y-1;
 							Destination d = recursivePlanner(last_x, last_y);
-							if(d.x<0 || d.y<0) {
-								getPlanned_path().remove(getPlanned_path().size()-1);
-							}else {
+							if(!(d.x<0 || d.y<0)) {
 								break;
 							}
 						}
@@ -269,36 +265,28 @@ public class Cart {
 					if(map.isFree(last_x+1,last_y)){
 						last_x=last_x+1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
 					if(map.isFree(last_x-1,last_y)){
 						last_x=last_x-1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
 					if(map.isFree(last_x,last_y+1)){
 						last_y=last_y+1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
 					if(map.isFree(last_x,last_y-1)){
 						last_y=last_y-1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -318,9 +306,7 @@ public class Cart {
 					if(map.isFree(last_x+1,last_y)){
 						last_x=last_x+1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -329,9 +315,7 @@ public class Cart {
 					if(map.isFree(last_x-1,last_y)){
 						last_x=last_x-1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -340,9 +324,7 @@ public class Cart {
 					if(map.isFree(last_x,last_y+1)){
 						last_y=last_y+1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -351,9 +333,7 @@ public class Cart {
 					if(map.isFree(last_x,last_y-1)){
 						last_y=last_y-1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -361,36 +341,28 @@ public class Cart {
 				if(map.isFree(last_x+1,last_y)){
 					last_x=last_x+1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
 				if(map.isFree(last_x-1,last_y)){
 					last_x=last_x-1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
 				if(map.isFree(last_x,last_y+1)){
 					last_y=last_y+1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
 				if(map.isFree(last_x,last_y-1)){
 					last_y=last_y-1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
@@ -405,9 +377,7 @@ public class Cart {
 					if(map.isFree(last_x+1,last_y)){
 						last_x=last_x+1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -416,9 +386,7 @@ public class Cart {
 					if(map.isFree(last_x-1,last_y)){
 						last_x=last_x-1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -427,9 +395,7 @@ public class Cart {
 					if(map.isFree(last_x,last_y+1)){
 						last_y=last_y+1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -438,9 +404,7 @@ public class Cart {
 					if(map.isFree(last_x,last_y-1)){
 						last_y=last_y-1;
 						Destination d = recursivePlanner(last_x, last_y);
-						if(d.x<0 || d.y<0) {
-							getPlanned_path().remove(getPlanned_path().size()-1);
-						}else {
+						if(!(d.x<0 || d.y<0)) {
 							break;
 						}
 					}
@@ -448,36 +412,28 @@ public class Cart {
 				if(map.isFree(last_x+1,last_y)){
 					last_x=last_x+1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
 				if(map.isFree(last_x-1,last_y)){
 					last_x=last_x-1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
 				if(map.isFree(last_x,last_y+1)){
 					last_y=last_y+1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
 				if(map.isFree(last_x,last_y-1)){
 					last_y=last_y-1;
 					Destination d = recursivePlanner(last_x, last_y);
-					if(d.x<0 || d.y<0) {
-						getPlanned_path().remove(getPlanned_path().size()-1);
-					}else {
+					if(!(d.x<0 || d.y<0)) {
 						break;
 					}
 				}
@@ -491,8 +447,6 @@ public class Cart {
 		if(destinations.size()==0 || destinations.size()==completedDestinations) {
 			destinations=new ArrayList<Destination>();
 			Order order = planner.getNextOrder();
-			System.out.println("In cart:"+this.planner.orders.size());
-			System.out.println("null - pre");
 			if(order==null) {
 				System.out.println("null");
 				destinations.add(new Destination(0, 0, 1));
