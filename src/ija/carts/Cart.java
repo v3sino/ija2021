@@ -26,7 +26,7 @@ public class Cart {
 	private Warehouse wh;
 	
 	public Cart(Goods[] cargoToLoad, int[] place, Planner plan, MapInfo m, Warehouse warehouse) {
-		Collections.addAll(cargo, cargoToLoad);
+		Collections.addAll(getCargo(), cargoToLoad);
 		planner = plan;
 		if(place.length>1) {
 			x = place[0];
@@ -39,16 +39,16 @@ public class Cart {
 		waitTime=-1;
 		waitFor = new ArrayList<Goods>();
 		planned_path = new ArrayList<Destination>();
-		load = cargo.size();
+		load = getCargo().size();
 	}
 	
 	public void move() {
 		map.printMap();
 		/// Loading
-		if(waitTime>0) {
-			if(waitTime==1) {
-				for (Goods goods : waitFor) {
-					cargo.add(goods);
+		if(getWaitTime()>0) {
+			if(getWaitTime()==1) {
+				for (Goods goods : getWaitFor()) {
+					getCargo().add(goods);
 					load++;
 				}
 				waitTime=-1;
@@ -56,7 +56,7 @@ public class Cart {
 				// TODO ..............
 				this.plan();
 			}else {
-				waitTime--;
+				waitTime = getWaitTime() - 1;
 			}
 			return;
 		}
@@ -76,13 +76,13 @@ public class Cart {
 			y = getPlanned_path().get(0).y;
 			getPlanned_path().remove(0);
 			
-		}else if(destinations.size()!=0 && destinations.size()!=completedDestinations){
-			if(Math.abs(destinations.get(completedDestinations).x-x)==1 && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==2){
-				Shelf shelf = map.getShelf(destinations.get(completedDestinations));
+		}else if(getDestinations().size()!=0 && getDestinations().size()!=completedDestinations){
+			if(Math.abs(getDestinations().get(completedDestinations).x-x)==1 && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==2){
+				Shelf shelf = map.getShelf(getDestinations().get(completedDestinations));
 				shelf.toString();
 				Goods good;
-				for(int i = 0;i<destinations.get(completedDestinations).count;i++) {
-					good = shelf.removeReserved(destinations.get(completedDestinations).goodtype);
+				for(int i = 0;i<getDestinations().get(completedDestinations).count;i++) {
+					good = shelf.removeReserved(getDestinations().get(completedDestinations).goodtype);
 					if(good==null){
 						System.out.println("Shelf '"+shelf+"' can't remove Reserved good number "+i);
 						break;
@@ -95,7 +95,7 @@ public class Cart {
 				this.findOrder();
 				return;
 			}
-			if(destinations.get(completedDestinations).x==x && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==3){
+			if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==3){
 				if(unload()) {
 					load=0;
 					this.findOrder();
@@ -112,13 +112,13 @@ public class Cart {
 	}
 	
 	private Destination recursivePlanner(int last_x, int last_y) {
-		if(Math.abs(destinations.get(completedDestinations).x-last_x)==1 && destinations.get(completedDestinations).y==last_y && destinations.get(completedDestinations).task==2) {
+		if(Math.abs(getDestinations().get(completedDestinations).x-last_x)==1 && getDestinations().get(completedDestinations).y==last_y && getDestinations().get(completedDestinations).task==2) {
 			map.reservePath(last_x, last_y);
 			Destination d = new Destination(last_x, last_y, 2);
 			getPlanned_path().add(d);
 			return d;
 		}
-		if(destinations.get(completedDestinations).x==x && destinations.get(completedDestinations).y==y && destinations.get(completedDestinations).task==3) {
+		if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==3) {
 			map.reservePath(last_x, last_y);
 			Destination d = new Destination(last_x, last_y, 3);
 			getPlanned_path().add(d);
@@ -131,7 +131,7 @@ public class Cart {
 			return d;
 		}
 		
-		if(destinations.get(completedDestinations).x-last_x>1 || (destinations.get(completedDestinations).x-last_x>0 && destinations.get(completedDestinations).task==3)) {
+		if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
 			if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x+1 && map.isFree(last_x+1,last_y)){
 				map.reservePath(last_x, last_y);
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -144,7 +144,7 @@ public class Cart {
 				return d;
 			}
 		}
-		if(destinations.get(completedDestinations).x-last_x<-1 || (destinations.get(completedDestinations).x-last_x<0 && destinations.get(completedDestinations).task==3)) {
+		if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
 			if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x-1 && map.isFree(last_x-1,last_y)){
 				map.reservePath(last_x, last_y);
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -157,7 +157,7 @@ public class Cart {
 				return d;
 			}
 		}
-		if(destinations.get(completedDestinations).y-last_y>0) {
+		if(getDestinations().get(completedDestinations).y-last_y>0) {
 			if(getPlanned_path().get(getPlanned_path().size()-1).y!=last_y+1 && map.isFree(last_x,last_y+1)){
 				map.reservePath(last_x, last_y);
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -170,7 +170,7 @@ public class Cart {
 				return d;
 			}
 		}
-		if(destinations.get(completedDestinations).y-last_y<0) {
+		if(getDestinations().get(completedDestinations).y-last_y<0) {
 			if(getPlanned_path().get(getPlanned_path().size()-1).y!=last_y-1 && map.isFree(last_x,last_y-1)){
 				map.reservePath(last_x, last_y);
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -238,13 +238,13 @@ public class Cart {
 		int last_x;
 		int last_y;
 		if(getPlanned_path().size()>0) {
-			if(map.cells[getPlanned_path().get(getPlanned_path().size()-1).x][getPlanned_path().get(getPlanned_path().size()-1).y].crossroad && !(getPlanned_path().get(getPlanned_path().size()-1).x == destinations.get(completedDestinations).x && getPlanned_path().get(getPlanned_path().size()-1).y==destinations.get(completedDestinations).y)) {
+			if(map.cells[getPlanned_path().get(getPlanned_path().size()-1).x][getPlanned_path().get(getPlanned_path().size()-1).y].crossroad && !(getPlanned_path().get(getPlanned_path().size()-1).x == getDestinations().get(completedDestinations).x && getPlanned_path().get(getPlanned_path().size()-1).y==getDestinations().get(completedDestinations).y)) {
 				// Planned path ends on crossroad -> path is not completed
 				last_x = getPlanned_path().get(getPlanned_path().size()-1).x;
 				last_y = getPlanned_path().get(getPlanned_path().size()-1).y;
 				
 				while(true) {
-					if(destinations.get(completedDestinations).x-last_x>1 || (destinations.get(completedDestinations).x-last_x>0 && destinations.get(completedDestinations).task==3)) {
+					if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
 						if(map.isFree(last_x+1,last_y)){
 							Destination d = recursivePlanner(last_x+1, last_y);
 							if(!(d.x<0 || d.y<0)) {
@@ -252,7 +252,7 @@ public class Cart {
 							}
 						}
 					}
-					if(destinations.get(completedDestinations).x-last_x<-1 || (destinations.get(completedDestinations).x-last_x<0 && destinations.get(completedDestinations).task==3)) {
+					if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
 						if(map.isFree(last_x-1,last_y)){
 							Destination d = recursivePlanner(last_x-1, last_y);
 							if(!(d.x<0 || d.y<0)) {
@@ -260,7 +260,7 @@ public class Cart {
 							}
 						}
 					}
-					if(destinations.get(completedDestinations).y-last_y>0) {
+					if(getDestinations().get(completedDestinations).y-last_y>0) {
 						if(map.isFree(last_x,last_y+1)){
 							Destination d = recursivePlanner(last_x, last_y+1);
 							if(!(d.x<0 || d.y<0)) {
@@ -268,7 +268,7 @@ public class Cart {
 							}
 						}
 					}
-					if(destinations.get(completedDestinations).y-last_y<0) {
+					if(getDestinations().get(completedDestinations).y-last_y<0) {
 						if(map.isFree(last_x,last_y-1)){
 							Destination d = recursivePlanner(last_x, last_y-1);
 							if(!(d.x<0 || d.y<0)) {
@@ -312,7 +312,7 @@ public class Cart {
 			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			
 			while(true) {
-				if(destinations.get(completedDestinations).x-last_x>1 || (destinations.get(completedDestinations).x-last_x>0 && destinations.get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
 					if(map.isFree(last_x+1,last_y)){
 						Destination d = recursivePlanner(last_x+1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -320,7 +320,7 @@ public class Cart {
 						}
 					}
 				}
-				if(destinations.get(completedDestinations).x-last_x<-1 || (destinations.get(completedDestinations).x-last_x<0 && destinations.get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
 					if(map.isFree(last_x-1,last_y)){
 						Destination d = recursivePlanner(last_x-1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -328,7 +328,7 @@ public class Cart {
 						}
 					}
 				}
-				if(destinations.get(completedDestinations).y-last_y>0) {
+				if(getDestinations().get(completedDestinations).y-last_y>0) {
 					if(map.isFree(last_x,last_y+1)){
 						Destination d = recursivePlanner(last_x, last_y+1);
 						if(!(d.x<0 || d.y<0)) {
@@ -336,7 +336,7 @@ public class Cart {
 						}
 					}
 				}
-				if(destinations.get(completedDestinations).y-last_y<0) {
+				if(getDestinations().get(completedDestinations).y-last_y<0) {
 					if(map.isFree(last_x,last_y-1)){
 						Destination d = recursivePlanner(last_x, last_y-1);
 						if(!(d.x<0 || d.y<0)) {
@@ -375,7 +375,7 @@ public class Cart {
 			last_y = getPlanned_path().get(getPlanned_path().size()-1).y;
 			
 			while(true) {
-				if(destinations.get(completedDestinations).x-last_x>1 || (destinations.get(completedDestinations).x-last_x>0 && destinations.get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
 					if(map.isFree(last_x+1,last_y)){
 						Destination d = recursivePlanner(last_x+1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -383,7 +383,7 @@ public class Cart {
 						}
 					}
 				}
-				if(destinations.get(completedDestinations).x-last_x<-1 || (destinations.get(completedDestinations).x-last_x<0 && destinations.get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
 					if(map.isFree(last_x-1,last_y)){
 						Destination d = recursivePlanner(last_x-1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -391,7 +391,7 @@ public class Cart {
 						}
 					}
 				}
-				if(destinations.get(completedDestinations).y-last_y>0) {
+				if(getDestinations().get(completedDestinations).y-last_y>0) {
 					if(map.isFree(last_x,last_y+1)){
 						Destination d = recursivePlanner(last_x, last_y+1);
 						if(!(d.x<0 || d.y<0)) {
@@ -399,7 +399,7 @@ public class Cart {
 						}
 					}
 				}
-				if(destinations.get(completedDestinations).y-last_y<0) {
+				if(getDestinations().get(completedDestinations).y-last_y<0) {
 					if(map.isFree(last_x,last_y-1)){
 						Destination d = recursivePlanner(last_x, last_y-1);
 						if(!(d.x<0 || d.y<0)) {
@@ -438,16 +438,16 @@ public class Cart {
 
 	
 	private void findOrder() {
-		if(destinations.size()==0 || destinations.size()==completedDestinations) {
+		if(getDestinations().size()==0 || getDestinations().size()==completedDestinations) {
 			destinations=new ArrayList<Destination>();
 			Order order = planner.getNextOrder();
 			if(order==null) {
 				System.out.println("order is null");
-				destinations.add(new Destination(0, 0, 1));
+				getDestinations().add(new Destination(0, 0, 1));
 				return;
 			}
 			int c;
-			int to_load = maxLoad-load;
+			int to_load = getMaxLoad()-load;
 			for(int j = 0;j<order.getGoodTypeObj().length && to_load>0;j++) {
 				if(order.getGoodTypeCount()[j]<1) {
 					continue;
@@ -466,7 +466,7 @@ public class Cart {
 					}
 					wh.shelves.get(i).reserveGoods(order.getGoodTypeObj()[j], d.count);
 					d.goodtype=order.getGoodTypeObj()[j];
-					destinations.add(d);
+					getDestinations().add(d);
 					to_load-=d.count;
 					if(order.loverCount(j, c))break;
 				}
@@ -478,19 +478,19 @@ public class Cart {
 			Destination a = new Destination(x, y, -1);
 			Destination nextD;
 			//sorting Destinations in row 
-			for(int j = 0;j<destinations.size()-1;j++) {
-				nextD = destinations.get(j);
-				for (int i = 1; i < destinations.size(); i++) {
-					if(a.length(nextD)>a.length(destinations.get(i))) {
-						nextD = destinations.get(i);
+			for(int j = 0;j<getDestinations().size()-1;j++) {
+				nextD = getDestinations().get(j);
+				for (int i = 1; i < getDestinations().size(); i++) {
+					if(a.length(nextD)>a.length(getDestinations().get(i))) {
+						nextD = getDestinations().get(i);
 					}
 				}
-				destinations.set(destinations.indexOf(nextD), destinations.get(j));
-				destinations.set(j, nextD);
+				getDestinations().set(getDestinations().indexOf(nextD), getDestinations().get(j));
+				getDestinations().set(j, nextD);
 			}
 			a = map.getExport_window();
 			a.task = 3;
-			destinations.add(a);
+			getDestinations().add(a);
 			completedDestinations=0;
 			this.printDestinations();
 			this.plan();
@@ -500,17 +500,16 @@ public class Cart {
 	}
 	
 	private void printDestinations() {
-		// TODO Auto-generated method stub
 		System.out.println("Destinations:");
-		for(Destination dest : destinations) {
+		for(Destination dest : getDestinations()) {
 			System.out.println(dest.toStringDestOrder());
 		}
 	}
 
 	private boolean load(Goods good) {
-		if(load<maxLoad) {
+		if(load<getMaxLoad()) {
 			waitTime=1;
-			waitFor.add(good);
+			getWaitFor().add(good);
 			return true;
 		}else {
 			JOptionPane.showMessageDialog(null,"Cart is already full, when it loads next stock","Cart loading problem",JOptionPane.WARNING_MESSAGE);
@@ -524,33 +523,33 @@ public class Cart {
 	
 	public String getCargoToString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Počet:").append(cargo.size()).append('\n');
-		for(int i = 0;i<cargo.size();i++) {
+		sb.append("Počet:").append(getCargo().size()).append('\n');
+		for(int i = 0;i<getCargo().size();i++) {
 			if(i!=0) sb.append(",");
-			sb.append(cargo.get(i).toString());
+			sb.append(getCargo().get(i).toString());
 		}
 		return sb.toString();
 	}
 	
 	private Boolean unload() {
-		Goods[] outLoad = new Goods[cargo.size()];
+		Goods[] outLoad = new Goods[getCargo().size()];
 		for (int i = 0; i < outLoad.length; i++) {
-			outLoad[i]=cargo.get(i);
+			outLoad[i]=getCargo().get(i);
 		}
-		cargo.clear();
+		getCargo().clear();
 		return planner.dispatch(outLoad);
 	}
 	
 	public Destination getNextDestination() {
 		try {
-			return destinations.get(completedDestinations);
+			return getDestinations().get(completedDestinations);
 		} catch (IndexOutOfBoundsException e) {
 			return new Destination(0,0,0);
 		}
 	}
 	
 	public ArrayList<Destination> getPath() {
-		return destinations;
+		return getDestinations();
 	}
 
 	public ArrayList<Destination> getPlanned_path() {
@@ -559,8 +558,24 @@ public class Cart {
 	
 	public void printPlanned_path() {
 		System.out.println("Planned path:");
-		for(Destination dest : planned_path) {
+		for(Destination dest : getPlanned_path()) {
 			System.out.println("["+dest.x+","+dest.y+"]");
 		}
+	}
+
+	public ArrayList<Goods> getWaitFor() {
+		return waitFor;
+	}
+
+	public int getWaitTime() {
+		return waitTime;
+	}
+
+	public int getMaxLoad() {
+		return maxLoad;
+	}
+
+	public ArrayList<Destination> getDestinations() {
+		return destinations;
 	}
 }
