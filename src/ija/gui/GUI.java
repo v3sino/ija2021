@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.swing.Timer;
+import javax.swing.*;
 
 import ija.carts.Cart;
 import ija.warehouse.MapInfo;
@@ -168,7 +168,7 @@ public class GUI extends Application{
         // -- END OF MENU INITIALIZATION -- //
 
         // Init objects
-        InitWarehouse(scene, size);
+        InitWarehouse(scene);
         //InitCarts(size);
 
         // ------- ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
@@ -322,11 +322,11 @@ public class GUI extends Application{
             }
             cartText.setText(txt);
             cartText.setVisible(true);
-            building.getChildren().addAll(Objects.requireNonNull(drawPath(i)));
+            building.getChildren().addAll(Objects.requireNonNull(createCartPath(i)));
         });
         imageview.setOnMouseExited(mouseEvent -> {
             cartText.setVisible(false);
-            building.getChildren().removeAll(Objects.requireNonNull(drawPath(i)));
+            building.getChildren().removeAll(Objects.requireNonNull(createCartPath(i)));
             cartPath.clear();
         });
 
@@ -334,23 +334,36 @@ public class GUI extends Application{
         building.getChildren().add(imageview);
     }
 
-    public ArrayList<Line> drawPath(int i){
+    /**
+     * Finction creates path of a cart
+     *
+     * @param i index of checked cart
+     * @return array of lines creating the path
+     */
+    public ArrayList<Line> createCartPath(int i){
         try {
+            double x, y, new_x, new_y;
             Cart observedCart = cartsInfo.get(i);
             ImageView displayedCart = carts.get(i);
 
-            double x, y, new_x, new_y;
-            for(Destination dest : observedCart.getPlanned_path()) {
-                x = displayedCart.getX()+(double) size/2;
-                y = displayedCart.getY()+(double) size/2;
+            x = (double) ((int) displayedCart.getX()/40);
+            System.out.print("start: ["+x);
+            x = x*size + (double)  size /2;
+            y = (double) ((int) displayedCart.getY()/40);
+            System.out.println(", "+y+"]");
+            y = y*size + (double)  size /2;
 
-                new_x = (dest.x * size)+(double) size/2+((size*0.67)/2);
-                new_y = ((dest.y-1) * size)+(double) size/2;
+            for(Destination dest : observedCart.getPlanned_path()) {
+                new_x = ((dest.x) * size)+(double) size/2;
+                new_y = ((dest.y) * size)+(double) size/2;
                 Line pathLine = new Line(x, y, new_x, new_y);
-                System.out.println("dest: ["+dest.x+ ", "+dest.y+"]");
-                System.out.println("pathline from ["+ x + ", " + y+"] to ["+ new_x + ", " + new_y+"]");
-                pathLine.setStroke(Color.RED);
+                pathLine.setStroke(Color.MEDIUMVIOLETRED);
+                pathLine.setStrokeWidth(5);
+                pathLine.setOpacity(.8);
                 cartPath.add(pathLine);
+
+                x = new_x;
+                y = new_y;
             }
 
             return cartPath;
@@ -362,15 +375,14 @@ public class GUI extends Application{
 
     /**
      * Function draws lines for orientation in warehouse
+     *  @param scene scene in which warehouse will be drawn
      *
-     * @param scene scene in which warehouse will be drawn
-     * @param size size of one rectangle unit (for proper display needs to be 40)
      */
-    private void InitWarehouse(Scene scene, int size){
+    private void InitWarehouse(Scene scene){
         // Divides the scene into equally distributed rectangles with size of variable 'size'
 
         // Vertical lines
-        for (int i = 0; i <= scene.getWidth(); i+=size) {
+        for (int i = 0; i <= scene.getWidth(); i+= GUI.size) {
             Line line_ver = new Line(i, 0, i, scene.getHeight()-20);
             line_ver.setStroke(Color.GRAY);
 
@@ -378,7 +390,7 @@ public class GUI extends Application{
 
         }
         // Horizontal lines
-        for (int i = 0; i <= scene.getHeight(); i+=size) {
+        for (int i = 0; i <= scene.getHeight(); i+= GUI.size) {
             Line line_hor = new Line(0, i, scene.getWidth(), i);
             line_hor.setStroke(Color.GRAY);
 
