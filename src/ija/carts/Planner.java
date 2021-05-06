@@ -15,6 +15,7 @@ public class Planner {
 	}
 	
 	public Boolean dispatch(Goods[] outLoad) {
+		JOptionPane.showMessageDialog(null, "Dispatching...", "Dispatching", JOptionPane.INFORMATION_MESSAGE);
 		System.out.println("Na výdajné okienko bola vyložená objednávka");
 		System.out.println("obsahuje:");
 		for (int i = 0; i < outLoad.length; i++) {
@@ -26,7 +27,6 @@ public class Planner {
 	}
 
 	public Order getNextOrder() {
-		System.out.println("In if" + orders.size());
 		if(orders.size()!=0) {
 			return orders.remove(0);
 		}
@@ -35,7 +35,6 @@ public class Planner {
 
 	public void addOrder(Order order) {
 		orders.add(order);
-		System.out.println("Order count = "+orders.size());
 	}
 	
 	public String toString() {
@@ -62,10 +61,8 @@ public class Planner {
 			
 			while((line=br.readLine())!=null) {
 				line = line.trim();
-				System.out.println(line);
 				if(line.charAt(0)=='#') {
 					// Order file comment
-					System.out.println("Line comment");
 					
 				}else if(line.charAt(0)=='-' && line.charAt(1)=='-') {
 					// Order file name of order (new order identifier)
@@ -130,7 +127,6 @@ public class Planner {
 				for (int i = 0; i < a2.length; i++) {
 					a2[i] = count.get(i);
 				}
-				System.out.println("pocet orderov: "+goods.size());
 				this.addOrder(new Order(a2, a1, name));
 			}
 			br.close();

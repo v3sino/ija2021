@@ -213,6 +213,7 @@ public class GUI extends Application{
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Tick\n");
                 cartsInfo.get(0).move();
+                cartsInfo.get(1).move();
                 timer();
             }
         });

@@ -141,8 +141,8 @@ public class MapInfo {
 	 * @param y2 y value of new position of cart
 	 */
 	public void moveCart(int x, int y, int x2, int y2) {
-		System.out.println("Map move");
-		System.out.println("Pohyb voziku z "+ Integer.toString(x)+","+Integer.toString(y)+" na: "+Integer.toString(x2)+","+Integer.toString(y2));
+		//System.out.println("Map move");
+		//System.out.println("Pohyb voziku z "+ Integer.toString(x)+","+Integer.toString(y)+" na: "+Integer.toString(x2)+","+Integer.toString(y2));
 		int cart_index = cells[x][y].index;
 		assert(cells[x][y].type==2);
 		assert(this.isFree(x,y));
@@ -186,10 +186,10 @@ public class MapInfo {
 	 * @return if the cell is free path
 	 */
 	public boolean isFree(int x, int y) {
-		if(x>=x_size||y>=y_size) {
+		if(x>=x_size||y>=y_size||x<0||y<0) {
 			return false;
 		}
-		if((cells[x][y].type==0 && cells[x][y].index==0 )|| cells[x][y].type==4) {
+		if((cells[x][y].type==0 || cells[x][y].type==4 ) &&  cells[x][y].index<1 ) {
 			return true;
 		}
 		return false;
@@ -202,6 +202,9 @@ public class MapInfo {
 	 * @return if the cell is a path
 	 */
 	public boolean isPath(int x, int y) {
+		if(x>=x_size||y>=y_size||x<0||y<0) {
+			return false;
+		}
 		if(cells[x][y].type==0) {
 			return true;
 		}
@@ -283,19 +286,42 @@ public class MapInfo {
 	public int getCartCount() {
 		return cart_c;
 	}
-	
+
 	/**
-	 * Function reserving path for cart, path is freed when cart pass trough
-	 * @param x x position of path to be reserve
-	 * @param y y position of path to be reserve
+	 * Function is reserving path for cart, path is freed when cart pass trough
+	 * @param x x position of path to be reserved
+	 * @param y y position of path to be reserved
 	 * @return true if path is cleared and path was not reserved and now is reserved
 	 */
 	public boolean reservePath(int x, int y) {
+		if(x>=x_size||y>=y_size||x<0||y<0) {
+			return false;
+		}
 		if(this.isFree(x, y)) {
 			cells[x][y].index=1;
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Function is unreserving path for cart
+	 * @param x x position of path to be unreserved
+	 * @param y y position of path to be unreserved
+	 */
+	public void unReservePath(int x, int y) {
+		if(x>=x_size||y>=y_size||x<0||y<0) {
+			return;
+		}
+		if(!this.isFree(x, y)) {
+		if(export_window.y==y && export_window.x==x) {
+			cells[x][y].type=4;
+			cells[x][y].index=-1;
+		}else {
+			cells[x][y].type=0;
+			cells[x][y].index=0;
+		}
+		}
 	}
 	public Destination getExport_window() {
 		return export_window;
