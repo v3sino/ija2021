@@ -14,7 +14,7 @@ import ija.gui.GUI;
 public class MapInfo {
     public ArrayList<Shelf> shelves;
 	private String mapFileName= "data/map1.txt";
-	public Cell cells [][];
+	public Cell[][] cells;
 	private GUI g;
 	public int x_size=-1;
 	public int y_size=-1;
@@ -41,7 +41,6 @@ public class MapInfo {
 	/**
 	 * Function read map from file specified in constructor (default map)
 	 * Example call from GUI: map.readMapFromFile(this);
-	 * @param gui specifies gui, from with will be called functions drawing objects on map (carts, shelves) 
 	 * @throws IOException default name of file is incorrect or file is not readable
 	 */
 	public void readMapFromFile() throws IOException {
@@ -59,7 +58,7 @@ public class MapInfo {
 		BufferedReader br = new BufferedReader(new FileReader(mapFile));
 		String line;
 		line=br.readLine();
-		String a [] = line.split(" ");
+		String[] a = line.split(" ");
 		x_size=Integer.parseInt(a[0]);
 		y_size=Integer.parseInt(a[1]);
 		cells = new Cell[x_size][y_size];
@@ -123,11 +122,25 @@ public class MapInfo {
 	 */
 	public void readMapToGui(GUI gui){
 		g=gui;
+		int shelfLen = 1; // Default length of shelf
+		int i; // Row iterator
+		int cnt = 0; // Counter of shelves used as shelf identificator
+		ArrayList<Integer> placedShelves = new ArrayList<>();
+
 		for(int y = 0; y<y_size;y++){
 			for(int x = 0; x<x_size;x++) {
-				if(cells[x][y].type==1) {
-					//System.out.println("Shelf on ["+x+","+y+"]");
-					gui.PutShelf(y+1,x+1, 40);
+				if(cells[x][y].type==1 && !placedShelves.contains(y)) {
+					//System.out.println("Shelf on ["+x+","+y+"]")
+					i = y+1;
+					while(cells[x][i].type==1){
+						placedShelves.add(i);
+						shelfLen++;
+						i++;
+					}
+					cnt++;
+					gui.PutShelf(y+1,x+1, 40, cnt, shelfLen);
+
+					shelfLen = 1;
 				}
 			}
 		}

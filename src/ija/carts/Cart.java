@@ -2,6 +2,7 @@ package ija.carts;
 
 import java.lang.Math;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JOptionPane;
 import ija.carts.Planner;
 import ija.warehouse.Goods;
@@ -25,9 +26,7 @@ public class Cart {
 	private Warehouse wh;
 	
 	public Cart(Goods[] cargoToLoad, int[] place, Planner plan, MapInfo m, Warehouse warehouse) {
-		for (Goods c : cargoToLoad) {
-			cargo.add(c);
-		}
+		Collections.addAll(cargo, cargoToLoad);
 		planner = plan;
 		if(place.length>1) {
 			x = place[0];
@@ -113,7 +112,7 @@ public class Cart {
 					load=0;
 					this.findOrder();
 				}
-				return; 
+				return;
 			}
 			else {
 				
@@ -546,7 +545,7 @@ public class Cart {
 	
 	public String getCargoToString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Počet:" + cargo.size()+'\n');
+		sb.append("Počet:").append(cargo.size()).append('\n');
 		for(int i = 0;i<cargo.size();i++) {
 			if(i!=0) sb.append(",");
 			sb.append(cargo.get(i).toString());

@@ -18,10 +18,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.Timer;
 
 import ija.carts.Cart;
@@ -35,7 +34,8 @@ public class GUI extends Application{
     private ArrayList<SequentialTransition> cart_moves;
     double deltaX; // delta of scene movement while mouse dragging
     double deltaY;
-    private final double speed = 0.75; // speed of one cart in seconds per square
+    private double speed = 0.75; // speed of one cart in seconds per square
+    private double speedLabel = 1.0; // variable shows the speed ratio
     int delay = 2000;
 
     List<Rectangle> shelves;
@@ -85,7 +85,7 @@ public class GUI extends Application{
 
         help_layout.setCenter(help_text);
         help_layout.setBottom(g);
-        // -- SCENE SET -- //
+        // -- HELP SCENE SET -- //
 
         // -- SETTING HEATMAP -- //
         Rectangle hMap = new Rectangle(0, 0, scene.getWidth(), scene.getHeight());
@@ -109,40 +109,55 @@ public class GUI extends Application{
 
         hlp_menu.getItems().addAll(readme);
 
-        Menu play_menu = new Menu("Play");
-        MenuItem animation1 = new MenuItem("Animation_1");
-        animation1.setOnAction(actionEvent -> {
-            CartMoveDown(carts.get(0), size, 4);
-            CartMoveRight(carts.get(0), size, 2);
-            CartMoveUp(carts.get(0), size, 3);
-            CartMoveLeft(carts.get(0), size, 2);
-            CartMoveDown(carts.get(3), size, 5);
+        // -- Cotrols menu -- //
+        Menu play_menu = new Menu("Controls");
 
-            timer();
+        // This menu item restarts the cart initial positions and set default speed
+        MenuItem restart = new MenuItem("Reset Carts");
+        restart.setOnAction(actionEvent -> {
+            InitCarts(size);
+            speed = 0.75;
+            speedLabel = 1.0;
         });
 
-        MenuItem animation2 = new MenuItem("Animation_2");
-        animation2.setOnAction(actionEvent -> {
-            CartMoveDown(carts.get(0), size, 9);
-            CartMoveRight(carts.get(0), size, 8);
-            CartMoveDown(carts.get(1), size, 4);
-            CartMoveLeft(carts.get(1), size, 2);
-            CartMoveDown(carts.get(1), size, 4);
-            CartMoveUp(carts.get(1), size, 8);
+        // Text displaying speed
+        Text speedTxt = new Text(scene.getWidth() -90, scene.getHeight()-35, Double.toString(speed));
+        speedTxt.setOpacity(0.);
+        speedTxt.setStyle("-fx-font: 16 arial;");
+        building.getChildren().add(speedTxt);
+        AtomicReference<Double> op = new AtomicReference<>(0.);
 
-            timer();
+        // This menu item speeds up the animations
+        MenuItem speedUp = new MenuItem("Speed Up");
+        speedUp.setOnAction(actionEvent -> {
+            if (speed - 0.25 >0) {
+                speed -= 0.25;
+                speedLabel += 0.25;
+            }
+            String speedStr = "Speed: " + speedLabel;
+            speedTxt.setText(speedStr);
+            op.set(1.);
+            speedTxt.setOpacity(1.);
         });
 
-        MenuItem restart = new MenuItem("Restart");
-        restart.setOnAction(actionEvent -> InitCarts(size));
+        // This menu item slows down the animations
+        MenuItem speedDown = new MenuItem("Speed Down");
+        speedDown.setOnAction(actionEvent -> {
+            speed += 0.25;
+            speedLabel -= 0.25;
 
-        play_menu.getItems().addAll(animation1, animation2, restart);
+            String speedStr = "Speed: " + speedLabel;
+            speedTxt.setText(speedStr);
+            op.set(1.);
+            speedTxt.setOpacity(1.);
+        });
 
+        play_menu.getItems().addAll(speedUp, speedDown, restart);
+
+        // -- Scene menu -- //
         Menu scene_menu = new Menu("Scene");
         MenuItem heatMap = new MenuItem("HeatMap");
-        heatMap.setOnAction(actionEvent -> {
-            hMap.setVisible(!hMap.isVisible());
-        });
+        heatMap.setOnAction(actionEvent -> hMap.setVisible(!hMap.isVisible()));
         scene_menu.getItems().addAll(reset_scene, heatMap);
 
         MenuBar menuBar = new MenuBar();
@@ -208,13 +223,14 @@ public class GUI extends Application{
 
     	map.readMapToGui(this);
 
-    	Timer tmr = new Timer(delay, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Tick\n");
-                cartsInfo.get(0).move();
-                timer();
+    	Timer tmr = new Timer(delay, e -> {
+    	    if (op.get() > 0.) {
+                op.updateAndGet(v -> v - 0.25);
+                speedTxt.setOpacity(op.get());
             }
+            System.out.println("Tick\n");
+            cartsInfo.get(0).move();
+            playAnimation();
         });
         tmr.start();
     }
@@ -225,89 +241,109 @@ public class GUI extends Application{
      * @param col column in which shelf will be drawn
      * @param row row in which shelf will be drawn
      * @param size size of the rectangle (default size for stage recommended)
+     * @param i identificator of the shelf
+     * @param len length of shelf
      */
-    public void PutShelf(int col, int row, int size){
-        Rectangle shelf = new Rectangle((row-1)*size, (col-1)*size, size, size);
+    public void PutShelf(int col, int row, int size, int i, int len){
+        int x = (row-1)*size;
+        int y = (col-1)*size;
+
+        Rectangle shelf = new Rectangle(x, y, size, len*size);
         shelf.setFill(Color.LIGHTGREY);
         shelf.setStrokeWidth(4);
         shelf.setStroke(Color.DARKGRAY);
 
-        shelf.setOnMouseEntered(mouseEvent -> {
-            shelf.setStrokeWidth(4);
-            shelf.setStroke(Color.RED);
-        });
+        shelf.setOnMouseEntered(mouseEvent -> shelf.setStroke(Color.RED));
         shelf.setOnMouseExited(mouseEvent -> shelf.setStroke(Color.DARKGRAY));
 
-        // Displaying shelf window
         shelf.setOnMouseClicked(mouseEvent -> {
-            //ShelfWindow.display();
+            try {
+                ShelfWindow.display(shelvesInfo.get(i));
+            }
+            catch (IndexOutOfBoundsException e){
+                ShelfWindow.display(null);
+            }
         });
 
+        // Shelf label
+        Text shelfLabel = new Text(x+5, y+12, Integer.toString(i));
+        shelfLabel.setStroke(Color.GRAY);
+
+        shelves.add(shelf);
         building.getChildren().add(shelf);
+        building.getChildren().add(shelfLabel);
     }
 
     /**
-     * Function draws basic lines for orientation and shelves
+     * Function puts cart on given row and column of the map
+     * in case the cart is already inicialized, calling the function will re-inicialize it
+     *
+     * @param col column position of the cart
+     * @param row row position of the cart
+     * @param size size of the square
+     * @param i identificator of the cart
+     */
+    public void PutCart(int col, int row, int size, int i){
+        if (!carts.isEmpty()) {
+            building.getChildren().remove(i);
+            carts.remove(i);
+        }
+
+        Image cart = new Image("file:data/cart.png");
+
+        ImageView imageview = new ImageView(cart);
+        imageview.setX(2*col*size+(size*0.67)/4); // put cart in the middle of rectangle
+        imageview.setY(row*size);
+        imageview.setFitHeight(size);
+        imageview.setFitWidth(size*0.67);
+        imageview.setRotate(imageview.getRotate()+180);
+
+        String txt;
+        try {
+            txt = cartsInfo.get(i).getCargoToString();
+        }
+        catch (IndexOutOfBoundsException e){
+            txt = "No info";
+        }
+
+        // Details of cart when hovering with mouse
+        Text cartText = new Text(10, 25, txt);
+        cartText.setStyle("-fx-font: 16 arial;");
+        building.getChildren().add(cartText);
+        cartText.setVisible(false);
+
+        imageview.setOnMouseEntered(mouseEvent -> cartText.setVisible(true));
+        imageview.setOnMouseExited(mouseEvent -> cartText.setVisible(false));
+
+        carts.add(imageview);
+        building.getChildren().add(imageview);
+    }
+
+    /**
+     * Function draws lines for orientation in warehouse
      *
      * @param scene scene in which warehouse will be drawn
      * @param size size of one rectangle unit (for proper display needs to be 40)
      */
     private void InitWarehouse(Scene scene, int size){
-        int cnt = 0;
         // Divides the scene into equally distributed rectangles with size of variable 'size'
+
+        // Vertical lines
         for (int i = 0; i <= scene.getWidth(); i+=size) {
-            // Vertical lines
             Line line_ver = new Line(i, 0, i, scene.getHeight()-20);
             line_ver.setStroke(Color.GRAY);
 
             building.getChildren().add(line_ver);
 
-            // Shelves
-            int s_width = size;
-            int s_height = 2*size;
-
-            // Drawing shelves
-            if (((i/10) % 8 != 0) && (i<scene.getWidth())) {
-                for (int j = 2*size; j < scene.getHeight()-size; j+=size*3) {
-                    cnt++;
-
-                    Rectangle shelf = new Rectangle(i, j, s_width, s_height);
-                    shelf.setFill(Color.LIGHTGREY);
-                    shelf.setStrokeWidth(4);
-                    shelf.setStroke(Color.DARKGRAY);
-
-                    shelf.setOnMouseEntered(mouseEvent -> {
-                        shelf.setStroke(Color.RED);
-                    });
-                    shelf.setOnMouseExited(mouseEvent -> shelf.setStroke(Color.DARKGRAY));
-
-                    // Displaying shelf window
-                    int finalCnt = cnt;
-                    shelf.setOnMouseClicked(mouseEvent -> {
-                        ShelfWindow.display(shelvesInfo.get(finalCnt));
-                        //shelvesInfo.get(finalCnt).print_content();
-                    });
-
-                    // Shelf label
-                    Text shelfLabel = new Text(i+5, j+12, Integer.toString(cnt));
-                    shelfLabel.setStroke(Color.GRAY);
-
-                    shelves.add(shelf);
-                    building.getChildren().add(shelf);
-                    building.getChildren().add(shelfLabel);
-                }
-            }
         }
+        // Horizontal lines
+        for (int i = 0; i <= scene.getHeight(); i+=size) {
+            Line line_hor = new Line(0, i, scene.getWidth(), i);
+            line_hor.setStroke(Color.GRAY);
 
-            for (int i = 0; i < scene.getHeight(); i+=size) {
-                // Horizontal lines
-                Line line_hor = new Line(0, i, scene.getWidth(), i);
-                line_hor.setStroke(Color.GRAY);
-
-                building.getChildren().add(line_hor);
-            }
-
+            building.getChildren().add(line_hor);
         }
+    }
 
     /**
      * Function (re)initializes 5 carts on the map
@@ -333,6 +369,23 @@ public class GUI extends Application{
             imageview.setFitHeight(size);
             imageview.setFitWidth(size*0.67);
             imageview.setRotate(imageview.getRotate()+180);
+
+            String txt;
+            try {
+                txt = cartsInfo.get(i).getCargoToString();
+            }
+            catch (IndexOutOfBoundsException e){
+                txt = "No info";
+            }
+
+            Text cartText = new Text(10, 25, txt);
+            cartText.setStyle("-fx-font: 18 arial;");
+            building.getChildren().add(cartText);
+            cartText.setVisible(false);
+
+            imageview.setOnMouseEntered(mouseEvent -> cartText.setVisible(true));
+            imageview.setOnMouseExited(mouseEvent -> cartText.setVisible(false));
+
 
             carts.add(imageview);
             building.getChildren().add(imageview);
@@ -541,7 +594,7 @@ public class GUI extends Application{
      * Function handles cart movements.
      * Probably will be called every xy seconds
      */
-    public void timer(){
+    public void playAnimation(){
         // Create move sequence for each cart
         SequentialTransition cart1_moves = new SequentialTransition();
         SequentialTransition cart2_moves = new SequentialTransition();

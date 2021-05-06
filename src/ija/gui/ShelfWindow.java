@@ -3,29 +3,23 @@ package ija.gui;
 import ija.warehouse.Shelf;
 import ija.warehouse.SubShelf;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.util.Random;
 
 public class ShelfWindow{
 
     public static void display(Shelf shelfInfo) {
-        int goodsNum = shelfInfo.numberOfNonEmptyShelves();
-
         //  -- Set stage
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Shelf");
@@ -40,8 +34,11 @@ public class ShelfWindow{
         layout.getChildren().add(shelf_view);
 
         // -- Print goods
-        for (int i = 0; i < goodsNum; i++) {
-            generateGoods(i, layout, shelfInfo.getSubShelf(i));
+        if (shelfInfo != null) {
+            int goodsNum = shelfInfo.numberOfNonEmptyShelves();
+            for (int i = 0; i < goodsNum; i++) {
+                generateGoods(i, layout, shelfInfo.getSubShelf(i));
+            }
         }
 
         // -- Add  back button
@@ -62,9 +59,8 @@ public class ShelfWindow{
         primaryStage.showAndWait();
     }
 
-
     /**
-     * Generates one box of goods (one subshelf)
+     * Generates one box of goods (one subshelf) on the scene
      *
      * @param shelfPos position on shelf (1-5)
      * @param layout window layout
@@ -91,16 +87,18 @@ public class ShelfWindow{
 
         Text info = new Text(10, 25, box.getContent());
         info.setStyle("-fx-font: 18 arial;");
+        layout.getChildren().add(info);
+        info.setVisible(false);
 
         // Display info on hover
         goods.setOnMouseEntered(mouseEvent -> {
-            layout.getChildren().add(info);
+            info.setVisible(true);
             goods.setOpacity(1);
         });
 
         // Hide info
         goods.setOnMouseExited(mouseEvent -> {
-            layout.getChildren().remove(info);
+            info.setVisible(false);
             goods.setOpacity(.85);
         });
     }
