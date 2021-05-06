@@ -26,6 +26,7 @@ import javax.swing.Timer;
 import ija.carts.Cart;
 import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
+import ija.warehouse.Warehouse;
 
 public class GUI extends Application{
 
@@ -40,20 +41,20 @@ public class GUI extends Application{
 
     List<Rectangle> shelves;
     List<ImageView> carts;
-    private static ArrayList<Shelf> shelvesInfo;  			// link to shelves
-    private static ArrayList<Cart> cartsInfo;
-	private static MapInfo map;				   // link to mapInfo
-
+    private ArrayList<Shelf> shelvesInfo;  			// link to shelves
+    private ArrayList<Cart> cartsInfo;
+    private MapInfo map;				   // link to mapInfo
+/*
     /**
      * Stores information about map and shelves from external class
      * @param shelvesInf list of shelves with data
      * @param mapInfo map structure with the map description
-     */
+     *//*
     public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo, ArrayList<Cart> cartsInf) {
         shelvesInfo = shelvesInf;
         cartsInfo = cartsInf;
     	map = mapInfo;
-	}
+	} */
     
     public void start(Stage primaryStage) throws Exception{
         building = new Group();
@@ -221,6 +222,13 @@ public class GUI extends Application{
         primaryStage.setResizable(false);
         primaryStage.show();
 
+        
+        //TODO NEW
+        Warehouse w = new Warehouse();
+        this.cartsInfo=w.carts;
+        this.map=w.map;
+        this.shelvesInfo=w.shelves;
+        
     	map.readShelfToGui(this);
     	map.readCartToGui(this);
 
@@ -235,6 +243,7 @@ public class GUI extends Application{
             System.out.println("Tick\n");
             cartsInfo.get(0).move();
             cartsInfo.get(1).move();
+            System.out.println(cartsInfo.get(0).x);
             playAnimation(); // -- changed name of timer() function becase it was bullshiting us
         });
         tmr.start();
@@ -305,7 +314,7 @@ public class GUI extends Application{
 
         String txt;
         try {
-            txt = cartsInfo.get(i).getCargoToString();
+            txt = this.cartsInfo.get(i).getCargoToString()+cartsInfo.get(i).x+cartsInfo.get(i).y;
         }
         catch (IndexOutOfBoundsException e){
             txt = "No info";
@@ -638,7 +647,7 @@ public class GUI extends Application{
         cart5_moves.getChildren().clear();
     }
 
-    public static void main() {
+    public static void main(String[] args) {
         launch();
     }
     

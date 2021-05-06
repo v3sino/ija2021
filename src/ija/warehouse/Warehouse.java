@@ -2,7 +2,6 @@ package ija.warehouse;
 
 import ija.carts.Cart;
 import ija.carts.Planner;
-import ija.gui.GUI;
 import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
 import ija.warehouse.Shelf;
@@ -17,11 +16,11 @@ public class Warehouse {
     public ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
     public ArrayList<Cart> carts = new ArrayList<Cart>(); 
     public ArrayList<GoodsType> types = new ArrayList<GoodsType>();
+	public MapInfo map;
 
-    @SuppressWarnings("static-access")
 	public Warehouse(){
 
-    	MapInfo map = new MapInfo(shelves);
+    	map = new MapInfo(shelves);
     	try {
 			map.readMapFromFile("data/map1.txt");
 		} catch (IOException e2) {
@@ -138,9 +137,6 @@ public class Warehouse {
 --------------------------------------------------end of demonstration-----------------------------
 */	
         planner.readOrderFromFile("data/Orders1.txt",types);
-        GUI g = new GUI();
-        g.initIfo(shelves, map, carts);
-	    g.main();
     }
 
     private void print_state(){

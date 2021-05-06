@@ -1,11 +1,13 @@
 package ija.warehouse;
 
+import ija.gui.GUI;
+
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-			@SuppressWarnings("unused")
-			Warehouse warehouse = new Warehouse();
+			GUI.main(args);
+			
 	}
 
 }
