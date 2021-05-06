@@ -166,7 +166,7 @@ public class GUI extends Application{
 
         // Init objects
         InitWarehouse(scene, size);
-        InitCarts(size);
+        //InitCarts(size);
 
         // ------- ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
@@ -221,7 +221,8 @@ public class GUI extends Application{
         primaryStage.setResizable(false);
         primaryStage.show();
 
-    	map.readMapToGui(this);
+    	map.readShelfToGui(this);
+    	map.readCartToGui(this);
 
     	Timer tmr = new Timer(delay, e -> {
 
@@ -288,15 +289,15 @@ public class GUI extends Application{
      * @param i identificator of the cart
      */
     public void PutCart(int col, int row, int size, int i){
-        if (!carts.isEmpty()) {
+        /*if (!carts.isEmpty()) {
             building.getChildren().remove(i);
             carts.remove(i);
-        }
+        }*/
 
         Image cart = new Image("file:data/cart.png");
 
         ImageView imageview = new ImageView(cart);
-        imageview.setX(2*col*size+(size*0.67)/4); // put cart in the middle of rectangle
+        imageview.setX(col*size+(size*0.67)/4); // put cart in the middle of rectangle
         imageview.setY(row*size);
         imageview.setFitHeight(size);
         imageview.setFitWidth(size*0.67);
