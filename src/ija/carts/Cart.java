@@ -51,14 +51,12 @@ public class Cart {
 					getCargo().add(goods);
 					load++;
 				}
+				waitFor.clear();
 				waitTime=-1;
-				// Plan the path
-				// TODO ..............
-				this.plan();
 			}else {
 				waitTime = getWaitTime() - 1;
+				return;
 			}
-			return;
 		}
 		
 		//Moving
@@ -452,25 +450,25 @@ public class Cart {
 				if(order.getGoodTypeCount()[j]<1) {
 					continue;
 				}
-			for(int i = 0;i<wh.shelves.size();i++) {
-				c = wh.shelves.get(i).numberOfUnreservedGoods(order.getGoodTypeObj()[j]);
-				if(c!=0){
-					if(c>to_load) {
-						c=to_load;
+				for(int i = 0;i<wh.shelves.size();i++) {
+					c = wh.shelves.get(i).numberOfUnreservedGoods(order.getGoodTypeObj()[j]);
+					if(c>0){
+						if(c>to_load) {
+							c=to_load;
+						}
+						Destination d  = map.getDestination(wh.shelves.get(i));
+						d.task = 2;
+						d.count = c;
+						if(c>order.getGoodTypeCount()[j]) {
+							d.count=order.getGoodTypeCount()[j];
+						}
+						wh.shelves.get(i).reserveGoods(order.getGoodTypeObj()[j], d.count);
+						d.goodtype=order.getGoodTypeObj()[j];
+						getDestinations().add(d);
+						to_load-=d.count;
+						if(order.loverCount(j, d.count))break;
 					}
-					Destination d  = map.getDestination(wh.shelves.get(i));
-					d.task = 2;
-					d.count = c;
-					if(d.count>order.getGoodTypeCount()[j]) {
-						d.count=order.getGoodTypeCount()[j];
-					}
-					wh.shelves.get(i).reserveGoods(order.getGoodTypeObj()[j], d.count);
-					d.goodtype=order.getGoodTypeObj()[j];
-					getDestinations().add(d);
-					to_load-=d.count;
-					if(order.loverCount(j, c))break;
 				}
-			}
 			}
 			if(!order.isEmpty()) {
 				planner.addOrder(order);
