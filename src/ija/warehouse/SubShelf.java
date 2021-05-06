@@ -32,6 +32,10 @@ public class SubShelf {
 
     public int reserveGoods(GoodsType type, int count){
         int x = 0;
+        if (this.numberOfUnreservedGoods(type) == 0){
+            System.out.println("Trying to reserve "+type.getName()+" but there are none unreserved");
+            return 0;
+        }
         for (Goods g : ThingsOnShelf.get(type)){
             if (!g.isReserved()){
                 g.reserve();
