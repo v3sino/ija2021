@@ -224,13 +224,17 @@ public class GUI extends Application{
     	map.readMapToGui(this);
 
     	Timer tmr = new Timer(delay, e -> {
+
+    	    // Opacity of displayed speed slowly fades out
     	    if (op.get() > 0.) {
                 op.updateAndGet(v -> v - 0.25);
                 speedTxt.setOpacity(op.get());
             }
+
             System.out.println("Tick\n");
             cartsInfo.get(0).move();
-            playAnimation();
+            cartsInfo.get(1).move();
+            playAnimation(); // -- changed name of timer() function becase it was bullshiting us
         });
         tmr.start();
     }

@@ -138,8 +138,6 @@ public class Warehouse {
 --------------------------------------------------end of demonstration-----------------------------
 */	
         planner.readOrderFromFile("data/Orders1.txt",types);
-        System.out.println("Planner:"+planner.orders.size());
-        System.out.println("cart:"+carts.get(0).planner.orders.size());
         GUI g = new GUI();
         g.initIfo(shelves, map, carts);
 	    g.main();
