@@ -9,6 +9,7 @@ import ija.warehouse.Goods;
 import ija.warehouse.Shelf;
 import ija.warehouse.Warehouse;
 import ija.warehouse.MapInfo;
+import javafx.scene.control.Alert;
 
 public class Cart {
 	public Planner planner;
@@ -510,7 +511,13 @@ public class Cart {
 			getWaitFor().add(good);
 			return true;
 		}else {
-			JOptionPane.showMessageDialog(null,"Cart is already full, when it loads next stock","Cart loading problem",JOptionPane.WARNING_MESSAGE);
+			//JOptionPane.showMessageDialog(null,"Cart is already full, when it loads next stock","Cart loading problem",JOptionPane.WARNING_MESSAGE);
+
+			Alert fullCart = new Alert(Alert.AlertType.WARNING);
+			fullCart.setTitle("Cart loading problem");
+			fullCart.setHeaderText(null);
+			fullCart.setContentText("Cart is already full, when it loads next stock");
+			fullCart.show();
 		}
 		return false;
 	}

@@ -42,6 +42,7 @@ public class GUI extends Application{
     private static ArrayList<Line> cartPath;
     int delay = 2000;
 
+
     List<Rectangle> shelves;
     List<ImageView> carts;
     private static ArrayList<Shelf> shelvesInfo;
@@ -163,8 +164,14 @@ public class GUI extends Application{
         heatMap.setOnAction(actionEvent -> hMap.setVisible(!hMap.isVisible()));
         scene_menu.getItems().addAll(reset_scene, heatMap);
 
+        // -- Progress menu -- //
+        Menu progress_menu = new Menu("Details");
+        MenuItem progress = new MenuItem("Progress");
+        progress.setOnAction(actionEvent -> showProgress());
+        progress_menu.getItems().addAll(progress);
+
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(hlp_menu, play_menu, scene_menu);
+        menuBar.getMenus().addAll(hlp_menu, play_menu, scene_menu, progress_menu);
         // -- END OF MENU INITIALIZATION -- //
 
         // Init objects
@@ -227,6 +234,15 @@ public class GUI extends Application{
     	map.readShelfToGui(this);
     	map.readCartToGui(this);
 
+    	// Loading indicators of carts
+        ArrayList<ProgressIndicator> indicators = new ArrayList<>();
+        for (int i = 0; i < carts.size(); i++) {
+            ProgressIndicator pi = new ProgressIndicator(-1);
+            building.getChildren().add(pi);
+            pi.setVisible(false);
+            indicators.add(pi);
+        }
+
     	Timer tmr = new Timer(delay, e -> {
 
     	    // Opacity of displayed speed slowly fades out
@@ -239,9 +255,28 @@ public class GUI extends Application{
             cartsInfo.get(0).move();
             cartsInfo.get(1).move();
             playAnimation(); // -- changed name of timer() function becase it was bullshiting us
+
+            // Small loading indicator while cart is laoding goods
+            for (ImageView cart:carts) {
+                int i = carts.indexOf(cart);
+                if (cartsInfo.get(i).getWaitTime() == 1) {
+                    indicators.get(i).setLayoutY(carts.get(i).getY() - 15);
+                    indicators.get(i).setLayoutX(carts.get(i).getX() - 15);
+                    indicators.get(i).setPrefHeight(20);
+                    indicators.get(i).setPrefWidth(20);
+                    indicators.get(i).setVisible(true);
+                }
+                else
+                    indicators.get(i).setVisible(false);
+            }
+
         });
         tmr.start();
+
+
+
     }
+
 
     /**
      * Function draws one sqare shelf and sets its actions
@@ -396,6 +431,19 @@ public class GUI extends Application{
 
             building.getChildren().add(line_hor);
         }
+    }
+
+    public void showProgress(){
+        Alert progAlert = new Alert(Alert.AlertType.INFORMATION);
+        progAlert.setTitle("Progress of orders");
+        progAlert.setHeaderText(null);
+        progAlert.setContentText(""); // TODO kolko objednavok chyba
+
+        ProgressBar prog = new ProgressBar(0);
+        prog.setPrefWidth(200);
+        prog.setPrefHeight(30);
+        progAlert.getDialogPane().setContent(prog);
+        progAlert.show();
     }
 
     /**
@@ -636,6 +684,21 @@ public class GUI extends Application{
         cart3_moves.getChildren().clear();
         cart4_moves.getChildren().clear();
         cart5_moves.getChildren().clear();
+    }
+
+    /** Displays alert
+     *
+     * @param type type of alert {WARNING, INFORMATION, ERROR, CONFIRMATION}
+     * @param title title of alert
+     * @param msg alert message
+     */
+    public static void showAlert(Alert.AlertType type, String title, String msg){
+
+        Alert dispatch = new Alert(type);
+        dispatch.setTitle(title);
+        dispatch.setHeaderText(null);
+        dispatch.setContentText(msg);
+        dispatch.show();
     }
 
     public static void main() {
