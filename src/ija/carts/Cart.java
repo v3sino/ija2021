@@ -443,6 +443,7 @@ public class Cart {
 			if(order==null) {
 				System.out.println("order is null");
 				completedDestinations=0;
+				runningOrder = null;
 				getDestinations().add(new Destination(0, 0, 1));
 				return;
 			}
@@ -492,6 +493,7 @@ public class Cart {
 			completedDestinations=0;
 			this.printDestinations();
 			this.plan();
+			runningOrder = order;
 		}else {
 			completedDestinations++;
 		}

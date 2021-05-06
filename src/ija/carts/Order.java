@@ -4,7 +4,7 @@ import ija.warehouse.GoodsType;
 
 public class Order {
 	private int goodTypeCount[];
-	private int goodTypeCountExp[];
+	public int goodTypeCountExp[];
 	private int goodTypeCountAll[];
 	private GoodsType goodTypeObj[];
 	private String name;
@@ -12,19 +12,19 @@ public class Order {
 	public Order(int [] count,GoodsType [] gt) {
 		this.goodTypeCount=count;
 		this.goodTypeCountAll=count;
-		for (int i = 0; i < goodTypeCountExp.length; i++) {
-			goodTypeCountExp[i]=0;
+		for (int i = 0; i < getGoodTypeCountExp().length; i++) {
+			getGoodTypeCountExp()[i]=0;
 		}
 		this.goodTypeObj=gt;
 	}
 	
 	public Order(int count,GoodsType gt) {
 		goodTypeCount= new int [1];
-		goodTypeCountExp= new int [1];
+		setGoodTypeCountExp(new int [1]);
 		goodTypeCountAll= new int [1];
 		goodTypeCount[0] = count;
-		goodTypeCountAll[0]=count;
-		goodTypeCountExp[0]=0;
+		getGoodTypeCountAll()[0]=count;
+		getGoodTypeCountExp()[0]=0;
 		goodTypeObj= new GoodsType [1];
 		goodTypeObj[0] = gt;
 	}
@@ -33,9 +33,9 @@ public class Order {
 		this.name = name;
 		this.goodTypeCount=count;
 		this.goodTypeCountAll=count;
-		goodTypeCountExp = new int [count.length];
-		for (int i = 0; i < goodTypeCountExp.length; i++) {
-			goodTypeCountExp[i]=0;
+		setGoodTypeCountExp(new int [count.length]);
+		for (int i = 0; i < getGoodTypeCountExp().length; i++) {
+			getGoodTypeCountExp()[i]=0;
 		}
 		this.goodTypeObj=gt;
 	}
@@ -54,7 +54,7 @@ public class Order {
 			if(goodTypeObj[i].equals(gt)) {
 				p=true;
 				goodTypeCount[i]+=count;
-				goodTypeCountAll[i]+=count;
+				getGoodTypeCountAll()[i]+=count;
 				break;
 			}
 		}
@@ -67,14 +67,14 @@ public class Order {
 			for(int i = 0;i<goodTypeObj.length;i++)b[i]=goodTypeObj[i];
 			b[goodTypeObj.length]=gt;
 			goodTypeObj=b;
-			int [] c = new int[goodTypeCountAll.length+1];
-			for(int i = 0;i<goodTypeCountAll.length;i++)a[i]=goodTypeCountAll[i];
-			a[goodTypeCountAll.length]=count;
+			int [] c = new int[getGoodTypeCountAll().length+1];
+			for(int i = 0;i<getGoodTypeCountAll().length;i++)a[i]=getGoodTypeCountAll()[i];
+			a[getGoodTypeCountAll().length]=count;
 			goodTypeCountAll=c;
-			int [] d = new int[goodTypeCountExp.length+1];
-			for(int i = 0;i<goodTypeCountExp.length;i++)a[i]=goodTypeCountExp[i];
-			a[goodTypeCountExp.length]=0;
-			goodTypeCountExp=d;
+			int [] d = new int[getGoodTypeCountExp().length+1];
+			for(int i = 0;i<getGoodTypeCountExp().length;i++)a[i]=getGoodTypeCountExp()[i];
+			a[getGoodTypeCountExp().length]=0;
+			setGoodTypeCountExp(d);
 		}
 	}
 	
@@ -116,5 +116,33 @@ public class Order {
 
 	public String getName() {
 		return name;
+	}
+
+	public int[] getGoodTypeCountExp() {
+		return goodTypeCountExp;
+	}
+
+	public void setGoodTypeCountExp(int goodTypeCountExp[]) {
+		this.goodTypeCountExp = goodTypeCountExp;
+	}
+
+	public int[] getGoodTypeCountAll() {
+		return goodTypeCountAll;
+	}
+
+	public int dispatched() {
+		int sum = 0;
+		for (int i = 0; i < goodTypeCountExp.length; i++) {
+			sum += goodTypeCountExp[i];
+		}
+		return sum;
+	}
+
+	public int all() {
+		int sum = 0;
+		for (int i = 0; i < goodTypeCountAll.length; i++) {
+			sum += goodTypeCountAll[i];
+		}
+		return sum;
 	}
 }

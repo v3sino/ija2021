@@ -20,14 +20,25 @@ public class Planner {
 		//System.out.println("Na výdajné okienko bola vyložená objednávka");
 		//System.out.println("obsahuje:");
 		for (int i = 0; i < outLoad.length; i++) {
-			sb.append(outLoad[i].toString());
-			System.out.println(outLoad[i].toString());	
+			sb.append(outLoad[i].toString()+"\n");
+			System.out.println(outLoad[i].toString());
 		}
 		//System.out.println("...to je všetko");
 		if(o==null) {
 			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
 		}else {
+			for (int i = 0; i < outLoad.length; i++) {
+				for (int j = 0; j < o.getGoodTypeCount().length; j++) {
+					if(outLoad[i].get_type().equals(o.getGoodTypeObj()[j])) {
+						o.goodTypeCountExp[j]++;
+					}
+				}
+			}
 			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
+			if(o.dispatched()==o.all()) {
+				System.out.println("removing");
+				orders.remove(o);
+			}
 		}
 		return true;
 		
