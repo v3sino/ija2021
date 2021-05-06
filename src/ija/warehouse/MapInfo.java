@@ -65,45 +65,46 @@ public class MapInfo {
 		cells = new Cell[x_size][y_size];
 		cart_c = 0;
 		shelf_c = 0;
-		int x1=0;
+		int y1=0;
 		Cell w = new Cell('0', 0);
 		while((line=br.readLine())!=null){
-			for(int y = 0; y<line.length();y++) {
-				cells[x1][y] = new Cell(w.typeCharToValue(line.charAt(y)),0);
-				if(line.charAt(y)=='S' || line.charAt(y)=='s') {
-					cells[x1][y].index=shelf_c;
+			for(int x = 0; x<line.length();x++) {
+				cells[x][y1] = new Cell(w.typeCharToValue(line.charAt(x)),0);
+				if(line.charAt(x)=='S' || line.charAt(x)=='s') {
+					cells[x][y1].index=shelf_c;
 					shelf_c++;
 				} else
-				if(line.charAt(y)=='C' || line.charAt(y)=='c') {
-					cells[x1][y].index=cart_c;
+				if(line.charAt(x)=='C' || line.charAt(x)=='c') {
+					cells[x][y1].index=cart_c;
 					cart_c++;
 				}
-				if(line.charAt(y)=='E' || line.charAt(y)=='e') {
+				if(line.charAt(x)=='E' || line.charAt(x)=='e') {
 					if(getExport_window()!=null) {
 						JOptionPane.showMessageDialog(null,"multiple export windows are on the screen, should be 1","multiple export windows are on the screen, should be 1", JOptionPane.ERROR_MESSAGE);
+						System.exit(1);
 					}
-					export_window=new Destination(x1, y, -1);
+					export_window=new Destination(x,y1, -1);
 				}
 			}
-			x1++;
+			y1++;
 		}
 		br.close();
 
 		int count;
 		for(int x = 0; x<x_size;x++){
 			for(int y = 0; y<y_size;y++) {
-				if(cells[x][y].type==0) {
+				if(cells[x][y].type==0 || cells[x][y].type==2 || cells[x][y].type==4) {
 					count=0;
-					if(x>0 && (cells[x-1][y].type==0 || cells[x-1][y].type==8)) {
+					if(x>0 && (cells[x-1][y].type==0 || cells[x-1][y].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
-					if(x_size-1>x && (cells[x+1][y].type==0 || cells[x+1][y].type==8)) {
+					if(x_size-1>x && (cells[x+1][y].type==0 || cells[x+1][y].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
-					if(y>0 && (cells[x][y-1].type==0 || cells[x][y-1].type==8)) {
+					if(y>0 && (cells[x][y-1].type==0 || cells[x][y-1].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
-					if(y_size-1>y && (cells[x][y+1].type==0 || cells[x][y+1].type==8)) {
+					if(y_size-1>y && (cells[x][y+1].type==0 || cells[x][y+1].type==2 || cells[x][y].type==4)) {
 						count++;
 					}
 					if(count>2) {
@@ -122,11 +123,11 @@ public class MapInfo {
 	 */
 	public void readMapToGui(GUI gui){
 		g=gui;
-		for(int x = 0; x<x_size;x++){
-			for(int y = 0; y<y_size;y++) {
+		for(int y = 0; y<y_size;y++){
+			for(int x = 0; x<x_size;x++) {
 				if(cells[x][y].type==1) {
-					System.out.println("Shelf on ["+x+","+y+"]");
-					gui.PutShelf(x+1,y+1, 40);
+					//System.out.println("Shelf on ["+x+","+y+"]");
+					gui.PutShelf(y+1,x+1, 40);
 				}
 			}
 		}
@@ -140,30 +141,42 @@ public class MapInfo {
 	 * @param y2 y value of new position of cart
 	 */
 	public void moveCart(int x, int y, int x2, int y2) {
+		System.out.println("Map move");
 		System.out.println("Pohyb voziku z "+ Integer.toString(x)+","+Integer.toString(y)+" na: "+Integer.toString(x2)+","+Integer.toString(y2));
 		int cart_index = cells[x][y].index;
 		assert(cells[x][y].type==2);
 		assert(this.isFree(x,y));
 		cells[x2][y2].type=cells[x][y].type;
 		cells[x2][y2].index=cells[x][y].index;
-		cells[x][y].type=0;
-		cells[x][y].index=0;
-		if(y==y2) {
-			if(x2-x>0) {
-				g.CartMoveUp(cart_index, 40, 1);
-			}
-			if(x2-x<0) {
-				g.CartMoveDown(cart_index, 40, 1);
-			}
+		if(export_window.y==y && export_window.x==x) {
+			cells[x][y].type=4;
+			cells[x][y].index=-1;
+		}else {
+			cells[x][y].type=0;
+			cells[x][y].index=0;
 		}
 		if(x==x2) {
-			if(y2-y>0) {
-				g.CartMoveRight(cart_index, 40, 1);
-			}
 			if(y2-y<0) {
-				g.CartMoveLeft(cart_index, 40, 1);
+				g.CartMoveUp(cart_index, 40, 1);
+				return;
+			}
+			if(y2-y>0) {
+				g.CartMoveDown(cart_index, 40, 1);
+				return;
 			}
 		}
+		if(y==y2) {
+			if(x2-x>0) {
+				g.CartMoveRight(cart_index, 40, 1);
+				return;
+			}
+			if(x2-x<0) {
+				g.CartMoveLeft(cart_index, 40, 1);
+				return;
+			}
+		}
+		JOptionPane.showMessageDialog(null, "Wrong move from:"+x+","+y+" to "+x+","+y+"!", "WRONG MOVE", JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 	}
 
 	/**
@@ -173,7 +186,10 @@ public class MapInfo {
 	 * @return if the cell is free path
 	 */
 	public boolean isFree(int x, int y) {
-		if(cells[x][y].type==0 && cells[x][y].index==0) {
+		if(x>=x_size||y>=y_size) {
+			return false;
+		}
+		if((cells[x][y].type==0 && cells[x][y].index==0 )|| cells[x][y].type==4) {
 			return true;
 		}
 		return false;
@@ -198,12 +214,8 @@ public class MapInfo {
 	 * @return shelf on given position
 	 */
 	public Shelf getShelf(Destination destination) {
-		for(int y = 0;y<y_size;y++){
-			for (int x = 0; x < x_size; x++) {
-				if(cells[destination.x][destination.y].type==1) {
-					return shelves.get(cells[x][y].index);
-				}
-			}
+		if(cells[destination.x][destination.y].type==1) {
+			return shelves.get(cells[destination.x][destination.y].index);
 		}
 		return null;
 	}
@@ -221,7 +233,22 @@ public class MapInfo {
 				}
 			}
 		}
+		JOptionPane.showMessageDialog(null, "shelf is not in map", "unknown shelf", JOptionPane.ERROR_MESSAGE);
+		System.exit(1);
 		return new Destination(-1, -1, 0);
+	}
+	
+	public void printMap() {
+		for (int y = 0; y < y_size; y++) {
+			for (int x = 0; x < x_size; x++) {
+				if(cells[x][y].type==0 && cells[x][y].crossroad) {
+					System.out.print("T");
+				}else {
+					System.out.print(cells[x][y].typeToChar(cells[x][y].type));
+				}
+			}
+			System.out.println();
+		}
 	}
 
 	/**

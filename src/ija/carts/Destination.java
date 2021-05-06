@@ -22,5 +22,9 @@ public class Destination {
 	public String toString() {
 		return "pozícia: "+Integer.toString(x)+","+Integer.toString(y);
 	}
+	
+	public String toStringDestOrder() {
+		return "pozícia: "+Integer.toString(x)+","+Integer.toString(y) + "uloha: "+Integer.toString(task);
+	}
 
 }
