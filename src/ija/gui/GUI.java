@@ -3,6 +3,7 @@ package ija.gui;
 import ija.carts.Destination;
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -176,7 +177,6 @@ public class GUI extends Application{
 
         // Init objects
         InitWarehouse(scene);
-        //InitCarts(size);
 
         // ------- ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
@@ -242,6 +242,7 @@ public class GUI extends Application{
             pi.setVisible(false);
             indicators.add(pi);
         }
+
 
     	Timer tmr = new Timer(delay, e -> {
 
@@ -692,11 +693,11 @@ public class GUI extends Application{
      * @param title title of alert
      * @param msg alert message
      */
-    public static void showAlert(Alert.AlertType type, String title, String msg){
+    public static void showAlert(Alert.AlertType type, String title, String header, String msg){
 
         Alert dispatch = new Alert(type);
         dispatch.setTitle(title);
-        dispatch.setHeaderText(null);
+        dispatch.setHeaderText(header);
         dispatch.setContentText(msg);
         dispatch.show();
     }

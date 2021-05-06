@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 public class Planner {
 	public ArrayList<Order> orders;
@@ -16,25 +18,30 @@ public class Planner {
 	
 	public Boolean dispatch(Goods[] outLoad, Order o) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Dispatching:\n");
+		//sb.append("Dispatching:\n");
 		//System.out.println("Na výdajné okienko bola vyložená objednávka");
 		//System.out.println("obsahuje:");
-		for (int i = 0; i < outLoad.length; i++) {
-			sb.append(outLoad[i].toString()+"\n");
-			System.out.println(outLoad[i].toString());
+		for (Goods goods : outLoad) {
+			sb.append(goods.toString()).append("\n");
+			System.out.println(goods.toString());
 		}
 		//System.out.println("...to je všetko");
 		if(o==null) {
-			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
+			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
 		}else {
-			for (int i = 0; i < outLoad.length; i++) {
+			for (Goods goods : outLoad) {
 				for (int j = 0; j < o.getGoodTypeCount().length; j++) {
-					if(outLoad[i].get_type().equals(o.getGoodTypeObj()[j])) {
+					if (goods.get_type().equals(o.getGoodTypeObj()[j])) {
 						o.goodTypeCountExp[j]++;
 					}
 				}
 			}
-			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
+
+			// This is how to run the Alert
+			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
+
 			if(o.dispatched()==o.all()) {
 				System.out.println("removing");
 				orders.remove(o);
