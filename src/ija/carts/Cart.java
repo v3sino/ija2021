@@ -24,6 +24,7 @@ public class Cart {
 	private int waitTime;
 	private ArrayList<Goods> waitFor;
 	private Warehouse wh;
+	private Order runningOrder; 
 	
 	public Cart(Goods[] cargoToLoad, int[] place, Planner plan, MapInfo m, Warehouse warehouse) {
 		Collections.addAll(getCargo(), cargoToLoad);
@@ -462,6 +463,7 @@ public class Cart {
 						if(c>order.getGoodTypeCount()[j]) {
 							d.count=order.getGoodTypeCount()[j];
 						}
+						System.out.println(order.getGoodTypeObj()[j].getName());
 						wh.shelves.get(i).reserveGoods(order.getGoodTypeObj()[j], d.count);
 						d.goodtype=order.getGoodTypeObj()[j];
 						getDestinations().add(d);
@@ -469,9 +471,6 @@ public class Cart {
 						if(order.loverCount(j, d.count))break;
 					}
 				}
-			}
-			if(!order.isEmpty()) {
-				planner.addOrder(order);
 			}
 			Destination a = new Destination(x, y, -1);
 			Destination nextD;
@@ -535,7 +534,7 @@ public class Cart {
 			outLoad[i]=getCargo().get(i);
 		}
 		getCargo().clear();
-		return planner.dispatch(outLoad);
+		return planner.dispatch(outLoad,runningOrder);
 	}
 	
 	public Destination getNextDestination() {
@@ -575,5 +574,9 @@ public class Cart {
 
 	public ArrayList<Destination> getDestinations() {
 		return destinations;
+	}
+
+	public Order getRunningOrder() {
+		return runningOrder;
 	}
 }

@@ -14,21 +14,33 @@ public class Planner {
 		orders = new ArrayList<Order>();
 	}
 	
-	public Boolean dispatch(Goods[] outLoad) {
-		JOptionPane.showMessageDialog(null, "Dispatching...", "Dispatching", JOptionPane.INFORMATION_MESSAGE);
-		System.out.println("Na výdajné okienko bola vyložená objednávka");
-		System.out.println("obsahuje:");
+	public Boolean dispatch(Goods[] outLoad, Order o) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Dispatching:\n");
+		//System.out.println("Na výdajné okienko bola vyložená objednávka");
+		//System.out.println("obsahuje:");
 		for (int i = 0; i < outLoad.length; i++) {
+			sb.append(outLoad[i].toString());
 			System.out.println(outLoad[i].toString());	
 		}
-		System.out.println("...to je všetko");
+		//System.out.println("...to je všetko");
+		if(o==null) {
+			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
+		}else {
+			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
+		}
 		return true;
 		
 	}
 
 	public Order getNextOrder() {
-		if(orders.size()!=0) {
-			return orders.remove(0);
+		//if(orders.size()!=0) {
+		//	return orders.remove(0);
+		//}
+		for(Order o : orders) {
+			if(!o.isEmpty()) {
+				return o;
+			}
 		}
 		return null;
 	} 
