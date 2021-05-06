@@ -1,5 +1,6 @@
 package ija.gui;
 
+import ija.carts.Destination;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -20,6 +21,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.Timer;
 
@@ -36,13 +38,15 @@ public class GUI extends Application{
     double deltaY;
     private double speed = 0.75; // speed of one cart in seconds per square
     private double speedLabel = 1.0; // variable shows the speed ratio
+    private static final int size = 40;
+    private static ArrayList<Line> cartPath;
     int delay = 2000;
 
     List<Rectangle> shelves;
     List<ImageView> carts;
-    private static ArrayList<Shelf> shelvesInfo;  			// link to shelves
+    private static ArrayList<Shelf> shelvesInfo;
     private static ArrayList<Cart> cartsInfo;
-	private static MapInfo map;				   // link to mapInfo
+	private static MapInfo map;
 
     /**
      * Stores information about map and shelves from external class
@@ -60,8 +64,7 @@ public class GUI extends Application{
         cart_moves = new ArrayList<>();
         carts = new ArrayList<>();
         shelves = new ArrayList<>();
-
-        int size = 40;
+        cartPath= new ArrayList<>();
 
         // Setting scene
         primaryStage.setTitle("Warehouse");
@@ -115,7 +118,7 @@ public class GUI extends Application{
         // This menu item restarts the cart initial positions and set default speed
         MenuItem restart = new MenuItem("Reset Carts");
         restart.setOnAction(actionEvent -> {
-            InitCarts(size);
+            //InitCarts(size);
             speed = 0.75;
             speedLabel = 1.0;
         });
@@ -289,10 +292,10 @@ public class GUI extends Application{
      * @param i identificator of the cart
      */
     public void PutCart(int col, int row, int size, int i){
-        /*if (!carts.isEmpty()) {
-            building.getChildren().remove(i);
+        if (i < carts.size()) {
+            building.getChildren().remove(carts.get(i));
             carts.remove(i);
-        }*/
+        }
 
         Image cart = new Image("file:data/cart.png");
 
@@ -303,25 +306,58 @@ public class GUI extends Application{
         imageview.setFitWidth(size*0.67);
         imageview.setRotate(imageview.getRotate()+180);
 
-        String txt;
-        try {
-            txt = cartsInfo.get(i).getCargoToString();
-        }
-        catch (IndexOutOfBoundsException e){
-            txt = "No info";
-        }
-
         // Details of cart when hovering with mouse
-        Text cartText = new Text(10, 25, txt);
+        Text cartText = new Text(10, 25, "");
         cartText.setStyle("-fx-font: 16 arial;");
         building.getChildren().add(cartText);
         cartText.setVisible(false);
 
-        imageview.setOnMouseEntered(mouseEvent -> cartText.setVisible(true));
-        imageview.setOnMouseExited(mouseEvent -> cartText.setVisible(false));
+        imageview.setOnMouseEntered(mouseEvent -> {
+            String txt;
+            try {
+                txt = cartsInfo.get(i).getCargoToString();
+            }
+            catch (IndexOutOfBoundsException e){
+                txt = "No info";
+            }
+            cartText.setText(txt);
+            cartText.setVisible(true);
+            building.getChildren().addAll(Objects.requireNonNull(drawPath(i)));
+        });
+        imageview.setOnMouseExited(mouseEvent -> {
+            cartText.setVisible(false);
+            building.getChildren().removeAll(Objects.requireNonNull(drawPath(i)));
+            cartPath.clear();
+        });
 
         carts.add(imageview);
         building.getChildren().add(imageview);
+    }
+
+    public ArrayList<Line> drawPath(int i){
+        try {
+            Cart observedCart = cartsInfo.get(i);
+            ImageView displayedCart = carts.get(i);
+
+            double x, y, new_x, new_y;
+            for(Destination dest : observedCart.getPlanned_path()) {
+                x = displayedCart.getX()+(double) size/2;
+                y = displayedCart.getY()+(double) size/2;
+
+                new_x = (dest.x * size)+(double) size/2+((size*0.67)/2);
+                new_y = ((dest.y-1) * size)+(double) size/2;
+                Line pathLine = new Line(x, y, new_x, new_y);
+                System.out.println("dest: ["+dest.x+ ", "+dest.y+"]");
+                System.out.println("pathline from ["+ x + ", " + y+"] to ["+ new_x + ", " + new_y+"]");
+                pathLine.setStroke(Color.RED);
+                cartPath.add(pathLine);
+            }
+
+            return cartPath;
+        }
+        catch (IndexOutOfBoundsException e){
+            return null;
+        }
     }
 
     /**
@@ -348,54 +384,6 @@ public class GUI extends Application{
 
             building.getChildren().add(line_hor);
         }
-    }
-
-    /**
-     * Function (re)initializes 5 carts on the map
-     *
-     * @param size size of one rectangle unit (for proper display needs to be 40)
-     */
-    private void InitCarts(int size) {
-        if (!carts.isEmpty()) {
-
-            for (ImageView i : carts) {
-                building.getChildren().remove(i);
-            }
-
-            carts.clear();
-        }
-
-        Image cart = new Image("file:data/cart.png");
-
-        for (int i = 1; i < 6; i++) {
-            ImageView imageview = new ImageView(cart);
-            imageview.setX(2*i*size+(size*0.67)/4); // put cart in the middle of rectangle
-            imageview.setY(0);
-            imageview.setFitHeight(size);
-            imageview.setFitWidth(size*0.67);
-            imageview.setRotate(imageview.getRotate()+180);
-
-            String txt;
-            try {
-                txt = cartsInfo.get(i).getCargoToString();
-            }
-            catch (IndexOutOfBoundsException e){
-                txt = "No info";
-            }
-
-            Text cartText = new Text(10, 25, txt);
-            cartText.setStyle("-fx-font: 18 arial;");
-            building.getChildren().add(cartText);
-            cartText.setVisible(false);
-
-            imageview.setOnMouseEntered(mouseEvent -> cartText.setVisible(true));
-            imageview.setOnMouseExited(mouseEvent -> cartText.setVisible(false));
-
-
-            carts.add(imageview);
-            building.getChildren().add(imageview);
-        }
-
     }
 
     /**
