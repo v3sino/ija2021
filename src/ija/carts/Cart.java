@@ -442,6 +442,7 @@ public class Cart {
 			Order order = planner.getNextOrder();
 			if(order==null) {
 				System.out.println("order is null");
+				completedDestinations=0;
 				getDestinations().add(new Destination(0, 0, 1));
 				return;
 			}
