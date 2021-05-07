@@ -25,7 +25,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -241,8 +240,11 @@ public class GUI extends Application{
             }
 
             System.out.println("Tick\n");
-            cartsInfo.get(0).move();
-            cartsInfo.get(1).move();
+            //cartsInfo.get(0).move();
+            //cartsInfo.get(1).move();
+            for(Cart cart : cartsInfo) {
+            	cart.move();
+            }
             playAnimation(); // -- changed name of timer() function becase it was bullshiting us
 
             // Small loading indicator while cart is laoding goods

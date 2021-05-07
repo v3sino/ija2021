@@ -93,15 +93,15 @@ public class Cart {
 				this.findOrder();
 				return;
 			}
+			if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==1){
+				this.findOrder();
+				return;
+			}
 			if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==3){
 				if(unload()) {
 					load=0;
 					this.findOrder();
 				}
-			}
-			if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==1){
-				this.findOrder();
-				return;
 			}
 			else {
 				this.plan();
@@ -376,6 +376,7 @@ public class Cart {
 				break;
 			}
 			getPlanned_path().remove(0);
+			if(getPlanned_path().size()==0)return;
 			last_x = getPlanned_path().get(getPlanned_path().size()-1).x;
 			last_y = getPlanned_path().get(getPlanned_path().size()-1).y;
 			
