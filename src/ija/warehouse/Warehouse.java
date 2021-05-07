@@ -3,20 +3,17 @@ package ija.warehouse;
 import ija.carts.Cart;
 import ija.carts.Planner;
 import ija.gui.GUI;
-import ija.warehouse.Goods;
-import ija.warehouse.GoodsType;
-import ija.warehouse.Shelf;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class Warehouse {
 
-    public ArrayList<Shelf> shelves = new ArrayList<Shelf>(10);
-    public ArrayList<Cart> carts = new ArrayList<Cart>(); 
-    public ArrayList<GoodsType> types = new ArrayList<GoodsType>();
+    public ArrayList<Shelf> shelves = new ArrayList<>(10);
+    public ArrayList<Cart> carts = new ArrayList<>();
+    public ArrayList<GoodsType> types = new ArrayList<>();
 
     @SuppressWarnings("static-access")
 	public Warehouse(){
@@ -52,7 +49,7 @@ public class Warehouse {
                 if (!types.contains(type)){
                     types.add(type);
                 }
-                List<Goods> tmp = new ArrayList<Goods>();
+                List<Goods> tmp = new ArrayList<>();
                 for (int i=0; i < count; i++){
                     tmp.add(types.get(types.indexOf(type)).newItem());
                 }
@@ -68,7 +65,7 @@ public class Warehouse {
             sc.close();
         }
         catch(Exception e) {
-        	System.out.println(e);
+            e.printStackTrace();
             System.out.println("file not found");
         }
     	for (int y = 0;y<map.y_size; y++) {

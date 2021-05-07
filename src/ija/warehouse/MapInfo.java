@@ -33,7 +33,7 @@ public class MapInfo {
 	
 	/**
 	 * @deprecated 
-	 * @param s
+	 * @param s shelf
 	 */
 	public MapInfo(Shelf s) {
 		// TODO Auto-generated constructor stub
@@ -235,10 +235,7 @@ public class MapInfo {
 		if(x>=x_size||y>=y_size||x<0||y<0) {
 			return false;
 		}
-		if((cells[x][y].type==0 || cells[x][y].type==4 ) &&  cells[x][y].index<1 ) {
-			return true;
-		}
-		return false;
+		return (cells[x][y].type == 0 || cells[x][y].type == 4) && cells[x][y].index < 1;
 	}
 
 	/**
@@ -251,10 +248,7 @@ public class MapInfo {
 		if(x>=x_size||y>=y_size||x<0||y<0) {
 			return false;
 		}
-		if(cells[x][y].type==0) {
-			return true;
-		}
-		return false;
+		return cells[x][y].type == 0;
 	}
 	
 	/**
@@ -312,7 +306,7 @@ public class MapInfo {
 	/**
 	 * Function for 2nd homework
 	 * @deprecated
-	 * @return
+	 * @return destination of window
 	 */
 	public Destination getWindowDest() {
 		return new Destination(2,1,0);
@@ -320,14 +314,14 @@ public class MapInfo {
 
 	/**
 	 * value is correct if readMapFromFile was already called
-	 * @return
+	 * @return number of shelves
 	 */
 	public int getShelfCount() {
 		return shelf_c;
 	}
 	/**
 	 * value is correct if readMapFromFile was already called
-	 * @return
+	 * @return number of carts
 	 */
 	public int getCartCount() {
 		return cart_c;
