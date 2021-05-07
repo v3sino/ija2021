@@ -12,6 +12,8 @@ import javafx.scene.control.Alert;
 
 public class Planner {
 	public ArrayList<Order> orders;
+	public int totalCount = 0;
+	public int totalDispatched = 0;
 	public Planner() {
 		orders = new ArrayList<>();
 	}
@@ -37,20 +39,19 @@ public class Planner {
 					}
 				}
 			}
-<<<<<<< HEAD
-			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
-			/*if(o.dispatched()==o.all()) {
-=======
 			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
 
 			// This is how to run the Alert
 			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
 
-			if(o.dispatched()==o.all()) {
->>>>>>> branch 'master' of git@github.com:v3sino/ija2021.git
+			/*if(o.dispatched()==o.all()) {
 				System.out.println("removing");
 				orders.remove(o);
 			}*/
+		}
+		totalDispatched=0;
+		for(Order ord : orders) {
+			totalDispatched+=ord.dispatched();
 		}
 		return true;
 		
@@ -70,6 +71,7 @@ public class Planner {
 
 	public void addOrder(Order order) {
 		orders.add(order);
+		totalCount+=order.all();
 	}
 	
 	public String toString() {
@@ -163,6 +165,10 @@ public class Planner {
 					a2[i] = count.get(i);
 				}
 				this.addOrder(new Order(a2, a1, name));
+			}
+			totalCount=0;
+			for(Order ord : orders) {
+				totalCount+=ord.all();
 			}
 			br.close();
 		} catch (IOException e) {
