@@ -101,6 +101,10 @@ public class Cart {
 				}
 				return;
 			}
+			if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==1){
+				this.findOrder();
+				return;
+			}
 			else {
 				this.plan();
 			}
@@ -123,6 +127,12 @@ public class Cart {
 			getPlanned_path().add(d);
 			return d;
 		}
+		if(getDestinations().get(completedDestinations).x==x && getDestinations().get(completedDestinations).y==y && getDestinations().get(completedDestinations).task==1) {
+			map.reservePath(last_x, last_y);
+			Destination d = new Destination(last_x, last_y, 1);
+			getPlanned_path().add(d);
+			return d;
+		}
 		if(map.cells[last_x][last_y].crossroad) {
 			map.reservePath(last_x, last_y);
 			getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -130,7 +140,7 @@ public class Cart {
 			return d;
 		}
 		
-		if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
+		if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task%2==1)) {
 			if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x+1 && map.isFree(last_x+1,last_y)){
 				map.reservePath(last_x, last_y);
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -143,7 +153,7 @@ public class Cart {
 				return d;
 			}
 		}
-		if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
+		if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task%2==1)) {
 			if(getPlanned_path().get(getPlanned_path().size()-1).x!=last_x-1 && map.isFree(last_x-1,last_y)){
 				map.reservePath(last_x, last_y);
 				getPlanned_path().add(new Destination(last_x, last_y, 1));
@@ -243,7 +253,7 @@ public class Cart {
 				last_y = getPlanned_path().get(getPlanned_path().size()-1).y;
 				
 				while(true) {
-					if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
+					if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task%2==1)) {
 						if(map.isFree(last_x+1,last_y)){
 							Destination d = recursivePlanner(last_x+1, last_y);
 							if(!(d.x<0 || d.y<0)) {
@@ -251,7 +261,7 @@ public class Cart {
 							}
 						}
 					}
-					if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
+					if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task%2==1)) {
 						if(map.isFree(last_x-1,last_y)){
 							Destination d = recursivePlanner(last_x-1, last_y);
 							if(!(d.x<0 || d.y<0)) {
@@ -311,7 +321,7 @@ public class Cart {
 			getPlanned_path().add(new Destination(last_x, last_y, 1));
 			
 			while(true) {
-				if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task%2==1)) {
 					if(map.isFree(last_x+1,last_y)){
 						Destination d = recursivePlanner(last_x+1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -319,7 +329,7 @@ public class Cart {
 						}
 					}
 				}
-				if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task%2==1)) {
 					if(map.isFree(last_x-1,last_y)){
 						Destination d = recursivePlanner(last_x-1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -374,7 +384,7 @@ public class Cart {
 			last_y = getPlanned_path().get(getPlanned_path().size()-1).y;
 			
 			while(true) {
-				if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x>1 || (getDestinations().get(completedDestinations).x-last_x>0 && getDestinations().get(completedDestinations).task%2==1)) {
 					if(map.isFree(last_x+1,last_y)){
 						Destination d = recursivePlanner(last_x+1, last_y);
 						if(!(d.x<0 || d.y<0)) {
@@ -382,7 +392,7 @@ public class Cart {
 						}
 					}
 				}
-				if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task==3)) {
+				if(getDestinations().get(completedDestinations).x-last_x<-1 || (getDestinations().get(completedDestinations).x-last_x<0 && getDestinations().get(completedDestinations).task%2==1)) {
 					if(map.isFree(last_x-1,last_y)){
 						Destination d = recursivePlanner(last_x-1, last_y);
 						if(!(d.x<0 || d.y<0)) {
