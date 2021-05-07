@@ -14,3 +14,16 @@ M: vozíky nie su načítavané do mapy - programované, netestované
 M: vozíky nie su vytvárané - programované, netestované 
 M: rezervácia tovarov - programované, netestované
 M: vozíky musia mať obmedzenú kapacitu (10 predmetov) - programované, netestované
+
+    • aplikace bude podporovat minimálně 50 druhů zboží
+    • po najetí/kliknutí na pozici regálu se zobrazí jeho aktuální obsah TEST?
+    • aplikace umožňuje načítání požadavků ze souboru i ruční zadávání
+    • je třeba zohlednit kapacitu vozíku
+    • systém obsahuje vlastní hodiny, které lze nastavit na výchozí hodnotu a různou rychlost
+    • po načtení mapy a obsahu skladu začne systém zobrazovat zpracování jednotlivých požadavků (způsob zobrazení je na vaší invenci, postačí značka, kolečko, ...)
+    • po najetí/kliknutí na symbol vozíku se zvýrazní trasa v mapě a zobrazí jeho aktuální náklad
+    • Je možné definovat možnost uzavření uličky
+    • vozík si automaticky zvolí objízdnou trasu (a aktualizuje ji i ve vizualizaci trasy)  TEST?
+    • Rozšiřte model o třetí rozměr → tím se změní i časy zastávek.
+    • Mapa umožní přepnutí do módu tzv. heatmapy, která reflektuje četnost zastávek u jednotlivých regálů (používá se k vyhodnocení efektivity rozložení zboží)
+    • Systém obohatíte o režim nakládání regálů novým zbožím

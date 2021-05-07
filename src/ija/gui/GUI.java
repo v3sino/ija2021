@@ -345,6 +345,11 @@ public class GUI extends Application{
         building.getChildren().add(cartText);
         cartText.setVisible(false);
 
+        Text cartName = new Text("Cart"+i);
+        cartName.setFill(Color.DIMGRAY);
+        building.getChildren().add(cartName);
+        cartName.setVisible(false);
+
         imageview.setOnMouseEntered(mouseEvent -> {
             String txt;
             try {
@@ -356,11 +361,16 @@ public class GUI extends Application{
             cartText.setText(txt);
             cartText.setVisible(true);
             building.getChildren().addAll(Objects.requireNonNull(createCartPath(i)));
+
+            cartName.setX(imageview.getX()+10);
+            cartName.setY(imageview.getY()-10);
+            cartName.setVisible(true);
         });
         imageview.setOnMouseExited(mouseEvent -> {
             cartText.setVisible(false);
             building.getChildren().removeAll(Objects.requireNonNull(createCartPath(i)));
             cartPath.clear();
+            cartName.setVisible(false);
         });
 
         carts.add(imageview);
