@@ -5,6 +5,8 @@ public class Cell {
 	public int index;   /// index in List for shelf and cart
 						/// for block 0 means permanent, not 0 means temporary
 	public boolean crossroad = false;
+	public int trafficIntensity = 0;
+	private int maxTrafficIntensity = 8; /// to scale trafficIntensity to color 0-255 should traficIntensity be multiplied by 32 
 	public Cell(char t,int i) {
 		type=t;
 		index = i;
@@ -67,5 +69,14 @@ public class Cell {
 	
 	public String toString() {
 		return typeToString(type)+" with index: "+Integer.toString(index);
+	}
+	
+	public boolean increaseTraffic() {
+		this.trafficIntensity++;
+		return !(this.trafficIntensity<this.maxTrafficIntensity);
+	}
+	
+	public void scaleTraffic() {
+		this.trafficIntensity/=2;
 	}
 }

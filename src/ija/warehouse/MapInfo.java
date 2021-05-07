@@ -190,6 +190,17 @@ public class MapInfo {
 			cells[x][y].type=0;
 			cells[x][y].index=0;
 		}
+		
+		// setting information for heatmap
+		if(cells[x][y].increaseTraffic()) {
+			// value of traffic overflow, so all cells are scaled
+			for (int i = 0; i < y_size; i++) {
+				for (int j = 0; j < x_size; j++) {
+					cells[j][i].scaleTraffic();
+				}
+			}
+		}
+		
 		if(x==x2) {
 			if(y2-y<0) {
 				g.CartMoveUp(cart_index, 40, 1);
