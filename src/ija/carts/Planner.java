@@ -13,17 +13,17 @@ import javafx.scene.control.Alert;
 public class Planner {
 	public ArrayList<Order> orders;
 	public Planner() {
-		orders = new ArrayList<Order>();
+		orders = new ArrayList<>();
 	}
 	
 	public Boolean dispatch(Goods[] outLoad, Order o) {
 		StringBuilder sb = new StringBuilder();
-		//sb.append("Dispatching:\n");
+		// sb.append("Dispatching:\n");
 		//System.out.println("Na výdajné okienko bola vyložená objednávka");
 		//System.out.println("obsahuje:");
 		for (Goods goods : outLoad) {
 			sb.append(goods.toString()).append("\n");
-			System.out.println(goods.toString());
+			System.out.println(goods);
 		}
 		//System.out.println("...to je všetko");
 		if(o==null) {
@@ -74,7 +74,7 @@ public class Planner {
 			StringBuilder sb = new StringBuilder();
 			for(int i = 0;i<orders.size();i++) {
 				if(i!=0) sb.append(" ; ");
-				sb.append("[ "+orders.get(i).toString()+"]");
+				sb.append("[ ").append(orders.get(i).toString()).append("]");
 			}
 			return sb.toString();
 		}
@@ -85,9 +85,9 @@ public class Planner {
 			BufferedReader br = new BufferedReader(new FileReader(string));
 			String line;
 			String name = null;
-			ArrayList<GoodsType> goods = new ArrayList<GoodsType>();
-			ArrayList<Integer> count = new ArrayList<Integer>();
-			boolean found = false;
+			ArrayList<GoodsType> goods = new ArrayList<>();
+			ArrayList<Integer> count = new ArrayList<>();
+			boolean found;
 			
 			while((line=br.readLine())!=null) {
 				line = line.trim();
@@ -98,8 +98,8 @@ public class Planner {
 					// Order file name of order (new order identifier)
 					System.out.println("new order "+line);
 					if(name!=null) {
-						GoodsType a1 [] = new GoodsType[goods.size()];
-						int a2 [] = new int[count.size()];
+						GoodsType[] a1 = new GoodsType[goods.size()];
+						int[] a2 = new int[count.size()];
 						for (int i = 0; i < a1.length; i++) {
 							a1[i] = goods.get(i);
 						}
@@ -149,8 +149,8 @@ public class Planner {
 				}
 			}
 			if(name!=null) {
-				GoodsType a1 [] = new GoodsType[goods.size()];
-				int a2 [] = new int[count.size()];
+				GoodsType[] a1 = new GoodsType[goods.size()];
+				int[] a2 = new int[count.size()];
 				for (int i = 0; i < a1.length; i++) {
 					a1[i] = goods.get(i);
 				}

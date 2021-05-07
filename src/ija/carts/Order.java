@@ -3,10 +3,10 @@ package ija.carts;
 import ija.warehouse.GoodsType;
 
 public class Order {
-	private int goodTypeCount[];
-	public int goodTypeCountExp[];
-	private int goodTypeCountAll[];
-	private GoodsType goodTypeObj[];
+	private int[] goodTypeCount;
+	public int[] goodTypeCountExp;
+	private int[] goodTypeCountAll;
+	private GoodsType[] goodTypeObj;
 	private String name;
 	
 	public Order(int [] count,GoodsType [] gt) {
@@ -60,11 +60,11 @@ public class Order {
 		}
 		if(!p) {
 			int [] a = new int[goodTypeCount.length+1];
-			for(int i = 0;i<goodTypeCount.length;i++)a[i]=goodTypeCount[i];
+			System.arraycopy(goodTypeCount, 0, a, 0, goodTypeCount.length);
 			a[goodTypeCount.length]=count;
 			goodTypeCount=a;
 			GoodsType [] b = new GoodsType[goodTypeObj.length+1];
-			for(int i = 0;i<goodTypeObj.length;i++)b[i]=goodTypeObj[i];
+			System.arraycopy(goodTypeObj, 0, b, 0, goodTypeObj.length);
 			b[goodTypeObj.length]=gt;
 			goodTypeObj=b;
 			int [] c = new int[getGoodTypeCountAll().length+1];
@@ -109,7 +109,7 @@ public class Order {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0;i<goodTypeCount.length;i++) {
 			if(i!=0) sb.append(",");
-			sb.append(goodTypeObj[i].toString()+" ("+Integer.toString(goodTypeCount[i])+")");
+			sb.append(goodTypeObj[i].toString()).append(" (").append(Integer.toString(goodTypeCount[i])).append(")");
 		}
 		return sb.toString();
 	}
@@ -122,7 +122,7 @@ public class Order {
 		return goodTypeCountExp;
 	}
 
-	public void setGoodTypeCountExp(int goodTypeCountExp[]) {
+	public void setGoodTypeCountExp(int[] goodTypeCountExp) {
 		this.goodTypeCountExp = goodTypeCountExp;
 	}
 
