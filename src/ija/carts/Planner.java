@@ -7,35 +7,47 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 public class Planner {
 	public ArrayList<Order> orders;
 	public Planner() {
-		orders = new ArrayList<Order>();
+		orders = new ArrayList<>();
 	}
 	
 	public Boolean dispatch(Goods[] outLoad, Order o) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Dispatching:\n");
+		// sb.append("Dispatching:\n");
 		//System.out.println("Na výdajné okienko bola vyložená objednávka");
 		//System.out.println("obsahuje:");
-		for (int i = 0; i < outLoad.length; i++) {
-			sb.append(outLoad[i].toString()+"\n");
-			System.out.println(outLoad[i].toString());
+		for (Goods goods : outLoad) {
+			sb.append(goods.toString()).append("\n");
+			System.out.println(goods);
 		}
 		//System.out.println("...to je všetko");
 		if(o==null) {
-			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
+			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
 		}else {
-			for (int i = 0; i < outLoad.length; i++) {
+			for (Goods goods : outLoad) {
 				for (int j = 0; j < o.getGoodTypeCount().length; j++) {
-					if(outLoad[i].get_type().equals(o.getGoodTypeObj()[j])) {
+					if (goods.get_type().equals(o.getGoodTypeObj()[j])) {
 						o.goodTypeCountExp[j]++;
 					}
 				}
 			}
+<<<<<<< HEAD
 			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
 			/*if(o.dispatched()==o.all()) {
+=======
+			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
+
+			// This is how to run the Alert
+			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
+
+			if(o.dispatched()==o.all()) {
+>>>>>>> branch 'master' of git@github.com:v3sino/ija2021.git
 				System.out.println("removing");
 				orders.remove(o);
 			}*/
@@ -67,7 +79,7 @@ public class Planner {
 			StringBuilder sb = new StringBuilder();
 			for(int i = 0;i<orders.size();i++) {
 				if(i!=0) sb.append(" ; ");
-				sb.append("[ "+orders.get(i).toString()+"]");
+				sb.append("[ ").append(orders.get(i).toString()).append("]");
 			}
 			return sb.toString();
 		}
@@ -78,9 +90,9 @@ public class Planner {
 			BufferedReader br = new BufferedReader(new FileReader(string));
 			String line;
 			String name = null;
-			ArrayList<GoodsType> goods = new ArrayList<GoodsType>();
-			ArrayList<Integer> count = new ArrayList<Integer>();
-			boolean found = false;
+			ArrayList<GoodsType> goods = new ArrayList<>();
+			ArrayList<Integer> count = new ArrayList<>();
+			boolean found;
 			
 			while((line=br.readLine())!=null) {
 				line = line.trim();
@@ -91,8 +103,8 @@ public class Planner {
 					// Order file name of order (new order identifier)
 					System.out.println("new order "+line);
 					if(name!=null) {
-						GoodsType a1 [] = new GoodsType[goods.size()];
-						int a2 [] = new int[count.size()];
+						GoodsType[] a1 = new GoodsType[goods.size()];
+						int[] a2 = new int[count.size()];
 						for (int i = 0; i < a1.length; i++) {
 							a1[i] = goods.get(i);
 						}
@@ -142,8 +154,8 @@ public class Planner {
 				}
 			}
 			if(name!=null) {
-				GoodsType a1 [] = new GoodsType[goods.size()];
-				int a2 [] = new int[count.size()];
+				GoodsType[] a1 = new GoodsType[goods.size()];
+				int[] a2 = new int[count.size()];
 				for (int i = 0; i < a1.length; i++) {
 					a1[i] = goods.get(i);
 				}

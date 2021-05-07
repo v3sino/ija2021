@@ -1,7 +1,13 @@
 package ija.gui;
 
+import ija.carts.Cart;
 import ija.carts.Destination;
-import javafx.animation.*;
+import ija.carts.Order;
+import ija.warehouse.MapInfo;
+import ija.warehouse.Shelf;
+import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -10,24 +16,19 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.swing.*;
-
-import ija.carts.Cart;
-import ija.warehouse.MapInfo;
-import ija.warehouse.Shelf;
 
 public class GUI extends Application{
 
@@ -71,7 +72,7 @@ public class GUI extends Application{
         primaryStage.setTitle("Warehouse");
         BorderPane layout = new BorderPane();
         BorderPane help_layout = new BorderPane();
-        Scene scene = new Scene(layout, 520, 580);
+        Scene scene = new Scene(layout, 520, 600);
         Scene help_scene = new Scene(help_layout, 450, 250);
 
         // -- SETTING HELP SCENE -- //
@@ -176,7 +177,6 @@ public class GUI extends Application{
 
         // Init objects
         InitWarehouse(scene);
-        //InitCarts(size);
 
         // ------- ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
@@ -243,6 +243,7 @@ public class GUI extends Application{
             indicators.add(pi);
         }
 
+
     	Timer tmr = new Timer(delay, e -> {
 
     	    // Opacity of displayed speed slowly fades out
@@ -273,10 +274,7 @@ public class GUI extends Application{
         });
         tmr.start();
 
-
-
     }
-
 
     /**
      * Function draws one sqare shelf and sets its actions
@@ -347,6 +345,11 @@ public class GUI extends Application{
         building.getChildren().add(cartText);
         cartText.setVisible(false);
 
+        Text cartName = new Text("Cart"+i);
+        cartName.setFill(Color.DIMGRAY);
+        building.getChildren().add(cartName);
+        cartName.setVisible(false);
+
         imageview.setOnMouseEntered(mouseEvent -> {
             String txt;
             try {
@@ -358,11 +361,16 @@ public class GUI extends Application{
             cartText.setText(txt);
             cartText.setVisible(true);
             building.getChildren().addAll(Objects.requireNonNull(createCartPath(i)));
+
+            cartName.setX(imageview.getX()+10);
+            cartName.setY(imageview.getY()-10);
+            cartName.setVisible(true);
         });
         imageview.setOnMouseExited(mouseEvent -> {
             cartText.setVisible(false);
             building.getChildren().removeAll(Objects.requireNonNull(createCartPath(i)));
             cartPath.clear();
+            cartName.setVisible(false);
         });
 
         carts.add(imageview);
@@ -382,10 +390,8 @@ public class GUI extends Application{
             ImageView displayedCart = carts.get(i);
 
             x = (double) ((int) displayedCart.getX()/40);
-            System.out.print("start: ["+x);
             x = x*size + (double)  size /2;
             y = (double) ((int) displayedCart.getY()/40);
-            System.out.println(", "+y+"]");
             y = y*size + (double)  size /2;
 
             for(Destination dest : observedCart.getPlanned_path()) {
@@ -418,31 +424,79 @@ public class GUI extends Application{
 
         // Vertical lines
         for (int i = 0; i <= scene.getWidth(); i+= GUI.size) {
-            Line line_ver = new Line(i, 0, i, scene.getHeight()-20);
+            Line line_ver = new Line(i, 0, i, scene.getHeight()-40);
             line_ver.setStroke(Color.GRAY);
 
             building.getChildren().add(line_ver);
 
         }
         // Horizontal lines
-        for (int i = 0; i <= scene.getHeight(); i+= GUI.size) {
+        for (int i = 0; i < scene.getHeight(); i+= GUI.size) {
             Line line_hor = new Line(0, i, scene.getWidth(), i);
             line_hor.setStroke(Color.GRAY);
 
             building.getChildren().add(line_hor);
         }
+
+        Rectangle wall = new Rectangle(0, scene.getHeight()-40, scene.getWidth(), 20);
+        wall.setFill(Color.DARKGRAY);
+        Rectangle door = new Rectangle(6*size+0.5, scene.getHeight()-42, size-1, 22);
+        door.setFill(Color.web("#f4f4f4"));
+        building.getChildren().addAll(wall, door);
     }
 
+
+    /**
+     * Function calculates actuall progress of orders and displays alert with details
+     */
     public void showProgress(){
+        // Progress of individual carts
+        GridPane cartProg = new GridPane();
+        cartProg.setVgap(10);
+        cartProg.setHgap(10);
+        int singleAll, singleDispatched = 0, i = 0;
+
+        // Progress of all carts
+        int all = 0, dispatched = 0;
+
+        // Count the progress of all carts but this probably won't work
+//        for ( Cart crt:cartsInfo){
+//            singleAll = 0;
+//            singleDispatched = 0;
+//
+//            for (Order ord : crt.planner.orders){
+//                all += ord.all();
+//                dispatched += ord.dispatched();
+//                singleAll += ord.all();
+//                singleDispatched += ord.dispatched();
+//            }
+//
+//            ProgressBar prog = new ProgressBar((double) singleDispatched/singleAll);
+//            Text cartName = new Text("Cart"+i);
+//            Text cartStat = new Text(singleDispatched+"/"+singleAll+" orders");
+//            cartProg.add(cartName, 0, i);
+//            cartProg.add(cartStat, 1, i);
+//            cartProg.add(prog, 2, i);
+//            i++;
+//        }
+
+        Cart crt = cartsInfo.get(0);
+        for (Order ord : crt.planner.orders){
+                all += ord.all();
+                dispatched += ord.dispatched();
+        }
+
         Alert progAlert = new Alert(Alert.AlertType.INFORMATION);
         progAlert.setTitle("Progress of orders");
-        progAlert.setHeaderText(null);
-        progAlert.setContentText(""); // TODO kolko objednavok chyba
+        progAlert.setHeaderText("Dispatched "+dispatched+"/"+all+" orders");
+        progAlert.setContentText(null);
 
-        ProgressBar prog = new ProgressBar(0);
+        ProgressBar prog = new ProgressBar((double) dispatched/all);
         prog.setPrefWidth(200);
-        prog.setPrefHeight(30);
+        prog.setMinHeight(60);
         progAlert.getDialogPane().setContent(prog);
+        progAlert.getDialogPane().setExpandableContent(cartProg);
+
         progAlert.show();
     }
 
@@ -692,11 +746,11 @@ public class GUI extends Application{
      * @param title title of alert
      * @param msg alert message
      */
-    public static void showAlert(Alert.AlertType type, String title, String msg){
+    public static void showAlert(Alert.AlertType type, String title, String header, String msg){
 
         Alert dispatch = new Alert(type);
         dispatch.setTitle(title);
-        dispatch.setHeaderText(null);
+        dispatch.setHeaderText(header);
         dispatch.setContentText(msg);
         dispatch.show();
     }
