@@ -2,7 +2,6 @@ package ija.gui;
 
 import ija.carts.Cart;
 import ija.carts.Destination;
-import ija.carts.Order;
 import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
 import javafx.animation.PathTransition;
@@ -11,13 +10,16 @@ import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -35,17 +37,19 @@ public class GUI extends Application{
     // -- Privates -- //
     private Group building; // the main scene group (contains shelves, carts, etc...)
     private ArrayList<SequentialTransition> cart_moves;
-    double deltaX; // delta of scene movement while mouse dragging
-    double deltaY;
+    private double deltaX; // delta of scene movement while mouse dragging
+    private double deltaY;
     private double speed = 0.75; // speed of one cart in seconds per square
     private double speedLabel = 1.0; // variable shows the speed ratio
     private static final int size = 40;
     private static ArrayList<Line> cartPath;
     int delay = 2000;
 
-
+    private ArrayList<Circle> heatMapItems;
+    private Rectangle hMap;
     List<Rectangle> shelves;
-    List<ImageView> carts;
+    private Scene scene;
+    private List<ImageView> carts;
     private static ArrayList<Shelf> shelvesInfo;
     private static ArrayList<Cart> cartsInfo;
 	private static MapInfo map;
@@ -72,7 +76,7 @@ public class GUI extends Application{
         primaryStage.setTitle("Warehouse");
         BorderPane layout = new BorderPane();
         BorderPane help_layout = new BorderPane();
-        Scene scene = new Scene(layout, 520, 600);
+        scene = new Scene(layout, 520, 600);
         Scene help_scene = new Scene(help_layout, 450, 250);
 
         // -- SETTING HELP SCENE -- //
@@ -92,13 +96,6 @@ public class GUI extends Application{
         help_layout.setBottom(g);
         // -- HELP SCENE SET -- //
 
-        // -- SETTING HEATMAP -- //
-        Rectangle hMap = new Rectangle(0, 0, scene.getWidth(), scene.getHeight());
-        hMap.setOpacity(0.4);
-        hMap.setFill(Color.LIGHTBLUE);
-        hMap.setVisible(false);
-        // -- HEATMAP SET -- //
-
         // -- MENU INITIALIZATION -- //
         Menu hlp_menu = new Menu("Help");
         MenuItem readme = new MenuItem("ReadMe");
@@ -117,16 +114,8 @@ public class GUI extends Application{
         // -- Cotrols menu -- //
         Menu play_menu = new Menu("Controls");
 
-        // This menu item restarts the cart initial positions and set default speed
-        MenuItem restart = new MenuItem("Reset Carts");
-        restart.setOnAction(actionEvent -> {
-            //InitCarts(size);
-            speed = 0.75;
-            speedLabel = 1.0;
-        });
-
         // Text displaying speed
-        Text speedTxt = new Text(scene.getWidth() -90, scene.getHeight()-35, Double.toString(speed));
+        Text speedTxt = new Text(scene.getWidth() -90, scene.getHeight()-50, Double.toString(speed));
         speedTxt.setOpacity(0.);
         speedTxt.setStyle("-fx-font: 16 arial;");
         building.getChildren().add(speedTxt);
@@ -157,12 +146,12 @@ public class GUI extends Application{
             speedTxt.setOpacity(1.);
         });
 
-        play_menu.getItems().addAll(speedUp, speedDown, restart);
+        play_menu.getItems().addAll(speedUp, speedDown);
 
         // -- Scene menu -- //
         Menu scene_menu = new Menu("Scene");
         MenuItem heatMap = new MenuItem("HeatMap");
-        heatMap.setOnAction(actionEvent -> hMap.setVisible(!hMap.isVisible()));
+        heatMap.setOnAction(actionEvent -> displayHMap());
         scene_menu.getItems().addAll(reset_scene, heatMap);
 
         // -- Progress menu -- //
@@ -176,7 +165,8 @@ public class GUI extends Application{
         // -- END OF MENU INITIALIZATION -- //
 
         // Init objects
-        InitWarehouse(scene);
+        InitWarehouse();
+        initHeatMap();
 
         // ------- ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
@@ -222,8 +212,6 @@ public class GUI extends Application{
         });
         // ------- END OF ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
-        building.getChildren().add(hMap);
-
         layout.setTop(menuBar);
         layout.setCenter(building);
 
@@ -245,7 +233,7 @@ public class GUI extends Application{
 
 
     	Timer tmr = new Timer(delay, e -> {
-
+            getHeatMap();
     	    // Opacity of displayed speed slowly fades out
     	    if (op.get() > 0.) {
                 op.updateAndGet(v -> v - 0.25);
@@ -274,6 +262,83 @@ public class GUI extends Application{
         });
         tmr.start();
 
+    }
+
+    /**
+     * Function initiates heat map objects
+     */
+    private void initHeatMap(){
+        double xpos, ypos;
+        heatMapItems = new ArrayList<>();
+
+        hMap = new Rectangle(0, 0, scene.getWidth(), scene.getHeight());
+        hMap.setOpacity(0.4);
+        hMap.setFill(Color.LIGHTBLUE);
+        hMap.setVisible(false);
+        building.getChildren().add(hMap);
+
+        for (int x = 0; x < map.x_size; x++) {
+            for (int y = 0; y < map.y_size; y++) {
+                if (map.cells[x][y].type != 1){
+                    xpos = x*size+(double)size/2;
+                    ypos = y*size+(double)size/2;
+                    Circle heat = new Circle(xpos, ypos, (double) size/2);
+                    heat.setOpacity(.6);
+                    heat.setVisible(false);
+                    building.getChildren().add(heat);
+                    heatMapItems.add(heat);
+                }
+
+            }
+        }
+
+    }
+
+    /**
+     * Function calculates intensity of positions on map
+     */
+    private void getHeatMap(){
+        int i = 0;
+        for (int x = 0; x < map.x_size; x++) {
+            for (int y = 0; y < map.y_size; y++) {
+                if (map.cells[x][y].type != 1) {
+                    System.out.println("position: [" + x + "," + y + "] index: " + i);
+                    System.out.println("size: " + heatMapItems.size());
+                    try {
+                        switch (map.cells[x][y].trafficIntensity) {
+                            case 1:
+                                heatMapItems.get(i).setFill(Color.rgb(117, 238, 70));
+                                break;
+                            case 2:
+                                heatMapItems.get(i).setFill(Color.rgb(255, 255, 0));
+                                break;
+                            case 3:
+                                heatMapItems.get(i).setFill(Color.rgb(255, 165, 0));
+                                break;
+                            case 4:
+                                heatMapItems.get(i).setFill(Color.rgb(255, 0, 0));
+                                break;
+                            default:
+                                heatMapItems.get(i).setFill(Color.LIGHTBLUE);
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Something went wrong");
+                    }
+                    i++;
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * Function displays map
+     */
+    private void displayHMap(){
+        hMap.setVisible(!hMap.isVisible());
+        for (Node hMapNode : heatMapItems)
+            hMapNode.setVisible(!hMapNode.isVisible());
     }
 
     /**
@@ -361,8 +426,16 @@ public class GUI extends Application{
             cartText.setVisible(true);
             building.getChildren().addAll(Objects.requireNonNull(createCartPath(i)));
 
-            cartName.setX(imageview.getX()+10);
-            cartName.setY(imageview.getY()-10);
+            if (imageview.getX() < scene.getWidth()-size)
+                cartName.setX(imageview.getX()+10);
+            else
+                cartName.setX(imageview.getX()-10-size);
+
+            if (imageview.getY()-10 > 0)
+                cartName.setY(imageview.getY()-10);
+            else
+                cartName.setY(imageview.getY()+10+size);
+
             cartName.setVisible(true);
         });
         imageview.setOnMouseExited(mouseEvent -> {
@@ -415,10 +488,8 @@ public class GUI extends Application{
 
     /**
      * Function draws lines for orientation in warehouse
-     *  @param scene scene in which warehouse will be drawn
-     *
      */
-    private void InitWarehouse(Scene scene){
+    private void InitWarehouse(){
         // Divides the scene into equally distributed rectangles with size of variable 'size'
 
         // Vertical lines
@@ -437,6 +508,7 @@ public class GUI extends Application{
             building.getChildren().add(line_hor);
         }
 
+        // Draw wall and output place
         Rectangle wall = new Rectangle(0, scene.getHeight()-40, scene.getWidth(), 20);
         wall.setFill(Color.DARKGRAY);
         Rectangle door = new Rectangle(6*size+0.5, scene.getHeight()-42, size-1, 22);

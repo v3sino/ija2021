@@ -1,14 +1,13 @@
 package ija.carts;
 
-import java.lang.Math;
-import java.util.ArrayList;
-import java.util.Collections;
-import ija.carts.Planner;
 import ija.warehouse.Goods;
+import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
 import ija.warehouse.Warehouse;
-import ija.warehouse.MapInfo;
 import javafx.scene.control.Alert;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Cart {
 	public Planner planner;
@@ -19,7 +18,7 @@ public class Cart {
 	public int x;
 	public int y;
 	private int maxLoad= 10;
-	public int load = 0;
+	public int load;
 	private MapInfo map;
 	private int waitTime;
 	private ArrayList<Goods> waitFor;
@@ -33,13 +32,13 @@ public class Cart {
 			x = place[0];
 			y = place[1];
 		}
-		destinations = new ArrayList<Destination>();
+		destinations = new ArrayList<>();
 		completedDestinations = 0;
 		wh = warehouse;
 		map=m;
 		waitTime=-1;
-		waitFor = new ArrayList<Goods>();
-		planned_path = new ArrayList<Destination>();
+		waitFor = new ArrayList<>();
+		planned_path = new ArrayList<>();
 		load = getCargo().size();
 	}
 	
@@ -99,7 +98,6 @@ public class Cart {
 					load=0;
 					this.findOrder();
 				}
-				return;
 			}
 			else {
 				this.plan();
@@ -301,10 +299,8 @@ public class Cart {
 					}
 					break;
 				}
-			}else{
-				// Path doesn't end on crossroad -> path is completed
-				return;
-			}
+			}// Path doesn't end on crossroad -> path is completed
+
 		}else {
 			last_x = x;
 			last_y = y;
@@ -438,7 +434,7 @@ public class Cart {
 	
 	private void findOrder() {
 		if(getDestinations().size()==0 || getDestinations().size()==completedDestinations) {
-			destinations=new ArrayList<Destination>();
+			destinations= new ArrayList<>();
 			Order order = planner.getNextOrder();
 			if(order==null) {
 				System.out.println("order is null");

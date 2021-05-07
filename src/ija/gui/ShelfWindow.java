@@ -43,7 +43,7 @@ public class ShelfWindow{
 
         // -- Add  back button
         Pane buttonPane = new Pane();
-        Button back = new Button("Späť");
+        Button back = new Button("Back");
         back.setPadding(new Insets(10, 20, 10, 20));
         back.setLayoutX(10);
         back.setLayoutY(-10);
