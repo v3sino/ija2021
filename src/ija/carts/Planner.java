@@ -40,18 +40,15 @@ public class Planner {
 				}
 			}
 			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
-
+			totalDispatched+=outLoad.length;
+			
 			// This is how to run the Alert
 			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
-
-			/*if(o.dispatched()==o.all()) {
-				System.out.println("removing");
+			
+			if(o.dispatched()==o.all()) {
+				//System.out.println("removing");
 				orders.remove(o);
-			}*/
-		}
-		totalDispatched=0;
-		for(Order ord : orders) {
-			totalDispatched+=ord.dispatched();
+			}
 		}
 		return true;
 		
