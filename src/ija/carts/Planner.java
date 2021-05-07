@@ -12,8 +12,8 @@ import javafx.scene.control.Alert;
 
 public class Planner {
 	public ArrayList<Order> orders;
-	public int totalCount = 0;
-	public int totalDispatched = 0;
+	private int totalCount = 0;
+	private int totalDispatched = 0;
 	public Planner() {
 		orders = new ArrayList<>();
 	}
@@ -171,5 +171,13 @@ public class Planner {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public int getTotalCount(){
+		return totalCount;
+	}
+
+	public int getTotalDispatched(){
+		return totalDispatched;
 	}
 }

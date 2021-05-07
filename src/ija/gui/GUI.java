@@ -349,7 +349,6 @@ public class GUI extends Application{
         cartName.setFill(Color.DIMGRAY);
         building.getChildren().add(cartName);
         cartName.setVisible(false);
-
         imageview.setOnMouseEntered(mouseEvent -> {
             String txt;
             try {
@@ -450,52 +449,19 @@ public class GUI extends Application{
      * Function calculates actuall progress of orders and displays alert with details
      */
     public void showProgress(){
-        // Progress of individual carts
-        GridPane cartProg = new GridPane();
-        cartProg.setVgap(10);
-        cartProg.setHgap(10);
-        int singleAll, singleDispatched = 0, i = 0;
-
-        // Progress of all carts
-        int all = 0, dispatched = 0;
-
-        // Count the progress of all carts but this probably won't work
-//        for ( Cart crt:cartsInfo){
-//            singleAll = 0;
-//            singleDispatched = 0;
-//
-//            for (Order ord : crt.planner.orders){
-//                all += ord.all();
-//                dispatched += ord.dispatched();
-//                singleAll += ord.all();
-//                singleDispatched += ord.dispatched();
-//            }
-//
-//            ProgressBar prog = new ProgressBar((double) singleDispatched/singleAll);
-//            Text cartName = new Text("Cart"+i);
-//            Text cartStat = new Text(singleDispatched+"/"+singleAll+" orders");
-//            cartProg.add(cartName, 0, i);
-//            cartProg.add(cartStat, 1, i);
-//            cartProg.add(prog, 2, i);
-//            i++;
-//        }
-
         Cart crt = cartsInfo.get(0);
-        for (Order ord : crt.planner.orders){
-                all += ord.all();
-                dispatched += ord.dispatched();
-        }
+        int all = crt.planner.getTotalCount();
+        int dispatched = crt.planner.getTotalDispatched();
 
         Alert progAlert = new Alert(Alert.AlertType.INFORMATION);
         progAlert.setTitle("Progress of orders");
-        progAlert.setHeaderText("Dispatched "+dispatched+"/"+all+" orders");
+        progAlert.setHeaderText("Dispatched "+dispatched+"/"+all+" products");
         progAlert.setContentText(null);
 
         ProgressBar prog = new ProgressBar((double) dispatched/all);
         prog.setPrefWidth(200);
         prog.setMinHeight(60);
         progAlert.getDialogPane().setContent(prog);
-        progAlert.getDialogPane().setExpandableContent(cartProg);
 
         progAlert.show();
     }
