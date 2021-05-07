@@ -35,10 +35,10 @@ public class Planner {
 				}
 			}
 			JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
-			if(o.dispatched()==o.all()) {
+			/*if(o.dispatched()==o.all()) {
 				System.out.println("removing");
 				orders.remove(o);
-			}
+			}*/
 		}
 		return true;
 		
@@ -154,7 +154,6 @@ public class Planner {
 			}
 			br.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

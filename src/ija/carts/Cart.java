@@ -3,7 +3,6 @@ package ija.carts;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Collections;
-import javax.swing.JOptionPane;
 import ija.carts.Planner;
 import ija.warehouse.Goods;
 import ija.warehouse.Shelf;
