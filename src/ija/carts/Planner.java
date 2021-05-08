@@ -21,6 +21,12 @@ public class Planner {
 		orders = new ArrayList<>();
 	}
 	
+	/**
+	 * provides expedition of goods and fulfills the order
+	 * @param outLoad list of goods from cart
+	 * @param o given order
+	 * @return true if success
+	 */
 	public Boolean dispatch(Goods[] outLoad, Order o) {
 		StringBuilder sb = new StringBuilder();
 		// sb.append("Dispatching:\n");
@@ -57,6 +63,9 @@ public class Planner {
 		
 	}
 
+	/**
+	 * @return first Order, which is not already planned or null if no Order to be planned 
+	 */
 	public Order getNextOrder() {
 		//if(orders.size()!=0) {
 		//	return orders.remove(0);
@@ -69,6 +78,10 @@ public class Planner {
 		return null;
 	} 
 
+	/**
+	 * adds next order to the last position of the list of Orders
+	 * @param order
+	 */
 	public void addOrder(Order order) {
 		orders.add(order);
 		totalCount+=order.all();
@@ -87,6 +100,11 @@ public class Planner {
 		}
 	}
 	
+	/**
+	 * Reads list of Orders from file
+	 * @param string
+	 * @param types
+	 */
 	public void readOrderFromFile(String string, ArrayList<GoodsType> types) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(string));

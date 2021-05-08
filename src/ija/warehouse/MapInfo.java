@@ -123,30 +123,6 @@ public class MapInfo {
 	 * @param gui specifies gui, from with will be called functions drawing objects on map (carts, shelves)
 	 */
 	public void readShelfToGui(GUI gui){
-		/*
-		g=gui;
-		int shelfLen = 1; // Default length of shelf
-		int i; // Row iterator
-		int cnt = 0; // Counter of shelves used as shelf identificator
-		ArrayList<Integer> placedShelves = new ArrayList<>();
-
-		for(int y = 0; y<y_size;y++){
-			for(int x = 0; x<x_size;x++) {
-				if(cells[x][y].type==1 && !placedShelves.contains(y)) {
-					//System.out.println("Shelf on ["+x+","+y+"]")
-					i = y+1;
-					while(cells[x][i].type==1){
-						placedShelves.add(i);
-						shelfLen++;
-						i++;
-					}
-					cnt++;
-					gui.PutShelf(y+1,x+1, 40, cnt, shelfLen);
-
-					shelfLen = 1;
-				}
-			}
-		}*/
 		g=gui;
 		for(int y = 0; y<y_size;y++){
 			for(int x = 0; x<x_size;x++) {
@@ -157,7 +133,13 @@ public class MapInfo {
 			}
 		}
 	}
-	
+
+	/**
+	 * Function read map from file specified parameter 
+	 * Example call from GUI: map.readCartToGui(this);
+	 * @warning !!! pixel size of shelf is used 40, no value readable from GUI
+	 * @param gui specifies gui, from with will be called functions drawing objects on map (carts, shelves)
+	 */
 	public void readCartToGui(GUI gui){
 		g=gui;
 		for(int y = 0; y<y_size;y++){

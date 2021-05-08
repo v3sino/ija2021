@@ -46,6 +46,9 @@ public class Cart {
 		load = getCargo().size();
 	}
 	
+	/**
+	 * function triggers cart to do something (moving, loading, uloading, planning path)
+	 */
 	public void move() {
 		map.printMap();
 		/// Loading
@@ -68,7 +71,6 @@ public class Cart {
 			this.printPlanned_path();
 			if(map.cells[x][y].crossroad) {
 				// cart reached crossroad, path to next crossroad is planned, path to following crossroad is been planning
-				// TODO .............
 				this.plan();
 			}
 			
@@ -118,6 +120,13 @@ public class Cart {
 		
 	}
 	
+	/**
+	 * function called only from function plan!!!
+	 * finds next free cell, adds actual position to planned_path or if no free cell is near, Destination with x,y = -1,-1
+	 * @param last_x 
+	 * @param last_y
+	 * @return
+	 */
 	private Destination recursivePlanner(int last_x, int last_y) {
 		if(Math.abs(getDestinations().get(completedDestinations).x-last_x)==1 && getDestinations().get(completedDestinations).y==last_y && getDestinations().get(completedDestinations).task==2) {
 			map.reservePath(last_x, last_y);
@@ -448,7 +457,9 @@ public class Cart {
 		}
 	}
 
-	
+	/**
+	 * function sets next order or fills array of Orders
+	 */
 	private void findOrder() {
 		if(getDestinations().size()==0 || getDestinations().size()==completedDestinations) {
 			destinations= new ArrayList<>();
@@ -512,6 +523,9 @@ public class Cart {
 		}
 	}
 	
+	/**
+	 * debug print
+	 */
 	private void printDestinations() {
 		System.out.println("Destinations:");
 		for(Destination dest : getDestinations()) {
@@ -519,6 +533,12 @@ public class Cart {
 		}
 	}
 
+	/**
+	 * function sets time of loading and setups goods to be add to cart
+	 * @param good 
+	 * @param subshelf_h index of subshelf, from which is the good, time to load from higher subshelf takes more time 
+	 * @return 
+	 */
 	private boolean load(Goods good, int subshelf_h) {
 		if(load<getMaxLoad()) {
 			waitTime=subshelf_h+1;

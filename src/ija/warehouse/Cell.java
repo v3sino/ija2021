@@ -10,7 +10,7 @@ public class Cell {
 						/// for block 0 means permanent, not 0 means temporary
 	public boolean crossroad = false;
 	public int trafficIntensity = 0;
-	private int maxTrafficIntensity = 5; /// to scale trafficIntensity to color 0-255 should traficIntensity be multiplied by 32
+	private int maxTrafficIntensity = 5;
 	public Cell(char t,int i) {
 		type=t;
 		index = i;

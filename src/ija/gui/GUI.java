@@ -29,7 +29,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
-
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -9,12 +9,17 @@ import java.util.Arrays;
  * @author xbabac02
  */
 public class Order {
-	private int[] goodTypeCount;
-	public int[] goodTypeCountExp;
-	private int[] goodTypeCountAll;
-	private GoodsType[] goodTypeObj;
-	private String name;
+	private int[] goodTypeCount; //count of types to be plant by carts
+	public int[] goodTypeCountExp; //count of types which were already dispatched
+	private int[] goodTypeCountAll; //count of types to be dispatched (number given by customer)
+	private GoodsType[] goodTypeObj; //types corresponding to counts 
+	private String name; // name of the order
 	
+	/**
+	 * constructor with given arrays
+	 * @param count number of goods of given type
+	 * @param gt given type
+	 */
 	public Order(int [] count,GoodsType [] gt) {
 		this.goodTypeCount=count;
 		this.goodTypeCountAll=count;
@@ -22,6 +27,11 @@ public class Order {
 		this.goodTypeObj=gt;
 	}
 	
+	/**
+	 * constructor with one value in each parameter
+	 * @param count number of goods of given type
+	 * @param gt given type
+	 */
 	public Order(int count,GoodsType gt) {
 		goodTypeCount= new int [1];
 		setGoodTypeCountExp(new int [1]);
@@ -33,6 +43,12 @@ public class Order {
 		goodTypeObj[0] = gt;
 	}
 	
+	/**
+	 * constructor with given arrays
+	 * @param count number of goods of given type
+	 * @param gt given type
+	 * @param name name of the order (better identification of orders)
+	 */
 	public Order(int[] count, GoodsType[] gt, String name) {
 		this.name = name;
 		this.goodTypeCount=count;
@@ -41,7 +57,7 @@ public class Order {
 		Arrays.fill(getGoodTypeCountExp(), 0);
 		this.goodTypeObj=gt;
 	}
-
+	
 	public int[] getGoodTypeCount() {
 		return goodTypeCount;
 	}
@@ -50,6 +66,11 @@ public class Order {
 		return goodTypeObj;
 	}
 	
+	/**
+	 * Adds one gootType to the order, goodType can already be a part of Order  
+	 * @param count number of goods
+	 * @param gt type of goods
+	 */
 	public void addToOrder(int count,GoodsType gt) {
 		boolean p = false;
 		for(int i = 0;i<goodTypeObj.length;i++) {
@@ -80,6 +101,9 @@ public class Order {
 		}
 	}
 	
+	/**
+	 * @return true if there is no good to be planned be carts
+	 */
 	public boolean isEmpty() {
 		boolean r = true;
 		for (int j : goodTypeCount) {
@@ -132,6 +156,9 @@ public class Order {
 		return goodTypeCountAll;
 	}
 
+	/**
+	 * @return total count of dispatched goods from this order
+	 */
 	public int dispatched() {
 		int sum = 0;
 		for (int j : goodTypeCountExp) {
@@ -140,6 +167,9 @@ public class Order {
 		return sum;
 	}
 
+	/**
+	 * @return total count of goods to be dispatched
+	 */
 	public int all() {
 		int sum = 0;
 		for (int j : goodTypeCountAll) {
