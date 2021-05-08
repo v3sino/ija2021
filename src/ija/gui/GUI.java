@@ -54,9 +54,12 @@ public class GUI extends Application{
     private double speedLabel = 1.0; // variable shows the speed ratio
     private static final int size = 40;
     private static ArrayList<Line> cartPath;
+
     int delay = 2000;
     int buildingWidth = 520;
     int buildingHeight = 560;
+
+    boolean puttingBarrier = false;
 
     private ArrayList<Circle> heatMapItems;
     private Rectangle hMap;
@@ -224,7 +227,10 @@ public class GUI extends Application{
         SignButton addOrder = new SignButton("+");
         StackPane newOrderSign = addOrder.toStackPane();
 
-        controlButtons.getChildren().addAll(speedSign, pauseButton, speedDownSign, newOrderSign);
+        SignButton barrier = new SignButton("x");
+        StackPane barrierSign = barrier.toStackPane();
+
+        controlButtons.getChildren().addAll(speedSign, pauseButton, speedDownSign, newOrderSign, barrierSign);
         VBox.setMargin(newOrderSign, new Insets(30, 0,0,0));
         // -- END OF CONTROL BUTTONS -- //
 
@@ -324,6 +330,24 @@ public class GUI extends Application{
 
         addOrder.getButton().setOnAction(actionEvent -> addNewOrder());
         addOrder.getTextSign().setOnMouseClicked(mouseEvent -> addOrder.getButton().fire());
+
+        barrier.getButton().setOnAction(actionEvent -> {
+            building.setOpacity(.6);
+            puttingBarrier = true;
+        });
+        barrierSign.setOnMouseClicked(mouseEvent -> barrier.getButton().fire());
+
+        building.setOnMouseClicked(mouseEvent -> {
+            if (puttingBarrier){
+                int x = (int) mouseEvent.getX()/size;
+                int y = (int) mouseEvent.getY()/size;
+                System.out.println("##### Putting on: "+x+", "+y);
+                putBarrier(x, y);
+                building.setOpacity(1);
+                puttingBarrier = false;
+            }
+        });
+
     }
 
     /**
@@ -624,6 +648,20 @@ public class GUI extends Application{
         building.getChildren().add(imageview);
     }
 
+    /**
+     * Function puts barrier on a square with given coordinates
+     * @param x x-coordinate of the square
+     * @param y y-coordinate of the square
+     */
+    public void putBarrier(int x, int y){
+        Line line1 = new Line(x*size, y*size, x*size+size, y*size+size);
+        Line line2 = new Line(x*size+size, y*size, x*size, y*size+size);
+
+        line1.setStroke(Color.GRAY);
+        line2.setStroke(Color.GRAY);
+
+        building.getChildren().addAll(line1, line2);
+    }
     /**
      * Finction creates path of a cart
      *
