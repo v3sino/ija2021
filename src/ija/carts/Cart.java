@@ -9,6 +9,10 @@ import javafx.scene.control.Alert;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Cart in warehouse (movement, product handling, pathing)
+ * @author xbabac02
+ */
 public class Cart {
 	public Planner planner;
 	private ArrayList<Goods> cargo = new ArrayList<Goods>();

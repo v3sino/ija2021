@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Graphical interface
+ * @author xbegan02
+ */
 public class GUI extends Application{
 
     // -- Privates -- //
@@ -240,12 +244,10 @@ public class GUI extends Application{
             }
 
             System.out.println("Tick\n");
-            //cartsInfo.get(0).move();
-            //cartsInfo.get(1).move();
             for(Cart cart : cartsInfo) {
             	cart.move();
             }
-            playAnimation(); // -- changed name of timer() function becase it was bullshiting us
+            playAnimation();
 
             // Small loading indicator while cart is laoding goods
             for (ImageView cart:carts) {
@@ -579,7 +581,6 @@ public class GUI extends Application{
 
     /**
      * Function rotates and moves cart down in given number of moves (rectangles)
-     * @author xbabac02
      * @param cart_index index of cart which is to be moved
      * @param size size of one map-rectangle
      * @param moves number of moves
@@ -628,7 +629,6 @@ public class GUI extends Application{
 
     /**
      * Function moves cart up in given number of moves (rectangles)
-     * @author xbabac02
      * @param cart_index index of cart which is to be moved
      * @param size size of one map-rectangle
      * @param moves number of moves
@@ -677,7 +677,6 @@ public class GUI extends Application{
     
     /**
      * Function rotates and moves cart in the right direction of a given number of moves (rectangles)
-     * @author xbabac02
      * @param cart_index index of cart which is to be moved
      * @param size size of one map-rectangle
      * @param moves number of moves
@@ -726,7 +725,6 @@ public class GUI extends Application{
     
     /**
      * Function rotates and moves cart in the left direction of a given number of moves (rectangles)
-     * @author xbabac02
      * @param cart_index index of cart which is to be moved
      * @param size size of one map-rectangle
      * @param moves number of moves
@@ -739,7 +737,6 @@ public class GUI extends Application{
     
     /**
      * Function handles cart movements.
-     * Probably will be called every xy seconds
      */
     public void playAnimation(){
         // Create move sequence for each cart

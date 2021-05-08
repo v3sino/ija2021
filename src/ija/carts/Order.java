@@ -4,6 +4,10 @@ import ija.warehouse.GoodsType;
 
 import java.util.Arrays;
 
+/**
+ * Order - goods to be dispached from warehouse
+ * @author xbabac02
+ */
 public class Order {
 	private int[] goodTypeCount;
 	public int[] goodTypeCountExp;

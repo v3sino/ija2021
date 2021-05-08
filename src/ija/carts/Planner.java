@@ -9,7 +9,10 @@ import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-
+/**
+ * Planner handles all the orders
+ * @author xbabac02
+ */
 public class Planner {
 	public ArrayList<Order> orders;
 	private int totalCount = 0;

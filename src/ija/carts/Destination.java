@@ -2,6 +2,10 @@ package ija.carts;
 
 import ija.warehouse.GoodsType;
 
+/**
+ * Destination of one cart
+ * @author xbabac02
+ */
 public class Destination {
 
 	public int x;
