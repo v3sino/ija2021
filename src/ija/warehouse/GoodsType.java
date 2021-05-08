@@ -57,10 +57,7 @@ public class GoodsType {
      * Are there any products of this type ?
      */
     public boolean empty() {
-        if (this.pocet == 0){
-            return true;
-        }
-        return false;
+        return this.pocet == 0;
     }
 
     public int size() {

@@ -3,12 +3,13 @@ package ija.gui;
 import ija.warehouse.Shelf;
 import ija.warehouse.SubShelf;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -16,6 +17,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Random;
+
 /**
  * Interface of one shelf
  * @author xbegan02
@@ -44,15 +46,31 @@ public class ShelfWindow{
             }
         }
 
-        // -- Add  back button
-        Pane buttonPane = new Pane();
+        // -- Add back button
+        HBox buttonPane = new HBox();
+        buttonPane.setPadding(new Insets(10, 10,10,10));
+
         Button back = new Button("Back");
         back.setPadding(new Insets(10, 20, 10, 20));
-        back.setLayoutX(10);
-        back.setLayoutY(-10);
-        buttonPane.getChildren().add(back);
-
         back.setOnAction(actionEvent -> primaryStage.close());
+
+        // -- Add goods button
+        Button add = new Button("Resupply");
+        add.setPadding(new Insets(10, 20, 10, 20));
+        add.setOnAction(actionEvent -> {
+            GUI.addGoods(shelfInfo);
+            layout.getChildren().removeIf(node -> node instanceof Rectangle);
+            if (shelfInfo != null) {
+                int goodsNum = shelfInfo.numberOfNonEmptyShelves();
+                for (int i = 0; i < goodsNum; i++) {
+                    generateGoods(i, layout, shelfInfo.getSubShelf(i));
+                }
+            }
+        });
+        HBox.setMargin(add, new Insets(0, 0, 0,shelf.getWidth()-190));
+
+
+        buttonPane.getChildren().addAll(back, add);
         layout.setBottom(buttonPane);
 
         // -- Display stage
@@ -105,5 +123,6 @@ public class ShelfWindow{
             goods.setOpacity(.85);
         });
     }
+
 
 }

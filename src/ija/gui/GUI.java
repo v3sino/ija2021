@@ -3,6 +3,7 @@ package ija.gui;
 import ija.carts.Cart;
 import ija.carts.Destination;
 import ija.carts.Order;
+import ija.warehouse.Goods;
 import ija.warehouse.GoodsType;
 import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
@@ -80,7 +81,7 @@ public class GUI extends Application{
     	map = mapInfo;
         goodsTypes = gTypes;
 	}
-    
+
     public void start(Stage primaryStage) throws Exception{
         building = new Pane();
         building.setPrefSize(560, 600);
@@ -273,7 +274,6 @@ public class GUI extends Application{
             indicators.add(pi);
         }
 
-
     	Timer tmr = new Timer(delay, e -> {
             // Actualize HeatMap
     	    getHeatMap();
@@ -405,6 +405,64 @@ public class GUI extends Application{
                 GoodsType newGoods = new GoodsType(orderAssign.getValue());
                 Order newOrder = new Order(Integer.parseInt(orderAssign.getKey()), newGoods);
                 cartsInfo.get(0).planner.addOrder(newOrder);
+            }
+        });
+    }
+
+    /**
+     * Function for adding new goods into a shelf
+     */
+    public static void addGoods(Shelf shelf){
+        // Init dialog
+        Dialog<Pair<String, String>> order = new Dialog<>();
+        order.setTitle("Resupply");
+        order.setHeaderText("Add new goods:");
+
+        // Pane for items
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        // Text field for number
+        Spinner<Integer> number = new Spinner<>(1, 50, 1);
+        number.setEditable(true);
+        number.setPrefSize(75, 25);
+
+        ChoiceBox<String> goodsType = new ChoiceBox<>();
+        ArrayList<String> goodsNames = new ArrayList<>();
+        for (GoodsType gt : goodsTypes){
+            goodsNames.add(gt.getName());
+        }
+        goodsType.getItems().addAll(goodsNames);
+
+        // -- Set buttons -- //
+        ButtonType orderButtonType = new ButtonType("Add Goods", ButtonBar.ButtonData.OK_DONE);
+        order.getDialogPane().lookupButton(orderButtonType);
+        order.getDialogPane().getButtonTypes().addAll(orderButtonType, ButtonType.CANCEL);
+
+        grid.add(new Label("Quantity:"), 0, 0);
+        grid.add(number, 1, 0);
+        grid.add(new Label("Type:"), 0, 1);
+        grid.add(goodsType, 1, 1);
+
+        order.getDialogPane().setContent(grid);
+
+        order.setResultConverter(dialogButton -> {
+            if (dialogButton == orderButtonType) {
+                return new Pair<>(number.getValue().toString(), goodsType.getValue());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = order.showAndWait();
+
+        result.ifPresent(orderAssign -> {
+            if (orderAssign.getValue() != null) {
+                Goods newGoods = new Goods(new GoodsType(orderAssign.getValue()));
+                for (int i = 0; i < Integer.parseInt(orderAssign.getKey()); i++)
+                    shelf.put(newGoods);
+
             }
         });
     }

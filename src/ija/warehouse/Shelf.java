@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author xzabka04
  */
 public class Shelf {
-    private final ArrayList<SubShelf> subshelves = new ArrayList<SubShelf>();
+    private final ArrayList<SubShelf> subshelves = new ArrayList<>();
 
     public Shelf() {
         SubShelf sub1 = new SubShelf();
