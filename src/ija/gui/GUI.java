@@ -12,7 +12,6 @@ import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -30,6 +29,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,36 +90,12 @@ public class GUI extends Application{
         shelves = new ArrayList<>();
         cartPath= new ArrayList<>();
 
-
         // Setting scene
         primaryStage.setTitle("Warehouse");
         BorderPane layout = new BorderPane();
-        BorderPane help_layout = new BorderPane();
         scene = new Scene(layout, 570, 600);
-        Scene help_scene = new Scene(help_layout, 450, 250);
-
-        // -- SETTING HELP SCENE -- //
-        StackPane g = new StackPane();
-        Button back = new Button("Späť");
-        back.setOnAction(actionEvent -> primaryStage.setScene(scene));
-        g.getChildren().add(back);
-        g.setAlignment(Pos.CENTER);
-        TextArea help_text = new TextArea();
-        help_text.setWrapText(true);
-        help_text.setEditable(false);
-
-        String help = "Základná funkcionalita pre GUI projekt IJA:\n - zobrazenie skladu \n - približovanie skladu pomocou kolieska na myši \n - posúvanie zobrazenia skladu buď pomocou 'wasd' alebo stlačením a ťahaním pravého tlačidla myši \n - uvedenie zobrazenia do pôvodnej podoby pomocou Help->Reset scene \n - zvládanie pohybu vozíkmi na základe príkazov k pohubu (ukážka Play->Animation1 potom Play->Animation2) \n - reset vozíkov do pôvodnej podoby cez Play->Reset \n - zobrazenie okna s regálom po kliknutí na ľubovoľný regál";
-        help_text.setText(help);
-
-        help_layout.setCenter(help_text);
-        help_layout.setBottom(g);
-        // -- HELP SCENE SET -- //
 
         // -- MENU INITIALIZATION -- //
-        Menu hlp_menu = new Menu("Help");
-        MenuItem readme = new MenuItem("ReadMe");
-        readme.setOnAction(actionEvent -> primaryStage.setScene(help_scene));
-
         MenuItem reset_scene = new MenuItem("Reset scene");
         reset_scene.setOnAction(actionEvent -> {
             building.setTranslateX(0);
@@ -127,8 +103,6 @@ public class GUI extends Application{
             building.setScaleX(1);
             building.setScaleY(1);
         });
-
-        //hlp_menu.getItems().addAll(readme);
 
         // -- Cotrols menu -- //
         Menu play_menu = new Menu("Controls");
