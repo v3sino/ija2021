@@ -79,7 +79,7 @@ public class Warehouse {
 
         planner.readOrderFromFile("data/Orders1.txt",types);
         GUI g = new GUI();
-        g.initIfo(shelves, map, carts);
+        g.initIfo(shelves, map, carts, types);
 	    g.main();
     }
     /**

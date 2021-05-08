@@ -2,57 +2,70 @@ package ija.gui;
 
 import ija.carts.Cart;
 import ija.carts.Destination;
+import ija.carts.Order;
+import ija.warehouse.GoodsType;
 import ija.warehouse.MapInfo;
 import ija.warehouse.Shelf;
 import javafx.animation.PathTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Graphical interface
- * @author xbegan02
+ *  Main graphic interface of application
+ * @author xbegan01
  */
+
 public class GUI extends Application{
 
     // -- Privates -- //
-    private Group building; // the main scene group (contains shelves, carts, etc...)
+    private Pane building; // the main scene group (contains shelves, carts, etc...)
     private ArrayList<SequentialTransition> cart_moves;
     private double deltaX; // delta of scene movement while mouse dragging
     private double deltaY;
     private double speed = 0.75; // speed of one cart in seconds per square
+    private final double speedDelta = speed-(speed*0.75);
     private double speedLabel = 1.0; // variable shows the speed ratio
     private static final int size = 40;
     private static ArrayList<Line> cartPath;
     int delay = 2000;
+    int buildingWidth = 520;
+    int buildingHeight = 560;
 
     private ArrayList<Circle> heatMapItems;
     private Rectangle hMap;
     List<Rectangle> shelves;
     private Scene scene;
     private List<ImageView> carts;
+
+    // From warehouse
+    private static ArrayList<GoodsType> goodsTypes;
     private static ArrayList<Shelf> shelvesInfo;
     private static ArrayList<Cart> cartsInfo;
 	private static MapInfo map;
@@ -62,24 +75,27 @@ public class GUI extends Application{
      * @param shelvesInf list of shelves with data
      * @param mapInfo map structure with the map description
      */
-    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo, ArrayList<Cart> cartsInf) {
+    public void initIfo(ArrayList<Shelf> shelvesInf, MapInfo mapInfo, ArrayList<Cart> cartsInf, ArrayList<GoodsType> gTypes) {
         shelvesInfo = shelvesInf;
         cartsInfo = cartsInf;
     	map = mapInfo;
+        goodsTypes = gTypes;
 	}
     
     public void start(Stage primaryStage) throws Exception{
-        building = new Group();
+        building = new Pane();
+        building.setPrefSize(560, 600);
         cart_moves = new ArrayList<>();
         carts = new ArrayList<>();
         shelves = new ArrayList<>();
         cartPath= new ArrayList<>();
 
+
         // Setting scene
         primaryStage.setTitle("Warehouse");
         BorderPane layout = new BorderPane();
         BorderPane help_layout = new BorderPane();
-        scene = new Scene(layout, 520, 600);
+        scene = new Scene(layout, 570, 600);
         Scene help_scene = new Scene(help_layout, 450, 250);
 
         // -- SETTING HELP SCENE -- //
@@ -112,7 +128,7 @@ public class GUI extends Application{
             building.setScaleY(1);
         });
 
-        hlp_menu.getItems().addAll(readme);
+        //hlp_menu.getItems().addAll(readme);
 
         // -- Cotrols menu -- //
         Menu play_menu = new Menu("Controls");
@@ -164,7 +180,7 @@ public class GUI extends Application{
         progress_menu.getItems().addAll(progress);
 
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(hlp_menu, play_menu, scene_menu, progress_menu);
+        menuBar.getMenus().addAll(play_menu, scene_menu, progress_menu);
         // -- END OF MENU INITIALIZATION -- //
 
         // Init objects
@@ -215,8 +231,32 @@ public class GUI extends Application{
         });
         // ------- END OF ACTIONS WITH MOVING AND SCALING THE SCENE ------- //
 
+        // -- CONTROL BUTTONS -- //
+        VBox controlButtons = new VBox();
+        controlButtons.setSpacing(20);
+        controlButtons.setPadding(new Insets(20, 10,10,10));
+
+        SignButton pauseSB = new SignButton("||");
+        StackPane pauseButton = pauseSB.toStackPane();
+
+        SignButton speedSB = new SignButton("<");
+        StackPane speedSign = speedSB.toStackPane();
+        speedSB.getTextSign().setRotate(90);
+
+        SignButton speedDownSB = new SignButton(">");
+        StackPane speedDownSign = speedDownSB.toStackPane();
+        speedDownSB.getTextSign().setRotate(90);
+
+        SignButton addOrder = new SignButton("+");
+        StackPane newOrderSign = addOrder.toStackPane();
+
+        controlButtons.getChildren().addAll(speedSign, pauseButton, speedDownSign, newOrderSign);
+        VBox.setMargin(newOrderSign, new Insets(30, 0,0,0));
+        // -- END OF CONTROL BUTTONS -- //
+
         layout.setTop(menuBar);
         layout.setCenter(building);
+        layout.setRight(controlButtons);
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -236,7 +276,9 @@ public class GUI extends Application{
 
 
     	Timer tmr = new Timer(delay, e -> {
-            getHeatMap();
+            // Actualize HeatMap
+    	    getHeatMap();
+
     	    // Opacity of displayed speed slowly fades out
     	    if (op.get() > 0.) {
                 op.updateAndGet(v -> v - 0.25);
@@ -266,6 +308,106 @@ public class GUI extends Application{
         });
         tmr.start();
 
+        // -- Actions of buttons on the right panel -- //
+        pauseSB.getButton().setOnAction(actionEvent -> {
+            if (tmr.isRunning()){
+                pauseSB.getTextSign().setText(">");
+                pauseSB.getTextSign().setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+                tmr.stop();
+            }
+            else{
+                pauseSB.getTextSign().setText("||");
+                pauseSB.getTextSign().setFont(Font.font("Verdana", FontWeight.BOLD, 16));
+                tmr.start();
+            }
+        });
+        pauseButton.setOnMouseClicked(mouseEvent -> pauseSB.getButton().fire());
+
+        speedSB.getButton().setOnAction(actionEvent -> {
+            if (speed - 0.25 >0) {
+                speed -= speedDelta;
+                speedLabel += 0.25;
+            }
+
+            String speedStr = "Speed: " + speedLabel;
+            speedTxt.setText(speedStr);
+            op.set(1.);
+            speedTxt.setOpacity(1.);
+        });
+        speedSign.setOnMouseClicked(mouseEvent -> speedSB.getButton().fire());
+
+        speedDownSB.getButton().setOnAction(actionEvent -> {
+            if (speedLabel - 0.25 > 0) {
+                speed += speedDelta;
+                speedLabel -= 0.25;
+            }
+
+            String speedStr = "Speed: " + speedLabel;
+            speedTxt.setText(speedStr);
+            op.set(1.);
+            speedTxt.setOpacity(1.);
+        });
+        speedDownSign.setOnMouseClicked(mouseEvent -> speedDownSB.getButton().fire());
+
+        addOrder.getButton().setOnAction(actionEvent -> addNewOrder());
+        addOrder.getTextSign().setOnMouseClicked(mouseEvent -> addOrder.getButton().fire());
+    }
+
+    /**
+     * Displays dialog and sends request for a new order
+     */
+    private void addNewOrder(){
+        // Init dialog
+        Dialog<Pair<String, String>> order = new Dialog<>();
+        order.setTitle("New Order");
+        order.setHeaderText("Add new order:");
+
+        // Pane for items
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        // Text field for number
+        Spinner<Integer> number = new Spinner<>(1, 50, 1);
+        number.setEditable(true);
+        number.setPrefSize(75, 25);
+
+        ChoiceBox<String> goodsType = new ChoiceBox<>();
+        ArrayList<String> goodsNames = new ArrayList<>();
+        for (GoodsType gt : goodsTypes){
+            goodsNames.add(gt.getName());
+        }
+        goodsType.getItems().addAll(goodsNames);
+
+        // -- Set buttons -- //
+        ButtonType orderButtonType = new ButtonType("Send Order", ButtonBar.ButtonData.OK_DONE);
+        order.getDialogPane().lookupButton(orderButtonType);
+        order.getDialogPane().getButtonTypes().addAll(orderButtonType, ButtonType.CANCEL);
+
+        grid.add(new Label("Quantity:"), 0, 0);
+        grid.add(number, 1, 0);
+        grid.add(new Label("Type:"), 0, 1);
+        grid.add(goodsType, 1, 1);
+
+        order.getDialogPane().setContent(grid);
+
+        order.setResultConverter(dialogButton -> {
+            if (dialogButton == orderButtonType) {
+                return new Pair<>(number.getValue().toString(), goodsType.getValue());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = order.showAndWait();
+
+        result.ifPresent(orderAssign -> {
+            if (orderAssign.getValue() != null) {
+                GoodsType newGoods = new GoodsType(orderAssign.getValue());
+                Order newOrder = new Order(Integer.parseInt(orderAssign.getKey()), newGoods);
+                cartsInfo.get(0).planner.addOrder(newOrder);
+            }
+        });
     }
 
     /**
@@ -306,8 +448,6 @@ public class GUI extends Application{
         for (int x = 0; x < map.x_size; x++) {
             for (int y = 0; y < map.y_size; y++) {
                 if (map.cells[x][y].type != 1) {
-                    System.out.println("position: [" + x + "," + y + "] index: " + i);
-                    System.out.println("size: " + heatMapItems.size());
                     try {
                         switch (map.cells[x][y].trafficIntensity) {
                             case 1:
@@ -497,25 +637,25 @@ public class GUI extends Application{
         // Divides the scene into equally distributed rectangles with size of variable 'size'
 
         // Vertical lines
-        for (int i = 0; i <= scene.getWidth(); i+= GUI.size) {
-            Line line_ver = new Line(i, 0, i, scene.getHeight()-40);
+        for (int i = 0; i <= buildingWidth; i+= GUI.size) {
+            Line line_ver = new Line(i, 0, i, buildingHeight);
             line_ver.setStroke(Color.GRAY);
 
             building.getChildren().add(line_ver);
 
         }
         // Horizontal lines
-        for (int i = 0; i < scene.getHeight(); i+= GUI.size) {
-            Line line_hor = new Line(0, i, scene.getWidth(), i);
+        for (int i = 0; i < buildingHeight; i+= GUI.size) {
+            Line line_hor = new Line(0, i, buildingWidth, i);
             line_hor.setStroke(Color.GRAY);
 
             building.getChildren().add(line_hor);
         }
 
         // Draw wall and output place
-        Rectangle wall = new Rectangle(0, scene.getHeight()-40, scene.getWidth(), 20);
+        Rectangle wall = new Rectangle(0, buildingHeight, buildingWidth, 20);
         wall.setFill(Color.DARKGRAY);
-        Rectangle door = new Rectangle(6*size+0.5, scene.getHeight()-42, size-1, 22);
+        Rectangle door = new Rectangle(6*size+0.5, buildingHeight-2, size-1, 22);
         door.setFill(Color.web("#f4f4f4"));
         building.getChildren().addAll(wall, door);
     }
