@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ *  Has information about all shelves and carts, calls GUI
+ * @author xzabka04
+ */
 public class Warehouse {
 
     public ArrayList<Shelf> shelves = new ArrayList<>(10);
@@ -28,14 +32,7 @@ public class Warehouse {
     	for (int i = 0; i <map.getShelfCount(); i++){
             shelves.add(new Shelf());
         }
-    	types.add(new GoodsType("banana"));
-    	types.add(new GoodsType("milk"));
-    	types.add(new GoodsType("apple"));
-    	types.add(new GoodsType("pineapple"));
-    	types.add(new GoodsType("plum"));
-    	types.add(new GoodsType("grapes"));
-    	types.add(new GoodsType("kiwi"));
-    	types.add(new GoodsType("orange"));
+
 		Planner planner = new Planner();
 
         try {
@@ -79,67 +76,15 @@ public class Warehouse {
 		}
 
         print_state();
-	
-/* -------------------------------------------------------demonstration how to reserve goods on shelf--------------------------
-        GoodsType apple = new GoodsType("jablko");
-        GoodsType orange = new GoodsType("pomaranc");
 
-        System.out.println("number of apples on shelf 1: "+shelves.get(1).numberOfGoods(apple));
-        System.out.println("number of oranges on shelf 1: "+shelves.get(1).numberOfGoods(orange));
-
-        System.out.println("number of unreserved apples on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(apple));
-        System.out.println("number of unreserved oranges on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(orange));
-
-        //---------------how to reserve goods...first chceck if there are enough-------------------
-        System.out.println("RESERVING 3 APPLES AND 7 ORANGES");
-        int applecount = 3;
-        int orangecount = 7;
-
-        if (shelves.get(1).numberOfUnreservedGoods(apple) >= applecount){
-            shelves.get(1).reserveGoods(apple,applecount);
-        }
-        else{
-            System.out.println("Not enough unreserved goods on the shelf");
-        }
-
-        if (shelves.get(1).numberOfUnreservedGoods(orange) >= orangecount){
-            shelves.get(1).reserveGoods(orange,orangecount);
-        }
-        else{
-            System.out.println("Not enough unreserved goods on the shelf");
-        }
-
-
-        System.out.println("number of apples on shelf 1: "+shelves.get(1).numberOfGoods(apple));
-        System.out.println("number of oranges on shelf 1: "+shelves.get(1).numberOfGoods(orange));
-
-        System.out.println("number of unreserved apples on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(apple));
-        System.out.println("number of unreserved oranges on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(orange));
-
-        //------ALWAYS USE removeReserved() IF YOU ARE REMOVING RESERVED GOODS WITH A CART... NOT removeAny() !!---------------------
-        //-----------------how to remove reserved goods from shelf.....you can also chceck if there are some before you remove, or check if return from removeReserved is null-------
-        System.out.println("REMOVING RESERVED 3 APPLES AND 6 ORANGES");
-        for (int i=0; i<3; i++){
-            shelves.get(1).removeReserved(apple);
-        }
-        for (int i=0; i<6; i++){
-            shelves.get(1).removeReserved(orange);
-        }
-
-        System.out.println("number of apples on shelf 1: "+shelves.get(1).numberOfGoods(apple));
-        System.out.println("number of oranges on shelf 1: "+shelves.get(1).numberOfGoods(orange));
-
-        System.out.println("number of unreserved apples on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(apple));
-        System.out.println("number of unreserved oranges on shelf 1: "+shelves.get(1).numberOfUnreservedGoods(orange));
-
---------------------------------------------------end of demonstration-----------------------------
-*/	
         planner.readOrderFromFile("data/Orders1.txt",types);
         GUI g = new GUI();
         g.initIfo(shelves, map, carts);
 	    g.main();
     }
-
+    /**
+     * Prints state of all shelves in warehouse
+     */
     private void print_state(){
         for(int i=0; i<shelves.size() ; i++){
             System.out.println("SHELF "+i+":");

@@ -9,6 +9,8 @@ import ija.carts.Destination;
 import ija.gui.GUI;
 
 /**
+ * Map of the warehouse, has positions of everything inside
+ * @author xbabac02
  * @implNote file with map, should contain size of cells table; Map contains 1 export window
  */
 public class MapInfo {
@@ -161,7 +163,6 @@ public class MapInfo {
 		for(int y = 0; y<y_size;y++){
 			for(int x = 0; x<x_size;x++) {
 				if(cells[x][y].type==2) {
-					//System.out.println("Shelf on ["+x+","+y+"]");
 					gui.PutCart(x,y, 40, cells[x][y].index);
 				}
 			}

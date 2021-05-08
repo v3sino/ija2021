@@ -1,29 +1,14 @@
 K dorobeniu:
 
 ako chceme zvoliť/zmeniť mapu?
-vozíky stále nikto nehýbe (časovač by mal volať funkciu move, nastavovať rýchlosť plynutia času)
+
 požiadavky nie su načítavané z GUI
-požiadavky nie su načítavané zo súboru - programované, netestované
+
 dokladanie
-grafické zobrazenie stavu vozíku
-grafické zobrazenie stavu objednávky
-grafické zobrazenie vyskladnenia
-heatmap dáta
 
-M: vozíky nie su načítavané do mapy - programované, netestované
-M: vozíky nie su vytvárané - programované, netestované 
-M: rezervácia tovarov - programované, netestované
-M: vozíky musia mať obmedzenú kapacitu (10 predmetov) - programované, netestované
-
-    • aplikace bude podporovat minimálně 50 druhů zboží
-    • po najetí/kliknutí na pozici regálu se zobrazí jeho aktuální obsah TEST?
-    • aplikace umožňuje načítání požadavků ze souboru i ruční zadávání
-    • je třeba zohlednit kapacitu vozíku
-    • systém obsahuje vlastní hodiny, které lze nastavit na výchozí hodnotu a různou rychlost
-    • po načtení mapy a obsahu skladu začne systém zobrazovat zpracování jednotlivých požadavků (způsob zobrazení je na vaší invenci, postačí značka, kolečko, ...)
-    • po najetí/kliknutí na symbol vozíku se zvýrazní trasa v mapě a zobrazí jeho aktuální náklad
-    • Je možné definovat možnost uzavření uličky
-    • vozík si automaticky zvolí objízdnou trasu (a aktualizuje ji i ve vizualizaci trasy)  TEST?
-    • Rozšiřte model o třetí rozměr → tím se změní i časy zastávek.
-    • Mapa umožní přepnutí do módu tzv. heatmapy, která reflektuje četnost zastávek u jednotlivých regálů (používá se k vyhodnocení efektivity rozložení zboží)
-    • Systém obohatíte o režim nakládání regálů novým zbožím
+• aplikace umožňuje načítání požadavků ze souboru i ruční zadávání
+• systém obsahuje vlastní hodiny, které lze nastavit na výchozí hodnotu a různou rychlost
+• Je možné definovat možnost uzavření uličky
+• vozík si automaticky zvolí objízdnou trasu (a aktualizuje ji i ve vizualizaci trasy)  TEST?
+• Rozšiřte model o třetí rozměr → tím se změní i časy zastávek.
+• Systém obohatíte o režim nakládání regálů novým zbožím

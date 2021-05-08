@@ -1,5 +1,9 @@
 package ija.warehouse;
 
+/**
+ *  One cell on the map (shelf/cart/path/...)
+ * @author xbabac02
+ */
 public class Cell {
 	public char type;
 	public int index;   /// index in List for shelf and cart

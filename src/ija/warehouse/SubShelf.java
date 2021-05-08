@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+/**
+ *  Represents one subshelf of a shelf in warehouse
+ * @author xzabka04
+ */
 public class SubShelf {
 
     private Map<GoodsType, List<Goods>> ThingsOnShelf = new HashMap<GoodsType, List<Goods>>();
@@ -16,7 +19,10 @@ public class SubShelf {
 
     public SubShelf() {
     }
-
+    /**
+     * Adds a new item onto the subshelf
+     * @param goodsItem item to add
+     */
     public void put(Goods goodsItem) {
         GoodsType type = goodsItem.get_type();
         if (this.ThingsOnShelf.containsKey(type)) {
@@ -30,6 +36,11 @@ public class SubShelf {
         count ++;
     }
 
+    /**
+     * Reserves items from subshelf so other carts wont try to take them
+     * @param type type of product to reserve
+     * @param count number of products you want to reserve
+     */
     public int reserveGoods(GoodsType type, int count){
         int x = 0;
         if (this.numberOfUnreservedGoods(type) == 0){
@@ -47,7 +58,11 @@ public class SubShelf {
         }
         return x;
     }
-
+    /**
+     * Number of goods that are not reserved
+     * @param type type of goods
+     * @return how many goods of the type are not yet reserved
+     */
     public int numberOfUnreservedGoods(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
         if (list == null){
@@ -63,7 +78,11 @@ public class SubShelf {
             return count;
         }
     }
-
+    /**
+     * Removes one of the reserved items from subshelf
+     * @param type type of product to remove
+     * @return the product that was removed
+     */
     public Goods removeReserved(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
         if (list == null) {
@@ -85,11 +104,20 @@ public class SubShelf {
         return null;
     }
 
+    /**
+     * Does this shelf contain this product type ?
+     * @param type type of product
+     * @return true/false
+     */
     public boolean containsGoods(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
         return list != null;
     }
-
+    /**
+     * Removes one item of given type from subshelf
+     * @param type type of product to remove
+     * @return the product that was removed
+     */
     public Goods removeAny(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
         if (list == null) {
@@ -104,7 +132,11 @@ public class SubShelf {
             }
         }
     }
-
+    /**
+     * How many goods of this type are on the subshelf ?
+     * @param type type of product
+     * @return number of products of given type on this subshelf
+     */
     public int numberOfGoods(GoodsType type) {
         List<Goods> list = this.ThingsOnShelf.get(type);
         if (list == null){
@@ -112,11 +144,16 @@ public class SubShelf {
         }
         else return list.size();
     }
-
+    /**
+     * Returns whether this subshelf is full or not
+     */
     public boolean isfull(){
         return count == capacity;
     }
 
+    /**
+     * Prints content of subshelf to stdout
+     */
     public void print_content(){
         if(count == 0){
             System.out.println("empty");
@@ -133,6 +170,9 @@ public class SubShelf {
         return count==0;
     }
 
+    /**
+     * Returns string representation of all the content inside this shelf
+     */
     public String getContent(){
         StringBuilder content = new StringBuilder();
         if(count == 0){

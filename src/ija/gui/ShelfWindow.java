@@ -16,7 +16,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.Random;
-
+/**
+ * Interface of one shelf
+ * @author xbegan02
+ */
 public class ShelfWindow{
 
     public static void display(Shelf shelfInfo) {
