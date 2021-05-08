@@ -244,7 +244,8 @@ public class GUI extends Application{
 
     	map.readShelfToGui(this);
     	map.readCartToGui(this);
-
+    	map.readBarrierToGui(this);
+    	
     	// Loading indicators of carts
         ArrayList<ProgressIndicator> indicators = new ArrayList<>();
         for (int i = 0; i < carts.size(); i++) {
@@ -335,14 +336,29 @@ public class GUI extends Application{
             building.setOpacity(.6);
             puttingBarrier = true;
         });
-        barrierSign.setOnMouseClicked(mouseEvent -> barrier.getButton().fire());
+        barrierSign.setOnMouseClicked(mouseEvent -> {
+        	barrier.getButton().fire();
+        	// block by Martin Babača 
+        	int x = (int) mouseEvent.getX()/size;
+            int y = (int) mouseEvent.getY()/size;
+            System.out.println("##### Removing blocade from: "+x+", "+y);
+            if(map.cells[x][y].typeToChar(map.cells[x][y].type)=='b') {
+            	map.cells[x][y].type=0;
+            }
+            //end of block
+        	});
 
         building.setOnMouseClicked(mouseEvent -> {
             if (puttingBarrier){
                 int x = (int) mouseEvent.getX()/size;
                 int y = (int) mouseEvent.getY()/size;
-                System.out.println("##### Putting on: "+x+", "+y);
-                putBarrier(x, y);
+            	// block by Martin Babača
+                if(map.cells[x][y].type==0) {
+                	map.cells[x][y].type=8;
+                    //end of block
+                    System.out.println("##### Putting on: "+x+", "+y);
+                    putBarrier(x, y);
+                }
                 building.setOpacity(1);
                 puttingBarrier = false;
             }

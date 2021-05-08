@@ -117,10 +117,10 @@ public class MapInfo {
 	}
 
 	/**
-	 * Function read map from file specified parameter 
+	 * Function reads map and triggers corresponding function of gui
 	 * Example call from GUI: map.readMapFromFile(this);
 	 * @warning !!! pixel size of shelf is used 40, no value readable from GUI
-	 * @param gui specifies gui, from with will be called functions drawing objects on map (carts, shelves)
+	 * @param gui specifies gui, from with will be called functions drawing objects on map (shelves)
 	 */
 	public void readShelfToGui(GUI gui){
 		g=gui;
@@ -135,10 +135,10 @@ public class MapInfo {
 	}
 
 	/**
-	 * Function read map from file specified parameter 
+	 * Function reads map and triggers corresponding function of gui
 	 * Example call from GUI: map.readCartToGui(this);
 	 * @warning !!! pixel size of shelf is used 40, no value readable from GUI
-	 * @param gui specifies gui, from with will be called functions drawing objects on map (carts, shelves)
+	 * @param gui specifies gui, from with will be called functions drawing objects on map (carts)
 	 */
 	public void readCartToGui(GUI gui){
 		g=gui;
@@ -146,6 +146,23 @@ public class MapInfo {
 			for(int x = 0; x<x_size;x++) {
 				if(cells[x][y].type==2) {
 					gui.PutCart(x,y, 40, cells[x][y].index);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Function reads map and triggers corresponding function of gui
+	 * Example call from GUI: map.readBarierToGui(this);
+	 * @warning !!! pixel size of shelf is used 40, no value readable from GUI
+	 * @param gui specifies gui, from with will be called functions drawing objects on map (barriers)
+	 */
+	public void readBarrierToGui(GUI gui){
+		g=gui;
+		for(int y = 0; y<y_size;y++){
+			for(int x = 0; x<x_size;x++) {
+				if(cells[x][y].type==8) {
+					gui.putBarrier(x, y);
 				}
 			}
 		}
