@@ -11,7 +11,7 @@ public class GoodsType {
 
     private String name;
     private int pocet;
-    private ArrayList<Goods> list = new ArrayList<Goods>();
+    private ArrayList<Goods> list = new ArrayList<>();
 
     /**
      * Constructor
