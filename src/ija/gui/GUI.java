@@ -338,26 +338,14 @@ public class GUI extends Application{
             building.setOpacity(.6);
             puttingBarrier = true;
         });
-        barrierSign.setOnMouseClicked(mouseEvent -> {
-        	barrier.getButton().fire();
-        	// block by Martin Babača 
-//        	int x = (int) mouseEvent.getX()/size;
-//            int y = (int) mouseEvent.getY()/size;
-//            System.out.println("##### Removing blocade from: "+x+", "+y);
-//            if(map.cells[x][y].typeToChar(map.cells[x][y].type)=='b') {
-//            	map.cells[x][y].type=0;
-//            }
-            //end of block
-        	});
+        barrierSign.setOnMouseClicked(mouseEvent -> barrier.getButton().fire());
 
         building.setOnMouseClicked(mouseEvent -> {
             if (puttingBarrier){
                 int x = (int) mouseEvent.getX()/size;
                 int y = (int) mouseEvent.getY()/size;
-            	// block by Martin Babača
                 if(map.cells[x][y].type==0) {
                 	map.cells[x][y].type=8;
-                    //end of block
                     System.out.println("##### Putting on: "+x+", "+y);
                     putBarrier(x, y);
                 }
