@@ -88,6 +88,24 @@ public class Shelf {
         }
         return null;
     }
+    
+    /**
+     * Returns index of shelf, from which will be given goodtype removed, if removeReserved will be called as a next command with the same goodtype
+     * @param goodtype type of product to remove
+     * @return index of subshelf
+     */
+	public int indexOfSubshelfForRemoveReserved(GoodsType goodtype) {
+        for(SubShelf i : subshelves){
+            if (i.numberOfGoods(goodtype) - i.numberOfUnreservedGoods(goodtype) > 0){
+                for (int j = 0; j < subshelves.size(); j++) {
+					if(i.equals(subshelves.get(j))) {
+						return j;
+					}
+				}
+            }
+        }
+        return -1;
+	}
 
     /**
      * Removes one item of given type from shelf

@@ -83,13 +83,15 @@ public class Cart {
 				Shelf shelf = map.getShelf(getDestinations().get(completedDestinations));
 				shelf.toString();
 				Goods good;
+				int subshelf_i;
 				for(int i = 0;i<getDestinations().get(completedDestinations).count;i++) {
+					subshelf_i = shelf.indexOfSubshelfForRemoveReserved(getDestinations().get(completedDestinations).goodtype);
 					good = shelf.removeReserved(getDestinations().get(completedDestinations).goodtype);
 					if(good==null){
 						System.out.println("Shelf '"+shelf+"' can't remove Reserved good number "+i);
 						break;
 					}else{
-						if(!this.load(good)){
+						if(!this.load(good,subshelf_i)){
 							System.out.println("ERR");
 						}
 					}
@@ -517,9 +519,9 @@ public class Cart {
 		}
 	}
 
-	private boolean load(Goods good) {
+	private boolean load(Goods good, int subshelf_h) {
 		if(load<getMaxLoad()) {
-			waitTime=1;
+			waitTime=subshelf_h+1;
 			getWaitFor().add(good);
 			return true;
 		}else {
