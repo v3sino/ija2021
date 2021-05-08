@@ -61,6 +61,7 @@ public class GUI extends Application{
 
     boolean puttingBarrier = false;
 
+    private ArrayList<Line> barrierList;
     private ArrayList<Circle> heatMapItems;
     private Rectangle hMap;
     List<Rectangle> shelves;
@@ -92,6 +93,7 @@ public class GUI extends Application{
         carts = new ArrayList<>();
         shelves = new ArrayList<>();
         cartPath= new ArrayList<>();
+        barrierList = new ArrayList<>();
 
         // Setting scene
         primaryStage.setTitle("Warehouse");
@@ -339,12 +341,12 @@ public class GUI extends Application{
         barrierSign.setOnMouseClicked(mouseEvent -> {
         	barrier.getButton().fire();
         	// block by Martin Babača 
-        	int x = (int) mouseEvent.getX()/size;
-            int y = (int) mouseEvent.getY()/size;
-            System.out.println("##### Removing blocade from: "+x+", "+y);
-            if(map.cells[x][y].typeToChar(map.cells[x][y].type)=='b') {
-            	map.cells[x][y].type=0;
-            }
+//        	int x = (int) mouseEvent.getX()/size;
+//            int y = (int) mouseEvent.getY()/size;
+//            System.out.println("##### Removing blocade from: "+x+", "+y);
+//            if(map.cells[x][y].typeToChar(map.cells[x][y].type)=='b') {
+//            	map.cells[x][y].type=0;
+//            }
             //end of block
         	});
 
@@ -359,6 +361,11 @@ public class GUI extends Application{
                     System.out.println("##### Putting on: "+x+", "+y);
                     putBarrier(x, y);
                 }
+                else if (map.cells[x][y].type == 8){
+                    map.cells[x][y].type=0;
+                    removeBarrier(x, y);
+                }
+
                 building.setOpacity(1);
                 puttingBarrier = false;
             }
@@ -676,7 +683,31 @@ public class GUI extends Application{
         line1.setStroke(Color.GRAY);
         line2.setStroke(Color.GRAY);
 
+        barrierList.add(line1);
+        barrierList.add(line2);
         building.getChildren().addAll(line1, line2);
+    }
+
+    /**
+     * Function removes barrier from a square with given coordinates
+     * @param x x-coordinate of the square
+     * @param y y-coordinate of the square
+     */
+    public void removeBarrier(int x, int y){
+        int i;
+        ArrayList<Line> barrierListCopy = new ArrayList<>(barrierList);
+
+        for (Line barLine : barrierListCopy){
+            if (barLine.getStartX() == x*size && barLine.getStartY() == y*size){
+                i = barrierList.indexOf(barLine);
+
+                building.getChildren().remove(barLine);
+                building.getChildren().remove(barrierList.get(i+1));
+
+                barrierList.remove(barLine);
+                barrierList.remove(barrierList.get(i));
+            }
+        }
     }
     /**
      * Finction creates path of a cart

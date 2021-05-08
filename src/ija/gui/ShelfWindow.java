@@ -67,7 +67,7 @@ public class ShelfWindow{
                 }
             }
         });
-        HBox.setMargin(add, new Insets(0, 0, 0,shelf.getWidth()-190));
+        HBox.setMargin(add, new Insets(0, 0, 0,shelf.getWidth()-175));
 
 
         buttonPane.getChildren().addAll(back, add);
