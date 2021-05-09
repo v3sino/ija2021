@@ -38,7 +38,6 @@ public class MapInfo {
 	 * @param s shelf
 	 */
 	public MapInfo(Shelf s) {
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * Function read map from file specified in constructor (default map)
@@ -127,7 +126,6 @@ public class MapInfo {
 		for(int y = 0; y<y_size;y++){
 			for(int x = 0; x<x_size;x++) {
 				if(cells[x][y].type==1) {
-					//System.out.println("Shelf on ["+x+","+y+"]");
 					gui.PutShelf(y+1,x+1, 40, cells[x][y].index, 1);
 				}
 			}
@@ -176,8 +174,6 @@ public class MapInfo {
 	 * @param y2 y value of new position of cart
 	 */
 	public void moveCart(int x, int y, int x2, int y2) {
-		//System.out.println("Map move");
-		//System.out.println("Pohyb voziku z "+ Integer.toString(x)+","+Integer.toString(y)+" na: "+Integer.toString(x2)+","+Integer.toString(y2));
 		int cart_index = cells[x][y].index;
 		assert(cells[x][y].type==2);
 		assert(this.isFree(x,y));

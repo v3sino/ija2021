@@ -29,16 +29,11 @@ public class Planner {
 	 */
 	public Boolean dispatch(Goods[] outLoad, Order o) {
 		StringBuilder sb = new StringBuilder();
-		// sb.append("Dispatching:\n");
-		//System.out.println("Na výdajné okienko bola vyložená objednávka");
-		//System.out.println("obsahuje:");
 		for (Goods goods : outLoad) {
 			sb.append(goods.toString()).append("\n");
 			System.out.println(goods);
 		}
-		//System.out.println("...to je všetko");
 		if(o==null) {
-			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching", JOptionPane.INFORMATION_MESSAGE);
 			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
 		}else {
 			for (Goods goods : outLoad) {
@@ -48,14 +43,12 @@ public class Planner {
 					}
 				}
 			}
-			//JOptionPane.showMessageDialog(null, sb.toString(), "Dispatching order:"+o.getName(), JOptionPane.INFORMATION_MESSAGE);
 			totalDispatched+=outLoad.length;
 			
 			// This is how to run the Alert
 			Platform.runLater(() -> ija.gui.GUI.showAlert(Alert.AlertType.INFORMATION, "Dispatching", "Dispatching order:", sb.toString()));
 			
 			if(o.dispatched()==o.all()) {
-				//System.out.println("removing");
 				orders.remove(o);
 			}
 		}
@@ -67,9 +60,6 @@ public class Planner {
 	 * @return first Order, which is not already planned or null if no Order to be planned 
 	 */
 	public Order getNextOrder() {
-		//if(orders.size()!=0) {
-		//	return orders.remove(0);
-		//}
 		for(Order o : orders) {
 			if(!o.isEmpty()) {
 				return o;
@@ -121,7 +111,6 @@ public class Planner {
 					
 				}else if(line.charAt(0)=='-' && line.charAt(1)=='-') {
 					// Order file name of order (new order identifier)
-					System.out.println("new order "+line);
 					if(name!=null) {
 						GoodsType[] a1 = new GoodsType[goods.size()];
 						int[] a2 = new int[count.size()];
@@ -141,8 +130,6 @@ public class Planner {
 					// Order file one stock order (structure of 1. line is: name of stock)(structure of 2. line: number any_comment with/without spaces)
 					found = false;
 					for (GoodsType type : types) {
-						//System.out.println(type.getName());
-						//System.out.println(line);
 						if(type.getName().equalsIgnoreCase(line)) {
 							goods.add(type);
 							found = true;

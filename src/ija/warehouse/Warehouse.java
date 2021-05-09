@@ -69,13 +69,10 @@ public class Warehouse {
 			for (int x = 0; x < map.x_size; x++) {
 				if(map.cells[x][y].type==2) {
 					int [] a = {x,y};
-					System.out.println(x+"=="+a[0]+",y=="+a[1]);
 					carts.add(new Cart(new Goods[0], a, planner, map, this));
 				}
 			}
 		}
-
-        print_state();
 
         planner.readOrderFromFile("data/Orders1.txt",types);
         GUI g = new GUI();
@@ -85,7 +82,8 @@ public class Warehouse {
     /**
      * Prints state of all shelves in warehouse
      */
-    private void print_state(){
+    @SuppressWarnings("unused")
+	private void print_state(){
         for(int i=0; i<shelves.size() ; i++){
             System.out.println("SHELF "+i+":");
             shelves.get(i).print_content();

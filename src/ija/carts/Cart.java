@@ -50,7 +50,6 @@ public class Cart {
 	 * function triggers cart to do something (moving, loading, uloading, planning path)
 	 */
 	public void move() {
-		map.printMap();
 		/// Loading
 		if(getWaitTime()>0) {
 			if(getWaitTime()==1) {
@@ -68,7 +67,6 @@ public class Cart {
 		
 		//Moving
 		if(getPlanned_path().size()>0) {// way is planned, path is cleared 
-			this.printPlanned_path();
 			if(map.cells[x][y].crossroad) {
 				// cart reached crossroad, path to next crossroad is planned, path to following crossroad is been planning
 				this.plan();
@@ -90,11 +88,10 @@ public class Cart {
 					subshelf_i = shelf.indexOfSubshelfForRemoveReserved(getDestinations().get(completedDestinations).goodtype);
 					good = shelf.removeReserved(getDestinations().get(completedDestinations).goodtype);
 					if(good==null){
-						System.out.println("Shelf '"+shelf+"' can't remove Reserved good number "+i);
 						break;
 					}else{
 						if(!this.load(good,subshelf_i)){
-							System.out.println("ERR");
+							System.out.println("unable to load");
 						}
 					}
 				}
@@ -256,7 +253,6 @@ public class Cart {
 	 * function plans path (cell by cell)
 	 */
 	private void plan() {
-		// ??? i don't know, if this works
 		int last_x;
 		int last_y;
 		if(getPlanned_path().size()>0) {
@@ -489,7 +485,6 @@ public class Cart {
 						if(c>order.getGoodTypeCount()[j]) {
 							d.count=order.getGoodTypeCount()[j];
 						}
-						System.out.println(order.getGoodTypeObj()[j].getName());
 						wh.shelves.get(i).reserveGoods(order.getGoodTypeObj()[j], d.count);
 						d.goodtype=order.getGoodTypeObj()[j];
 						getDestinations().add(d);
@@ -515,7 +510,6 @@ public class Cart {
 			a.task = 3;
 			getDestinations().add(a);
 			completedDestinations=0;
-			this.printDestinations();
 			this.plan();
 			runningOrder = order;
 		}else {
@@ -526,6 +520,7 @@ public class Cart {
 	/**
 	 * debug print
 	 */
+	@SuppressWarnings("unused")
 	private void printDestinations() {
 		System.out.println("Destinations:");
 		for(Destination dest : getDestinations()) {
@@ -545,8 +540,6 @@ public class Cart {
 			getWaitFor().add(good);
 			return true;
 		}else {
-			//JOptionPane.showMessageDialog(null,"Cart is already full, when it loads next stock","Cart loading problem",JOptionPane.WARNING_MESSAGE);
-
 			Alert fullCart = new Alert(Alert.AlertType.WARNING);
 			fullCart.setTitle("Cart loading problem");
 			fullCart.setHeaderText(null);
